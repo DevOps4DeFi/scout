@@ -1,14 +1,14 @@
 locals {
-  nondefault_name_suffix = var.app_name == "scout"? "" : "-${var.app_name}"
+  name_suffix = var.app_name == "scout"? "" : "-${var.app_name}"
 }
 resource "aws_ecr_repository" "prometheus" {
-  name = "prometheus${local.nondefault_name_suffix}"
+  name = "prometheus${local.name_suffix}"
 }
 resource "aws_ecr_repository" "scout" {
-  name = "scout${local.nondefault_name_suffix}"
+  name = "scout${local.name_suffix}"
 }
 resource "aws_ecr_repository" "grafana" {
-  name = "grafana${local.nondefault_name_suffix}"
+  name = "grafana${local.name_suffix}"
 }
 locals {
   all_repo_arns = [aws_ecr_repository.grafana.arn, aws_ecr_repository.scout.arn, aws_ecr_repository.prometheus.arn]
