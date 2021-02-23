@@ -17,7 +17,7 @@ resource "aws_ecs_service" "grafana" {
 }
 
 resource "aws_ecs_task_definition" "grafana" {
-  family                   = "grafana"
+  family                   = "grafana${local.name_suffix}"
   container_definitions = jsonencode(concat(
   jsondecode(module.grafana-container-definition.json_map_encoded_list),
   jsondecode(module.grafana-render-container-definition.json_map_encoded_list)))
