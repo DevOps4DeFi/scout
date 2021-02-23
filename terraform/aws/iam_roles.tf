@@ -85,5 +85,4 @@ resource "aws_iam_role_policy" "ecs_exec" {
   name_prefix   = "ecsExecRolePolicy"
   policy = data.aws_iam_policy_document.ecs_exec.json
   role   = aws_iam_role.ecs_exec.id
-  tags = var.tags
 }
