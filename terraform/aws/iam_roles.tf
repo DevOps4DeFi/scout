@@ -75,14 +75,15 @@ data "aws_iam_policy_document" "ecs_exec" {
 
 // AWS IAM Role used for ecs task execution
 resource "aws_iam_role" "ecs_exec" {
-  name               = "ecsExecTaskRole"
+  name_prefix               = "ecsExecTaskRole"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assumerole.json
   tags               = var.tags
 }
 
 // AWS IAM Role Policy used for ecs task execution
 resource "aws_iam_role_policy" "ecs_exec" {
-  name   = "ecsExecRolePolicy"
+  name_prefix   = "ecsExecRolePolicy"
   policy = data.aws_iam_policy_document.ecs_exec.json
   role   = aws_iam_role.ecs_exec.id
+  tags = var.tags
 }
