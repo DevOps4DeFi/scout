@@ -173,8 +173,7 @@ resource "aws_lb_listener_rule" "https_grafana" {
   listener_arn = var.public_lb_https_listener_arn
   condition {
     host_header {
-      values = [
-        "grafana.${var.route53_root_fqdn}"]
+      values = [aws_route53_record.grafana.fqdn]
     }
   }
     action {
