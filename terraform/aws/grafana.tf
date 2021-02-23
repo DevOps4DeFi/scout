@@ -151,13 +151,13 @@ module "grafana-render-container-definition" {
 }
 
 resource "aws_lb_target_group" "grafana" {
-  name        = "grafana"
+  name_prefix        = "grafana"
   protocol    = "HTTP"
   port        = 3000
   target_type = "instance"
   vpc_id      = local.vpc_id
   tags = {
-    name = "grafana"
+    name = "grafana${local.name_suffix}"
   }
   health_check {
     healthy_threshold   = 2

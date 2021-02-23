@@ -94,13 +94,13 @@ port_mappings = [
 */
 }
 resource "aws_lb_target_group" "prometheus" {
-  name        = "prometheus"
+  name_prefix        = "prometheus"
   protocol    = "HTTP"
   port        = 9090
   target_type = "instance"
   vpc_id      = local.vpc_id
   tags = {
-    name = "prometheus"
+    name = "prometheus${local.name_suffix}"
   }
   health_check {
     healthy_threshold   = 2
