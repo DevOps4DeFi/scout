@@ -125,7 +125,7 @@ resource "aws_lb_listener_rule" "prometheus" {
   }
 }
 resource "aws_route53_record" "prometheus" {
-  name    = "prometheus"
+  name    = "prometheus${local.name_suffix}"
   type    = "A"
   zone_id = data.aws_route53_zone.rootzone.zone_id
   alias {
