@@ -1,0 +1,48 @@
+version: "3"
+services:
+  scout:
+    build:
+      context: ./scout
+    container_name: scout-collector
+    ports:
+      - "8801:8801"
+    environment:
+      - ETHNODEURL
+  renderer:
+    image: grafana/grafana-image-renderer:latest
+    ports:
+      - 8081
+    environment:
+        ENABLE_METRICS: 'true'
+  grafana:
+    build:
+      context: ./grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    environment:
+      - GF_RENDERING_SERVER_URL=http://renderer:8081/renderer
+      - GF_RENDERING_CALLBACK_URL=http://grafana:3000/
+      - GF_LOG_FILTERS=rendering:debug
+      - PROMETHEUS_URL=http://prometheus:9090
+      - ENV GF_AUTH_DISABLE_LOGIN_FORM=true
+      - ENV GF_AUTH_ANONYMOUS_ENABLED=true
+      - ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - DEFAULT_DISCORD_NOTIFIER_WEBHOOK
+  prometheus:
+    build:
+      context: ./prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+      - "9093:9093"
+    volumes:
+      - prometheus-data:/prometheus
+# Explicitly define the persistent volume for your data storage
+volumes:
+  grafana-data:
+    external: true
+  prometheus-data:
+    external: true

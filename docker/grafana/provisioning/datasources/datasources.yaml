@@ -1,0 +1,17 @@
+apiVersion: 1
+datasources:
+  - name: badger-prometheus
+    version: 1
+    orgId: 1
+    type: prometheus
+    typeLogoUrl: public/app/plugins/datasource/prometheus/img/prometheus_logo.svg
+    access: proxy
+    url: $PROMETHEUS_URL
+    password: ''
+    user: ''
+    database: ''
+    basicAuth: false
+    isDefault: true
+    jsonData: {}
+    readOnly: false
+
