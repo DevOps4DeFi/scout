@@ -1,4 +1,4 @@
-`resource "aws_acm_certificate" "https" {
+resource "aws_acm_certificate" "https" {
   domain_name       = "*.${data.aws_route53_zone.rootzone.name}"
   validation_method = "DNS"
   tags              = var.tags
