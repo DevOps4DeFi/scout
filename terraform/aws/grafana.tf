@@ -84,7 +84,7 @@ module "grafana-container-definition" {
     },
     {
       name  = "PROMETHEUS_URL"
-      value = "https://${aws_route53_record.prometheus.fqdn}:9090"
+      value = "https://${aws_route53_record.prometheus.fqdn}"
     },
     {
       name = "GF_SECURITY_ADMIN_USER"

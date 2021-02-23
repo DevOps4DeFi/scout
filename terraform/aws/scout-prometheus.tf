@@ -13,7 +13,7 @@ resource "aws_ecs_service" "prometheus" {
     container_port   = 9090
     target_group_arn = aws_lb_target_group.prometheus.arn
   }
-  depends_on = [aws_lb_listener.prometheus]
+  depends_on = [var.private_lb_https_listener_arn]
 }
 
 resource "aws_ecs_task_definition" "prometheus" {
@@ -111,15 +111,17 @@ resource "aws_lb_target_group" "prometheus" {
   }
 }
 
-## If so they need their own target groups.
-resource "aws_lb_listener" "prometheus" {
-  load_balancer_arn = data.aws_lb.private_alb.arn
-  port              = 9090
-  protocol          = "HTTPS"
-  certificate_arn = aws_acm_certificate_validation.https.certificate_arn
-  default_action {
+resource "aws_lb_listener_rule" "prometheus" {
+  listener_arn = var.public_lb_https_listener_arn
+  condition {
+    host_header {
+      values = [
+        "${var.app_name}.${var.route53_root_fqdn}"]
+    }
+  }
+  action {
     target_group_arn = aws_lb_target_group.prometheus.arn
-    type             = "forward"
+    type = "forward"
   }
 }
 resource "aws_route53_record" "prometheus" {
