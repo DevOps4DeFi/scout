@@ -112,7 +112,7 @@ resource "aws_lb_target_group" "prometheus" {
 }
 
 resource "aws_lb_listener_rule" "prometheus" {
-  listener_arn = var.public_lb_https_listener_arn
+  listener_arn = var.private_lb_https_listener_arn
   condition {
     host_header {
       values = [aws_route53_record.prometheus.fqdn]
