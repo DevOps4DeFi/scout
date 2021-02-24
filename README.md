@@ -1,5 +1,5 @@
 # Badger Scout - Opensource
-This is an opensource version of the monitoring tool used by Badger-Finance to watch simple ops metrics.  Over time communtiy dashboards will be added
+This is an opensource version of the monitoring tool used by Badger-Finance to watch simple ops metrics on our Etherium smart contracts.  Over time communtiy dashboards will be added.
 
 Badger scout inspects each block on the chain and creates badger relevant events
 and uses Prometheus/Grafana to stored/display/work on them.
