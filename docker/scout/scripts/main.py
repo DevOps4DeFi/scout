@@ -63,7 +63,6 @@ def main():
         rewards_gauge.labels( 'digg' ).set( digg_rewards )
 
         token_prices = get_json_request(url=f'https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}', request_type='get')
-        console.print (token_prices)
         for token in tokens:
             console.print( f'Processing Coingecko price for [bold]{token}...' )
             for countertoken in countertoken_csv.split(","):

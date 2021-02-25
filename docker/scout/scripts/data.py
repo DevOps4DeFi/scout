@@ -4,6 +4,8 @@ from brownie import interface
 from brownie.network.contract import InterfaceContainer
 from rich.console import Console
 import logging
+import json
+import requests
 from rich.logging import RichHandler
 
 warnings.simplefilter( "ignore" )
@@ -128,3 +130,13 @@ def get_digg_data():
 def get_badgertree_data():
     return Badgertree( name='Rewards Cycles', badger_tree=interface.Badgertree( badgertree ) )
 
+def get_json_request(request_type, url, request_data=None):
+    # Take a request object and request type, then return the response in JSON format
+    json_request = json.dumps(request_data)
+    if(request_type == 'get'):
+        r = requests.get(f'{url}', data=json_request)
+    elif(request_type == 'post'):
+        r = requests.post(f'{url}', data=json_request)
+    else:
+        return None
+    return r.json()
