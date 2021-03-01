@@ -1,4 +1,5 @@
-from rich.console import Console
+#!/usr/local/bin/python3
+# from rich.console import Console
 from prometheus_client import Gauge, start_http_server
 import warnings
 import scripts.data
@@ -37,7 +38,7 @@ def main():
     digg_prices = scripts.data.get_digg_data()
     badgertree_cycles = scripts.data.get_badgertree_data()
 
-    for block in chain.new_blocks( height_buffer=20 ):
+    for block in chain.new_blocks( height_buffer=1 ):
 
         console.rule( title=f'[green]{block.number}' )
         console.print( f'Calculating reward holdings..' )
