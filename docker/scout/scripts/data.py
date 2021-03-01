@@ -2,13 +2,11 @@ import warnings
 from dataclasses import dataclass
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
-from rich.console import Console
 import logging
 from rich.logging import RichHandler
 
 warnings.simplefilter( "ignore" )
 
-console = Console()
 logging.basicConfig( level="ERROR", format="%(message)s", datefmt="[%X]",
                      handlers=[RichHandler( rich_tracebacks=True )] )
 log = logging.getLogger( "rich" )
@@ -29,15 +27,22 @@ class lpToken:
                 token1_scale =  10 ** 9
             else:
                 token1_scale = scale
-
             info = {
-                "token0Name": self.token.token0.key('token0')
-                "token1Name": self.token.token1.key('token1')
-                "token0Reserve": self.sett.getReserves()['_reserve0'] / scale,
-                "token1Reserve": self.sett.getReserves()['_reserve1'] / token1_scale,
-                "totalSupply"  : self.sett.totalSupply() / scale,
-
+                "token0": self.token.token0(),
+                "token1": self.token.token1(),
+                "token0_reserve": self.token.getReserves()[0],
+                "token1_reserve": self.token.getReserves()[1],
             }
+
+            #console.print(f'token0:{token0_name}, token1: {token1_name}, getReserves:{reserves}')
+
+            #info = {
+            #    "token0Name": self.token.token0.key('token0')
+            #    "token1Name": self.token.token1.key('token1')
+            #    "token0Reserve": self.sett.getReserves()['_reserve0'] / scale,
+            #    "token1Reserve": self.sett.getReserves()['_reserve1'] / token1_scale,
+            #    "totalSupply"  : self.sett.totalSupply() / scale,
+            #}
         except ValueError as e:
             info = {}
             log.exception( str( e ) )
@@ -73,7 +78,8 @@ class Treasury:
         scale = 10 ** self.token.decimals()
         try:
             info = {
-                    "treasuryBalance": self.token.balanceOf( TREASURY_ADDRESS ) / scale
+                    "treasuryBalance": self.token.balanceOf( TREASURY_ADDRESS ) / scale,
+                    "decimals": self.token.decimals()
                     }
         except ValueError as e:
             info = {}
@@ -152,8 +158,10 @@ oracle = '0x058ec2Bf15011095a25670b618A129c043e2162E'
 oracle_provider = '0x72dc16CFa95beB42aeebD2B10F22E55bD17Ce976'
 badgertree   = '0x660802Fc641b154aBA66a62137e71f331B6d787A'
 
+
 def get_lp_data():
-    return [lpToken( name=f'{name}', interface.lpToken( token ))]
+    return [lpToken( name=f'{name}', token=interface.lpToken( token )) for name, token in lp_tokens.items()]
+
 def get_sett_data():
     return [Sett( name=f'{name}', sett=interface.Sett( sett ) ) for name, sett in setts.items()]
 

@@ -3,6 +3,7 @@
 from prometheus_client import Gauge, start_http_server
 import warnings
 import scripts.data
+from rich.console import Console
 from brownie import chain
 from brownie import interface
 
@@ -30,9 +31,11 @@ def main():
     rewards_gauge = Gauge( 'rewards', '', ['token'] )
     digg_gauge = Gauge( 'digg_price', '', ['value'] )
     cycle_guage = Gauge('badgertree', 'Badgretree rewards', ['lastCycleUnixtime'])
+    lpTokens_gauge = Gauge('lp_tokens', "LP Token counts", ['token', 'param'])
 
     start_http_server( 8801 )
 
+    lpTokens = scripts.data.get_lp_data()
     setts = scripts.data.get_sett_data()
     treasury = scripts.data.get_treasury_data()
     digg_prices = scripts.data.get_digg_data()
@@ -49,6 +52,13 @@ def main():
         rewards_gauge.labels( 'badger' ).set( badger_rewards )
         rewards_gauge.labels( 'digg' ).set( digg_rewards )
 
+        for token in lpTokens:
+            console.print( f'Processing lpToken reserves [bold]{token.name}...' )
+            token0 = interface.ERC20(token.describe()["token0"])
+            token1 = interface.ERC20(token.describe()["token1"])
+            token0_reserve = token.describe()["token0_reserve"]
+            lpTokens_gauge.labels(token.name, f"{token0.name}_reserve").set(token0_reserve / (10 ** token0.decimals()))
+            lpTokens_gauge.labels(token.name, f"{token1.name}_reserve").set(token0_reserve / (10 ** token0.decimals()))
 
         for sett in setts:
             info = sett.describe()
