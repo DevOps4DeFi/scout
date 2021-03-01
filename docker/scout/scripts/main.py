@@ -31,7 +31,7 @@ def main():
     rewards_gauge = Gauge( 'rewards', '', ['token'] )
     digg_gauge = Gauge( 'digg_price', '', ['value'] )
     cycle_guage = Gauge('badgertree', 'Badgretree rewards', ['lastCycleUnixtime'])
-    lpTokens_gauge = Gauge('lp_tokens', "LP Token counts", ['token', 'param'])
+    lpTokens_gauge = Gauge('lp_tokens', "LP Token counts", ['lptoken', 'token'])
 
     start_http_server( 8801 )
 
@@ -57,8 +57,8 @@ def main():
             token0 = interface.ERC20(token.describe()["token0"])
             token1 = interface.ERC20(token.describe()["token1"])
             token0_reserve = token.describe()["token0_reserve"]
-            lpTokens_gauge.labels(token.name, f"{token0.name()}_reserve").set(token0_reserve / (10 ** token0.decimals()))
-            lpTokens_gauge.labels(token.name, f"{token1.name()}_reserve").set(token0_reserve / (10 ** token0.decimals()))
+            lpTokens_gauge.labels(token.name, token0.name()).set(token0_reserve / (10 ** token0.decimals()))
+            lpTokens_gauge.labels(token.name, token1.name()).set(token0_reserve / (10 ** token0.decimals()))
 
         for sett in setts:
             info = sett.describe()
