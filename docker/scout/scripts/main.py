@@ -57,8 +57,8 @@ def main():
             token0 = interface.ERC20(token.describe()["token0"])
             token1 = interface.ERC20(token.describe()["token1"])
             token0_reserve = token.describe()["token0_reserve"]
-            lpTokens_gauge.labels(token.name, f"{token0.name}_reserve").set(token0_reserve / (10 ** token0.decimals()))
-            lpTokens_gauge.labels(token.name, f"{token1.name}_reserve").set(token0_reserve / (10 ** token0.decimals()))
+            lpTokens_gauge.labels(token.name, f"{token0.name()}_reserve").set(token0_reserve / (10 ** token0.decimals()))
+            lpTokens_gauge.labels(token.name, f"{token1.name()}_reserve").set(token0_reserve / (10 ** token0.decimals()))
 
         for sett in setts:
             info = sett.describe()
