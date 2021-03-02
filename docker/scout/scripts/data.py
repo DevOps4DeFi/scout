@@ -2,11 +2,15 @@ import warnings
 from dataclasses import dataclass
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
+from rich.console import Console
 import logging
+import json
+import requests
 from rich.logging import RichHandler
 
 warnings.simplefilter( "ignore" )
 
+console = Console()
 logging.basicConfig( level="ERROR", format="%(message)s", datefmt="[%X]",
                      handlers=[RichHandler( rich_tracebacks=True )] )
 log = logging.getLogger( "rich" )
@@ -80,8 +84,7 @@ class Treasury:
         scale = 10 ** self.token.decimals()
         try:
             info = {
-                    "treasuryBalance": self.token.balanceOf( TREASURY_ADDRESS ) / scale,
-                    "decimals": self.token.decimals()
+                    "treasuryBalance": self.token.balanceOf( TREASURY_ADDRESS ) / scale
                     }
         except ValueError as e:
             info = {}
@@ -146,7 +149,6 @@ treasury_tokens = {
         'crvRenWSBTC' : '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
         'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
         'crvTbtcSbtc': '0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd',
-        'WETH' : '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
         }
 lp_tokens = {
     'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
@@ -176,3 +178,13 @@ def get_digg_data():
 def get_badgertree_data():
     return Badgertree( name='Rewards Cycles', badger_tree=interface.Badgertree( badgertree ) )
 
+def get_json_request(request_type, url, request_data=None):
+    # Take a request object and request type, then return the response in JSON format
+    json_request = json.dumps(request_data)
+    if(request_type == 'get'):
+        r = requests.get(f'{url}', data=json_request)
+    elif(request_type == 'post'):
+        r = requests.post(f'{url}', data=json_request)
+    else:
+        return None
+    return r.json()
