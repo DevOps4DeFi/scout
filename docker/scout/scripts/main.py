@@ -60,7 +60,7 @@ def main():
             token1_reserve = token.describe()["token1_reserve"]
             lpTokens_gauge.labels(token.name, f"{token0.symbol()}_supply").set(token0_reserve / (10 ** token0.decimals()))
             lpTokens_gauge.labels(token.name, f"{token1.symbol()}_supply").set(token1_reserve / (10 ** token1.decimals()))
-            lpTokens_gauge.labels(token.name, "totalLpTokenSupply").set(token.describe()["totalSupply"])
+            lpTokens_gauge.labels(token.name, "totalLpTokenSupply").set(token.describe()["totalSupply"] / (10 ** token.describe()["decimals"]))
 
         for sett in setts:
             info = sett.describe()
