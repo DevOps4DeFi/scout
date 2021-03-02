@@ -6,7 +6,7 @@ ENV GF_AUTH_ANONYMOUS_ENABLED=true
 # Role of anonymous user
 ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
 # Install plugins here our in your own config file
-ENV GF_INSTALL_PLUGINS="grafana-image-renderer"
+ENV GF_INSTALL_PLUGINS="grafana-image-renderer, marcusolsson-json-datasource"
 # Add provisioning
 ADD provisioning /etc/grafana/provisioning
 # Add configuration file
