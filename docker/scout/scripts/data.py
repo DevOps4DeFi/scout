@@ -146,7 +146,7 @@ treasury_tokens = {
         'crvRenWSBTC' : '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
         'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
         'crvTbtcSbtc': '0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd',
-
+        'WETH' : '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
         }
 lp_tokens = {
     'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
