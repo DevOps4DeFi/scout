@@ -32,6 +32,7 @@ class lpToken:
                 "token1": self.token.token1(),
                 "token0_reserve": self.token.getReserves()[0],
                 "token1_reserve": self.token.getReserves()[1],
+                "totalSupply": self.token.totalSupply()
             }
 
             #console.print(f'token0:{token0_name}, token1: {token1_name}, getReserves:{reserves}')
