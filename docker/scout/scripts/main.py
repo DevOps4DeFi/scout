@@ -31,7 +31,7 @@ def main():
     rewards_gauge = Gauge( 'rewards', '', ['token'] )
     digg_gauge = Gauge( 'digg_price', '', ['value'] )
     cycle_guage = Gauge('badgertree', 'Badgretree rewards', ['lastCycleUnixtime'])
-    lpTokens_gauge = Gauge('lp_tokens', "LP Token counts", ['lptoken', 'token'])
+    lpTokens_gauge = Gauge('lptokens', "LP Token counts", ['lptoken', 'token'])
 
     start_http_server( 8801 )
 
