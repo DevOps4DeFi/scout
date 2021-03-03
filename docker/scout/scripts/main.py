@@ -75,7 +75,7 @@ def main():
 
         for token in crvpools:
             console.print(f'Processing crv token data for [bold]{token}:{crvpools[token]}...')
-            virtual_price = interface.CRVswap(crvpools[token]).get_virtual_price()
+            virtual_price = interface.CRVswap(crvpools[token]).get_virtual_price()/1e18
             crvtoken_gauge.labels(token, "pricePerShare").set(virtual_price)
 
         for token in lpTokens:
