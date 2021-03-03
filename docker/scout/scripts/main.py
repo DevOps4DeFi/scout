@@ -2,6 +2,7 @@
 from rich.console import Console
 from prometheus_client import Gauge, start_http_server
 import warnings
+import datetime
 from scripts.data import get_sett_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data
 from brownie import chain
 from brownie import interface
@@ -71,7 +72,9 @@ def main():
 #    console.print(f"Digg: {digg_price}")
 
     for block in chain.new_blocks( height_buffer=1 ):
-        console.rule( title=f'[green]{block.number}' )
+        now = datetime.datetime.now()
+        timestamp = (now.strftime("%Y-%m-%d %H:%M:%S"))
+        console.rule(title=f'[green]{block.number} at {timestamp}')
         console.print( f'Calculating reward holdings..' )
 
         badger_rewards = badger.balanceOf( badgertree.address ) / 1e18
