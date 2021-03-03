@@ -108,12 +108,12 @@ def main():
 
         for sett in setts:
             info = sett.describe()
-            console.print( f'Processing [bold]{sett.name}...' )
+            console.print( f'Processing Sett [bold]{sett.name}...' )
             for param, value in info.items():
                 sett_gauge.labels( sett.name, param ).set( value )
         for token in treasury:
             info = token.describe()
-            console.print( f'Processing [bold]{token.name}...' )
+            console.print( f'Processing Ecosystem Token [bold]{token.name}...' )
             for param, value in info.items():
                 treasury_gauge.labels( token.name, param ).set( value )
         price = digg_prices.describe()
@@ -123,7 +123,7 @@ def main():
             console.print( f'Processing Badgertree [bold]{param}...' )
             cycle_guage.labels( param ).set( value )
         for param, value in price.items():
-            console.print( f'Processing digg [bold]{param}...' )
+            console.print( f'Processing Digg Oracle [bold]{param}...' )
             digg_gauge.labels( param ).set( value )
 
         digg_sushi_price = (slpDiggWbtc.getReserves()[0] / 1e8) / (slpDiggWbtc.getReserves()[1] / 1e9)
