@@ -9,12 +9,19 @@ from brownie import interface
 warnings.simplefilter( "ignore" )
 console = Console()
 
+##TODO copied to keep dashboards looking good.  In a week retire all lowercase names and adjust dashboard to use uppercase
 tokens = {
     "badger": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
+    "BADGER": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
     "digg": "0x798D1bE841a82a273720CE31c822C61a67a601C3",
+    "DIGG": "0x798D1bE841a82a273720CE31c822C61a67a601C3",
     "sushi": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+    "SUSHI": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+    "xSUSHI": "0x8798249c2e607446efb7ad49ec89dd1865ff4272",
     "farm": "0xa0246c9032bc3a600820415ae600c6388619a14d",
+    "FARM": "0xa0246c9032bc3a600820415ae600c6388619a14d",
     "wbtc": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+    "WBTC": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
     'WETH': '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
         }
 
@@ -26,9 +33,9 @@ crvpools = {
 
 tree = '0x660802Fc641b154aBA66a62137e71f331B6d787A'
 
-badger = interface.Badger( tokens['badger'] )
-digg = interface.Digg( tokens['digg'] )
-wbtc = interface.ERC20( '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599' )
+badger = interface.Badger( tokens['BADGER'] )
+digg = interface.Digg( tokens['DIGG'] )
+wbtc = interface.ERC20( tokens['WBTC'] )
 badgertree = interface.Badgertree( tree )
 
 slpDiggWbtc = interface.Pair('0x9a13867048e01c663ce8Ce2fE0cDAE69Ff9F35E3')
