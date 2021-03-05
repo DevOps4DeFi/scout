@@ -26,6 +26,18 @@ tokens = {
     'WETH': '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
         }
 
+badger_wallets = {
+    "fees": "0x8dE82C4C968663a0284b01069DDE6EF231D0Ef9B",
+    "team": "0xe4aa1d8aaf8a50422bc5c7310deb1262d1f6f657",
+    "DAO_treasury": "0x4441776e6a5d61fa024a5117bfc26b953ad1f425",
+    "uniswap_rewards": "0x0c79406977314847a9545b11783635432d7fe019",
+    "badgerhunt": "0x394dcfbcf25c5400fcc147ebd9970ed34a474543",
+    "rewardsEscrow": "0x19d099670a21bc0a8211a89b84cedf59abb4377f",
+    "badgertree": "0x660802fc641b154aba66a62137e71f331b6d787a",
+    "badger_deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
+    "dev_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77"
+}
+
 crvpools = {
     'crvRenWBTC'  : '0x93054188d876f558f4a66B2EF1d97d16eDf0895B',
     'crvRenWSBTC' : '0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714',
@@ -65,6 +77,9 @@ def main():
     for key in tokens.keys():
         token_csv += (tokens[key] + ",")
     token_csv.rstrip(",")
+    console.print (f"tokenskeys={token_csv}")
+    console.print (f"countertokens = {countertoken_csv}")
+
 
 #    badger_price = token_prices[tokens["badger"].lower()]["usd"]
 #    digg_price = token_prices[tokens["digg"].lower()]["usd"]
@@ -106,8 +121,6 @@ def main():
             for countertoken in countertoken_csv.split(","):
                 #    badger_price = token_prices[tokens["badger"].lower()]["usd"]
                 coingecko_price_gauge.labels( token, countertoken ).set ( token_prices[tokens[token].lower()][countertoken])
-
-
 
         for sett in setts:
             info = sett.describe()

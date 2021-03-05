@@ -74,7 +74,6 @@ class Sett:
 
         return info
 
-
 @dataclass
 class Treasury:
     name: str
