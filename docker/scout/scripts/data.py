@@ -147,8 +147,12 @@ treasury_tokens = {
         'DIGG'        : '0x798D1bE841a82a273720CE31c822C61a67a601C3',
         'crvRenWBTC'  : '0x49849C98ae39Fff122806C06791Fa73784FB3675',
         'crvRenWSBTC' : '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
-        'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
         'crvTbtcSbtc': '0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd',
+        'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
+        'slpWbtcBadger': '0x110492b31c59716ac47337e616804e3e3adc0b4a',
+        'uniWbtcBadger': '0xcd7989894bc033581532d2cd88da5db0a4b12859',
+        'uniWbtcDigg'  : '0xe86204c4eddd2f70ee00ead6805f917671f56c52',
+        'slpWbtcDigg' : '0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3'
         }
 lp_tokens = {
     'slpWbtcEth' : '0xceff51756c56ceffca006cd410b03ffc46dd3a58',
