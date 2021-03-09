@@ -60,8 +60,10 @@ class Sett:
         try:
             info = {
                     "pricePerShare": self.sett.getPricePerFullShare() / scale,
-                    "totalSupply"  : self.sett.totalSupply() / scale, "balance": self.sett.balance() / scale,
-                    "available"    : self.sett.available() / scale
+                    "totalSupply"  : self.sett.totalSupply() / scale,
+                    "balance": self.sett.balance() / scale,
+                    "available"    : self.sett.available() / scale,
+                    "token"        : self.sett.token()
                     }
         except ValueError as e:
             info = {}

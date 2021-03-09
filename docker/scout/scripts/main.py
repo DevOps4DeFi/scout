@@ -72,7 +72,7 @@ number_treasury_tokens = len(treasury_tokens_address_list)
 treasury_tokens_name_list = list(treasury_tokens.keys())
 
 def main():
-    sett_gauge = Gauge("sett", "", ["sett", "param"])
+    sett_gauge = Gauge("sett", "Data from Badger Vaults", ["sett", "param", "token"])
     treasury_gauge = Gauge("treasury", '', ['token', 'param'])
     rewards_gauge = Gauge( 'rewards', '', ['token'])
     digg_gauge = Gauge('digg_price', '', ['value'])
@@ -115,7 +115,7 @@ def main():
         rewards_gauge.labels( 'badger' ).set( badger_rewards )
         rewards_gauge.labels( 'digg' ).set( digg_rewards )
         for token in lpTokens:
-            if step % 2 == 0: # only run every other step
+            if step % 2 == 1: # only run every other step
                 break
             info = token.describe()
             console.print( f'Processing lpToken reserves [bold]{token.name}...' )
@@ -127,7 +127,6 @@ def main():
                                   f"{token0.symbol()}_supply").set(token0_reserve / (10 ** token0.decimals()))
             lpTokens_gauge.labels(token.name,
                                   f"{token1.symbol()}_supply").set(token1_reserve / (10 ** token1.decimals()))
-
             lpTokens_gauge.labels(token.name, "totalLpTokenSupply").set(info["totalSupply"] / (10 ** info["decimals"]))
 
         # process wallets for one treasury token
@@ -155,7 +154,8 @@ def main():
             info = sett.describe()
             console.print( f'Processing Sett [bold]{sett.name}...' )
             for param, value in info.items():
-                sett_gauge.labels( sett.name, param ).set( value )
+                if param != "token":
+                    sett_gauge.labels(sett.name, param, info["token"]).set( value )
         for token in treasury:
             info = token.describe()
             console.print( f'Processing Ecosystem Token [bold]{token.name}...' )
