@@ -81,7 +81,7 @@ class TokenBalance:
             try:
                 info.append({
                     "balance": self.token.balanceOf( address ) / scale,
-                    "tokenName": self.token.name(),
+                    "tokenName": self.token.symbol(),
                     "tokenAddress": self.token,
                     "walletAddress": address,
                     "walletName": name

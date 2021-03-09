@@ -94,9 +94,6 @@ def main():
     for key in tokens.keys():
         token_csv += (tokens[key] + ",")
     token_csv.rstrip(",")
-    console.print (f"tokenskeys={token_csv}")
-    console.print (f"countertokens = {countertoken_csv}")
-
 
 #    badger_price = token_prices[tokens["badger"].lower()]["usd"]
 #    digg_price = token_prices[tokens["digg"].lower()]["usd"]
