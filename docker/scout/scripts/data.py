@@ -26,11 +26,6 @@ class lpToken:
     def describe(self):
         scale = 10 ** self.token.decimals()
         try:
-            token1 = self.token.token1
-            if token1 == treasury_tokens['DIGG']:
-                token1_scale =  10 ** 9
-            else:
-                token1_scale = scale
             info = {
                 "token0": self.token.token0(),
                 "token1": self.token.token1(),
@@ -75,10 +70,30 @@ class Sett:
         return info
 
 @dataclass
+class TokenBalance:
+    wallets: dict
+    token: InterfaceContainer
+
+    def describe(self):
+        info = []
+        for name, address in self.wallets.items():
+            scale = 10 ** self.token.decimals()
+            try:
+                info.append({
+                    "balance": self.token.balanceOf( address ) / scale,
+                    "tokenName": self.token.name(),
+                    "tokenAddress": self.token,
+                    "walletAddress": address,
+                    "walletName": name
+                })
+            except ValueError as e:
+                log.exception( str( e ) )
+        return info
+
+@dataclass
 class Treasury:
     name: str
     token: InterfaceContainer
-
     def describe(self):
         scale = 10 ** self.token.decimals()
         try:
@@ -140,10 +155,16 @@ setts = {
         }
 
 treasury_tokens = {
-        'xSUSHI'      : '0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272',
         'FARM'        : '0xa0246c9032bC3A600820415aE600c6388619A14D',
         'BADGER'      : '0x3472A5A71965499acd81997a54BBA8D852C6E53d',
         'DIGG'        : '0x798D1bE841a82a273720CE31c822C61a67a601C3',
+        'USDC'        : '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+        'WBTC'        : '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599',
+        'WETH'        : '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+        'SUSHI'       : "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+        'bDIGG'       : "0x7e7E112A68d8D2E221E11047a72fFC1065c38e1a",
+        'bBADGER'     : '0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28',
+        'xSUSHI'      : '0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272',
         'crvRenWBTC'  : '0x49849C98ae39Fff122806C06791Fa73784FB3675',
         'crvRenWSBTC' : '0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3',
         'crvTbtcSbtc': '0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd',
@@ -167,13 +188,16 @@ badgertree   = '0x660802Fc641b154aBA66a62137e71f331B6d787A'
 
 
 def get_lp_data():
-    return [lpToken( name=f'{name}', token=interface.lpToken( token )) for name, token in lp_tokens.items()]
+    return [lpToken( name=f'{name}', token=interface.lpToken(token)) for name, token in lp_tokens.items()]
 
 def get_sett_data():
     return [Sett( name=f'{name}', sett=interface.Sett( sett ) ) for name, sett in setts.items()]
 
 def get_treasury_data():
     return [Treasury( name=f'{name}', token=interface.ERC20( token ) ) for name, token in treasury_tokens.items()]
+
+def get_token_balance_data(wallets, tokenAddress):
+    return TokenBalance(wallets=wallets, token=interface.ERC20(tokenAddress))
 
 def get_digg_data():
     return Digg( name='Digg Prices', digg_oracle=interface.Oracle( oracle ) )

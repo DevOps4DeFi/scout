@@ -3,7 +3,7 @@ from rich.console import Console
 from prometheus_client import Gauge, start_http_server
 import warnings
 import datetime
-from scripts.data import get_sett_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data
+from scripts.data import get_sett_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data, get_token_balance_data
 from brownie import chain
 from brownie import interface
 
@@ -11,6 +11,20 @@ warnings.simplefilter( "ignore" )
 console = Console()
 
 ##TODO copied to keep dashboards looking good.  In a week retire all lowercase names and adjust dashboard to use uppercase
+new_tokens = {
+    "BADGER": "0x3472A5A71965499acd81997a54BBA8D852C6E53d".lower(),
+    "DIGG": "0x798D1bE841a82a273720CE31c822C61a67a601C3".lower(),
+    "SUSHI": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+    "xSUSHI": "0x8798249c2e607446efb7ad49ec89dd1865ff4272",
+    "FARM": "0xa0246c9032bc3a600820415ae600c6388619a14d",
+    "WBTC": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599".lower(),
+    'WETH': '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'
+}
+
+token_interfaces = {}
+for name, address in new_tokens.items():
+    token_interfaces.update({address : interface.ERC20(address)})
+
 tokens = {
     "badger": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
     "BADGER": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
@@ -46,29 +60,32 @@ crvpools = {
 
 tree = '0x660802Fc641b154aBA66a62137e71f331B6d787A'
 
-badger = interface.Badger( tokens['BADGER'] )
-digg = interface.Digg( tokens['DIGG'] )
-wbtc = interface.ERC20( tokens['WBTC'] )
+badger = token_interfaces[new_tokens['BADGER'].lower()]
+digg = token_interfaces[new_tokens['DIGG'].lower()]
+wbtc = token_interfaces[new_tokens['WBTC'].lower()]
 badgertree = interface.Badgertree( tree )
-
 slpDiggWbtc = interface.Pair('0x9a13867048e01c663ce8Ce2fE0cDAE69Ff9F35E3')
 uniDiggWbtc = interface.Pair('0xe86204c4eddd2f70ee00ead6805f917671f56c52')
 
 
 def main():
-    sett_gauge = Gauge( "sett", "", ["sett", "param"] )
-    treasury_gauge = Gauge( "treasury", '', ['token', 'param'] )
-    rewards_gauge = Gauge( 'rewards', '', ['token'] )
-    digg_gauge = Gauge( 'digg_price', '', ['value'] )
+    sett_gauge = Gauge("sett", "", ["sett", "param"])
+    treasury_gauge = Gauge("treasury", '', ['token', 'param'])
+    rewards_gauge = Gauge( 'rewards', '', ['token'])
+    digg_gauge = Gauge('digg_price', '', ['value'])
     cycle_guage = Gauge('badgertree', 'Badgretree rewards', ['lastCycleUnixtime'])
     coingecko_price_gauge = Gauge('coingecko_prices', 'Pricing data from Coingecko', ['token','countertoken'])
     lpTokens_gauge = Gauge('lptokens', "LP Token data", ['lptoken', 'token'])
     crvtoken_gauge = Gauge('crvtokens', "CRV token data", ['token', 'param'])
+    wallets_gauge = Gauge('wallets', 'Watched Wallet Balances', ['walletName', 'walletAddress', 'tokenName', 'tokenAddress'])
     start_http_server( 8801 )
-
+    console.print(token_interfaces)
     lpTokens = get_lp_data()
     setts = get_sett_data()
     treasury = get_treasury_data()
+    wallet_balances_by_token = {}
+    for tokenAddress in new_tokens.values():
+        wallet_balances_by_token[tokenAddress] = get_token_balance_data(badger_wallets, tokenAddress)
     digg_prices = get_digg_data()
     badgertree_cycles = get_badgertree_data()
 
@@ -97,22 +114,30 @@ def main():
 
         rewards_gauge.labels( 'badger' ).set( badger_rewards )
         rewards_gauge.labels( 'digg' ).set( digg_rewards )
+        for token in lpTokens:
+            info = token.describe()
+            console.print( f'Processing lpToken reserves [bold]{token.name}...' )
+            token0 = token_interfaces[info["token0"].lower()]
+            token1 = token_interfaces[info["token1"].lower()]
+            token0_reserve = info["token0_reserve"]
+            token1_reserve = info["token1_reserve"]
+            lpTokens_gauge.labels(token.name,
+                                  f"{token0.symbol()}_supply").set(token0_reserve / (10 ** token0.decimals()))
+            lpTokens_gauge.labels(token.name,
+                                  f"{token1.symbol()}_supply").set(token1_reserve / (10 ** token1.decimals()))
+            lpTokens_gauge.labels(token.name,
+                                  lpTokens_gauge.labels(token.name, "totalLpTokenSupply")).set(info["totalSupply"] / (10 ** info["decimals"]))
+
+        for name, tokenAddress in new_tokens.items():
+            info = wallet_balances_by_token[tokenAddress]
+            console.print(f'Processing wallet balances  for [bold]{name}:{tokenAddress}...')
+            for metric in info.describe():
+                wallets_gauge.labels(metric["walletName"], metric["walletAddress"], metric["tokenName"], metric["tokenAddress"]).set(metric["balance"])
 
         for token in crvpools:
             console.print(f'Processing crv token data for [bold]{token}:{crvpools[token]}...')
             virtual_price = interface.CRVswap(crvpools[token]).get_virtual_price()/1e18
             crvtoken_gauge.labels(token, "pricePerShare").set(virtual_price)
-
-        for token in lpTokens:
-            console.print( f'Processing lpToken reserves [bold]{token.name}...' )
-            token0 = interface.ERC20(token.describe()["token0"])
-            token1 = interface.ERC20(token.describe()["token1"])
-            token0_reserve = token.describe()["token0_reserve"]
-            token1_reserve = token.describe()["token1_reserve"]
-            lpTokens_gauge.labels(token.name, f"{token0.symbol()}_supply").set(token0_reserve / (10 ** token0.decimals()))
-            lpTokens_gauge.labels(token.name, f"{token1.symbol()}_supply").set(token1_reserve / (10 ** token1.decimals()))
-            lpTokens_gauge.labels(token.name, "totalLpTokenSupply").set(token.describe()["totalSupply"] / (10 ** token.describe()["decimals"]))
-
 
         token_prices = get_json_request(url=f'https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}', request_type='get')
 
