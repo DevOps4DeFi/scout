@@ -69,6 +69,7 @@ uniDiggWbtc = interface.Pair('0xe86204c4eddd2f70ee00ead6805f917671f56c52')
 
 treasury_tokens_address_list = list(treasury_tokens.values())
 number_treasury_tokens = len(treasury_tokens_address_list)
+treasury_tokens_name_list = list(treasury_tokens.keys())
 
 def main():
     sett_gauge = Gauge("sett", "", ["sett", "param"])
@@ -131,6 +132,7 @@ def main():
 
         # process wallets for one treasury token
         tokenAddress = treasury_tokens_address_list[step % number_treasury_tokens]
+        name = treasury_tokens_name_list[step % number_treasury_tokens]
         info = wallet_balances_by_token[tokenAddress]
         console.print(f'Processing wallet balances  for [bold]{name}:{tokenAddress}...')
         for metric in info.describe():
