@@ -3,7 +3,7 @@ from rich.console import Console
 from prometheus_client import Gauge, start_http_server
 import warnings
 import datetime
-from scripts.data import get_sett_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data, get_token_balance_data
+from scripts.data import get_sett_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data, get_token_balance_data, treasury_tokens
 from brownie import chain
 from brownie import interface
 
@@ -67,6 +67,8 @@ badgertree = interface.Badgertree( tree )
 slpDiggWbtc = interface.Pair('0x9a13867048e01c663ce8Ce2fE0cDAE69Ff9F35E3')
 uniDiggWbtc = interface.Pair('0xe86204c4eddd2f70ee00ead6805f917671f56c52')
 
+treasury_tokens_address_list = list(treasury_tokens.values())
+number_treasury_tokens = len(treasury_tokens_address_list)
 
 def main():
     sett_gauge = Gauge("sett", "", ["sett", "param"])
@@ -79,12 +81,11 @@ def main():
     crvtoken_gauge = Gauge('crvtokens', "CRV token data", ['token', 'param'])
     wallets_gauge = Gauge('wallets', 'Watched Wallet Balances', ['walletName', 'walletAddress', 'tokenName', 'tokenAddress'])
     start_http_server( 8801 )
-    console.print(token_interfaces)
     lpTokens = get_lp_data()
     setts = get_sett_data()
     treasury = get_treasury_data()
     wallet_balances_by_token = {}
-    for tokenAddress in new_tokens.values():
+    for tokenAddress in treasury_tokens.values():
         wallet_balances_by_token[tokenAddress] = get_token_balance_data(badger_wallets, tokenAddress)
     digg_prices = get_digg_data()
     badgertree_cycles = get_badgertree_data()
@@ -99,11 +100,12 @@ def main():
 #    digg_price = token_prices[tokens["digg"].lower()]["usd"]
 #    console.print(f"Badger: {badger_price}")
 #    console.print(f"Digg: {digg_price}")
-
+    step = 0
     for block in chain.new_blocks( height_buffer=1 ):
+        step += 1
         now = datetime.datetime.now()
         timestamp = (now.strftime("%Y-%m-%d %H:%M:%S"))
-        console.rule(title=f'[green]{block.number} at {timestamp}')
+        console.rule(title=f'[green]{block.number} at {timestamp} step number {step}')
         console.print( f'Calculating reward holdings..' )
 
         badger_rewards = badger.balanceOf( badgertree.address ) / 1e18
@@ -112,6 +114,8 @@ def main():
         rewards_gauge.labels( 'badger' ).set( badger_rewards )
         rewards_gauge.labels( 'digg' ).set( digg_rewards )
         for token in lpTokens:
+            if step % 2 == 1: # only run every other step
+                break
             info = token.describe()
             console.print( f'Processing lpToken reserves [bold]{token.name}...' )
             token0 = token_interfaces[info["token0"].lower()]
@@ -125,10 +129,11 @@ def main():
             lpTokens_gauge.labels(token.name,
                                   lpTokens_gauge.labels(token.name, "totalLpTokenSupply")).set(info["totalSupply"] / (10 ** info["decimals"]))
 
-        for name, tokenAddress in new_tokens.items():
-            info = wallet_balances_by_token[tokenAddress]
-            console.print(f'Processing wallet balances  for [bold]{name}:{tokenAddress}...')
-            for metric in info.describe():
+        # process wallets for one treasury token
+        tokenAddress = treasury_tokens_address_list[step % number_treasury_tokens]
+        info = wallet_balances_by_token[tokenAddress]
+        console.print(f'Processing wallet balances  for [bold]{name}:{tokenAddress}...')
+        for metric in info.describe():
                 wallets_gauge.labels(metric["walletName"], metric["walletAddress"], metric["tokenName"], metric["tokenAddress"]).set(metric["balance"])
 
         for token in crvpools:

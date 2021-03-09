@@ -186,7 +186,8 @@ oracle = '0x058ec2Bf15011095a25670b618A129c043e2162E'
 oracle_provider = '0x72dc16CFa95beB42aeebD2B10F22E55bD17Ce976'
 badgertree   = '0x660802Fc641b154aBA66a62137e71f331B6d787A'
 
-
+def treasury_tokes():
+    return treasury_tokens
 def get_lp_data():
     return [lpToken( name=f'{name}', token=interface.lpToken(token)) for name, token in lp_tokens.items()]
 
