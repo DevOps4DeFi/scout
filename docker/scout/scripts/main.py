@@ -115,7 +115,7 @@ def main():
         rewards_gauge.labels( 'badger' ).set( badger_rewards )
         rewards_gauge.labels( 'digg' ).set( digg_rewards )
         for token in lpTokens:
-            if step % 2 == 1: # only run every other step
+            if step % 2 == 0: # only run every other step
                 break
             info = token.describe()
             console.print( f'Processing lpToken reserves [bold]{token.name}...' )
@@ -127,8 +127,8 @@ def main():
                                   f"{token0.symbol()}_supply").set(token0_reserve / (10 ** token0.decimals()))
             lpTokens_gauge.labels(token.name,
                                   f"{token1.symbol()}_supply").set(token1_reserve / (10 ** token1.decimals()))
-            lpTokens_gauge.labels(token.name,
-                                  lpTokens_gauge.labels(token.name, "totalLpTokenSupply")).set(info["totalSupply"] / (10 ** info["decimals"]))
+
+            lpTokens_gauge.labels(token.name, "totalLpTokenSupply").set(info["totalSupply"] / (10 ** info["decimals"]))
 
         # process wallets for one treasury token
         tokenAddress = treasury_tokens_address_list[step % number_treasury_tokens]
