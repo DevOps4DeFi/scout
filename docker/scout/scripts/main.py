@@ -144,7 +144,7 @@ def main():
             info = sett.describe()
             console.print(f'Processing Sett [bold]{sett.name}...')
             for param, value in info.items():
-                sett_gauge.labels(sett.name, param, sett_vaults[sett.name].lower(), sett.name).set(value)
+                sett_gauge.labels(sett.name, param, sett_vaults[sett.name].lower(), sett.names[1:]).set(value)
         price = digg_prices.describe()
         last_cycle_unixtime = badgertree_cycles.describe()
 
