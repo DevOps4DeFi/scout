@@ -1,0 +1,1428 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 14,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "badger"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "value {__name__=\"sett\", instance=\"scout-collector:8801\", job=\"badger\", param=\"totalSupply\", sett=\"bbadger\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "bbadger"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:247",
+          "alias": "badger",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"totalSupply\", sett=~\".*bbadger.*\"}",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        },
+        {
+          "expr": "sett{param=\"pricePerShare\", sett=\"bbadger\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$A*$B",
+          "hide": false,
+          "refId": "C",
+          "type": "math"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Badger Sett deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": null,
+          "format": "short",
+          "label": "bbadger",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "format": "short",
+          "label": "badger",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {},
+          "custom": {},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiBADGER"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sushi Badger"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sushi WBTC"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniBadger"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni Badger"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni WBTC"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:401",
+          "alias": "/WBTC/",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:1074"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"balance\", sett=\"bslpBadgerWbtc\"}",
+          "hide": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiBalance"
+        },
+        {
+          "expr": "sett{param=\"balance\", sett=\"buniBadgerWbtc\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniBalance"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"uniWbtcBadger\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"slpWbtcBadger\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=\"uniWbtcBadger\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcBadger\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"uniWbtcBadger\",token=\"BADGER_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "UniBADGER"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcBadger\",token=\"BADGER_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiBADGER"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($uniBalance/$uniSupply)*$uniWBTC",
+          "hide": false,
+          "refId": "UniWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($uniBalance/$uniSupply)*$UniBADGER",
+          "hide": false,
+          "refId": "UniBadger",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiWBTC",
+          "hide": false,
+          "refId": "SushiWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiBADGER",
+          "hide": false,
+          "refId": "SushiBADGER",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$SushiWBTC + $UniWBTC",
+          "hide": false,
+          "refId": "Total-WBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$SushiBADGER+ $UniBADGER",
+          "hide": false,
+          "refId": "Total-BADGER",
+          "type": "math"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Badger LP deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": 5,
+          "format": "none",
+          "label": "BADGER",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "decimals": 5,
+          "format": "none",
+          "label": "WBTC",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {},
+          "custom": {},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiBADGER"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sushi Badger"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sushi WBTC"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniBadger"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni Badger"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni WBTC"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 3,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:401",
+          "alias": "/WBTC/",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:1074"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"balance\", sett=\"bslpBadgerWbtc\"}",
+          "hide": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiBalance"
+        },
+        {
+          "expr": "sett{param=\"balance\", sett=\"buniBadgerWbtc\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniBalance"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"uniWbtcBadger\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"slpWbtcBadger\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=\"uniWbtcBadger\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcBadger\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"uniWbtcBadger\",token=\"BADGER_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "UniBADGER"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcBadger\",token=\"BADGER_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiBADGER"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($uniBalance/$uniSupply)*$uniWBTC",
+          "hide": false,
+          "refId": "UniWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($uniBalance/$uniSupply)*$UniBADGER",
+          "hide": false,
+          "refId": "UniBadger",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiWBTC",
+          "hide": false,
+          "refId": "SushiWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiBADGER",
+          "hide": false,
+          "refId": "SushiBADGER",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$SushiWBTC + $UniWBTC",
+          "hide": false,
+          "refId": "Total-WBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$SushiBADGER+ $UniBADGER",
+          "hide": false,
+          "refId": "Total-BADGER",
+          "type": "math"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Badger LP deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": 5,
+          "format": "none",
+          "label": "BADGER",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "decimals": 5,
+          "format": "none",
+          "label": "WBTC",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sett{instance=\"scout-collector:8801\", job=\"badger\", param=\"totalSupply\", sett=\"bdigg\"} value {__name__=\"sett\", instance=\"scout-collector:8801\", job=\"badger\", param=\"totalSupply\", sett=\"bdigg\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "bdigg"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "C {__name__=\"sett\", instance=\"scout-collector:8801\", job=\"badger\", param=\"totalSupply\", sett=\"bdigg\"}"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "digg"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 9,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:777",
+          "alias": "digg",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"totalSupply\", sett=~\".*bdigg.*\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "B"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "(($A/$B)*1000000000)*$B",
+          "hide": false,
+          "refId": "C",
+          "type": "math"
+        },
+        {
+          "expr": "sett{param=\"balance\", sett=~\".*bdigg.*\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "DIGG Sett deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": null,
+          "format": "short",
+          "label": "bdigg",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "format": "short",
+          "label": "digg",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {},
+          "custom": {},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiDIGG"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sushi Digg"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Sushi WBTC"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniDigg"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni Digg"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni WBTC"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "hiddenSeries": false,
+      "id": 11,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:401",
+          "alias": "/WBTC/",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:1074"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"balance\", sett=\"bslpDiggWbtc\"}",
+          "hide": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiBalance"
+        },
+        {
+          "expr": "sett{param=\"balance\", sett=\"buniDiggWbtc\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniBalance"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"uniWbtcDigg\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"slpWbtcDigg\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=\"uniWbtcDigg\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "uniWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcDigg\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"uniWbtcDigg\",token=\"DIGG_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "UniDIGG"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcDigg\",token=\"DIGG_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiDIGG"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($uniBalance/$uniSupply)*$uniWBTC",
+          "hide": false,
+          "refId": "UniWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($uniBalance/$uniSupply)*$UniDIGG",
+          "hide": false,
+          "refId": "UniDigg",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiWBTC",
+          "hide": false,
+          "refId": "SushiWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiDIGG",
+          "hide": false,
+          "refId": "SushiDIGG",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$SushiWBTC + $UniWBTC",
+          "hide": false,
+          "refId": "Total-WBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "$SushiDIGG+ $UniDIGG",
+          "hide": false,
+          "refId": "Total-DIGG",
+          "type": "math"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Digg LP deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": 5,
+          "format": "none",
+          "label": "DIGG",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "decimals": 5,
+          "format": "none",
+          "label": "WBTC",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "badger-prometheus",
+      "description": "crv tokens that repreent a reasonably close 1/1 value with btc (although not exact)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyBTC"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Total"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 2,
+      "fillGradient": 4,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "hiddenSeries": false,
+      "id": 7,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "expr": "sett{param=\"balance\", sett=~\".*Crv.*\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "queryType": "randomWalk",
+          "refId": "crv token balances"
+        },
+        {
+          "expr": "sum(sett{param=\"balance\", sett=~\".*Crv.*\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "Total"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Sett Deposits - BTCesque denominated",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1222",
+          "decimals": 3,
+          "format": "currencyBTC",
+          "label": "crv tokens",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1223",
+          "format": "percent",
+          "label": "Percent",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": false
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {},
+          "custom": {},
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiETH"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "ETH"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "SushiWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "WBTC"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniDigg"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni Digg"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "UniWBTC"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Uni WBTC"
+              }
+            ]
+          }
+        ]
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "hiddenSeries": false,
+      "id": 8,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:401",
+          "alias": "/WBTC/",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:1074"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"balance\", sett=\"bslpEthWbtc\"}",
+          "hide": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiBalance"
+        },
+        {
+          "expr": "lptokens{lptoken=~\"slpWbtcEth\",token=\"totalLpTokenSupply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiSupply"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcEth\",token=\"WBTC_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiWBTC"
+        },
+        {
+          "expr": "lptokens{lptoken=\"slpWbtcEth\",token=\"WETH_supply\"}",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "sushiETH"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiWBTC",
+          "hide": false,
+          "refId": "SushiWBTC",
+          "type": "math"
+        },
+        {
+          "datasource": "__expr__",
+          "expression": "($sushiBalance/$sushiSupply)*$sushiETH",
+          "hide": false,
+          "refId": "SushiETH",
+          "type": "math"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "WBTC/ETH Sushi LP deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": 0,
+          "format": "none",
+          "label": "ETH",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "decimals": 2,
+          "format": "none",
+          "label": "WBTC",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Sett Deposits Overview",
+  "uid": "EOFBepsGz",
+  "version": 15
+}

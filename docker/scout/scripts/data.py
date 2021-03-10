@@ -63,7 +63,6 @@ class Sett:
                     "totalSupply"  : self.sett.totalSupply() / scale,
                     "balance": self.sett.balance() / scale,
                     "available"    : self.sett.available() / scale,
-                    "token"        : self.sett.token()
                     }
         except ValueError as e:
             info = {}
@@ -85,7 +84,7 @@ class TokenBalance:
                     "balance": self.token.balanceOf( address ) / scale,
                     "tokenName": self.token.symbol(),
                     "tokenAddress": self.token,
-                    "walletAddress": address,
+                    "walletAddress": address.lower(),
                     "walletName": name
                 })
             except ValueError as e:
@@ -142,15 +141,15 @@ class Badgertree:
 
         return info
 
-setts = {
-        "bbadger"         : "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
+sett_vaults = {
+        "bBADGER"         : "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
         "brenCrv"         : "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
         "bsbtcCrv"        : "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "btbtcCrv"        : "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
         "buniBadgerWbtc"  : "0x235c9e24D3FB2FAFd58a2E49D454Fdcd2DBf7FF1",
         "bslpBadgerWbtc"  : '0x1862A18181346EBd9EdAf800804f89190DeF24a5',
         "bharvestRenCrv"  : "0xAf5A1DECfa95BAF63E0084a35c62592B774A2A87",
-        "bdigg"           : "0x7e7E112A68d8D2E221E11047a72fFC1065c38e1a",
+        "bDIGG"           : "0x7e7E112A68d8D2E221E11047a72fFC1065c38e1a",
         "buniDiggWbtc"    : "0xC17078FDd324CC473F8175Dc5290fae5f2E84714",
         "bslpDiggWbtc"  : "0x88128580ACdD9c04Ce47AFcE196875747bF2A9f6",
         "bslpEthWbtc"   : "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D"
@@ -194,7 +193,7 @@ def get_lp_data():
     return [lpToken( name=f'{name}', token=interface.lpToken(token)) for name, token in lp_tokens.items()]
 
 def get_sett_data():
-    return [Sett( name=f'{name}', sett=interface.Sett( sett ) ) for name, sett in setts.items()]
+    return [Sett( name=f'{name}', sett=interface.Sett( sett ) ) for name, sett in sett_vaults.items()]
 
 def get_treasury_data():
     return [Treasury( name=f'{name}', token=interface.ERC20( token ) ) for name, token in treasury_tokens.items()]
