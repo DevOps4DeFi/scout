@@ -2,8 +2,7 @@
 ### this script requires that AWS_REGION is set and that proper AWS credentials are configured in environment variables
 ### the credentials should have admin access to ecr, or be those of the scout-deploy user provided by terraform
 ### and found in SSM parameter store
-### ECR URL must be set to the root hostname of your account/region ecr - see example
-ECR_URL=941247369314.dkr.ecr.us-east-1.amazonaws.com
+### ENV VAR ECR_URL must be set to the root hostname of your account/region ecr - see example
 time_tag=`date '+%Y%m%d%H%M%S'`
 for app in grafana prometheus scout
 do

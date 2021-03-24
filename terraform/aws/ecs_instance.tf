@@ -15,7 +15,7 @@ resource "aws_instance" "main" {
   vpc_security_group_ids      = [aws_security_group.ecs_instance.id]
   key_name                    = var.aws_keypair_name
   user_data = templatefile("${path.module}/templates/userdata.template.sh", {
-    ebs_device_name = "/dev/xvdf"
+    ebs_device_name = "/dev/nvme1n1"
     cluster_name    = aws_ecs_cluster.scout.name
     mount_point     = local.mount_point
   })
@@ -31,10 +31,6 @@ resource "aws_instance" "main" {
     volume_size           = var.datavolume_size
     snapshot_id = var.ebs_snapshot_id
     delete_on_termination = false
-  }
-  ebs_block_device {
-    ## docker volumes mount provided as part of ami
-    device_name = "/dev/xvdcz"
   }
 }
 ###

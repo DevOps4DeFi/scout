@@ -19,10 +19,11 @@ rule_files:
 # Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'badger'
-
+  - job_name: 'scout'
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
-
     static_configs:
       - targets: ['scout-collector:8801']
+  - job_name: 'bsc-scout'
+    static_configs:
+      - targets: ['bsc-collector:8801']

@@ -13,14 +13,15 @@ resource "aws_ecs_service" "prometheus" {
     container_port   = 9090
     target_group_arn = aws_lb_target_group.prometheus.arn
   }
-  depends_on = [var.private_lb_https_listener_arn]
+  depends_on = [aws_lb_listener.prometheus]
 }
 
 resource "aws_ecs_task_definition" "prometheus" {
   container_definitions = jsonencode(concat(
     jsondecode(module.prometheus-container-definition.json_map_encoded_list),
-  jsondecode(module.scout-container-definition.json_map_encoded_list)))
-  family                   = "prometheus${local.name_suffix}"
+  jsondecode(module.scout-container-definition.json_map_encoded_list),
+  jsondecode(module.bsc-scout-container-definition.json_map_encoded_list)))
+  family                   = "prometheus"
   requires_compatibilities = ["EC2"]
   execution_role_arn       = aws_iam_role.ecs_exec.arn
   network_mode             = "bridge"
@@ -37,7 +38,7 @@ module "prometheus-container-definition" {
   container_name               = "prometheus"
   container_memory_reservation = 250
   essential                    = true
-  links = ["scout-collector"]
+  links = ["scout-collector", "bsc-collector"]
   mount_points = [
     {
       containerPath = "/prometheus"
@@ -61,6 +62,30 @@ module "prometheus-container-definition" {
     }
   ]
 }
+module "bsc-scout-container-definition" {
+  source                       = "cloudposse/ecs-container-definition/aws"
+  version                      = "0.47.0"
+  container_image              = local.scout_docker_image ## TODO make optional
+  container_name               = "bsc-collector"
+  essential                    = false ## TODO change to true when stable
+  container_memory_reservation = 250
+  entrypoint = ["./startBsc.sh"]
+  log_configuration = {
+    logDriver = "awslogs"
+    options = {
+      awslogs-group         = aws_cloudwatch_log_group.scout.id
+      awslogs-region        = var.region
+      awslogs-stream-prefix = "bsc-scout"
+    }
+  }
+
+  secrets = [
+    {
+      name      = "ETHNODEURL"
+      valueFrom = var.bsc_url_ssm_parameter_name
+    }]
+}
+
 module "scout-container-definition" {
   source                       = "cloudposse/ecs-container-definition/aws"
   version                      = "0.47.0"
@@ -82,25 +107,15 @@ module "scout-container-definition" {
       name      = "ETHNODEURL"
       valueFrom = var.ethnode_url_ssm_parameter_name
   }]
-/*  Currently scout never needs to be accessed from outside this task.
-port_mappings = [
-    {
-      ## Alert Manager
-      containerPort = 8801
-      protocol      = "tcp"
-    }
-  ]
-
-*/
 }
 resource "aws_lb_target_group" "prometheus" {
-  name        = "prometheus${local.name_suffix}"
+  name        = "prometheus"
   protocol    = "HTTP"
   port        = 9090
   target_type = "instance"
   vpc_id      = local.vpc_id
   tags = {
-    name = "prometheus${local.name_suffix}"
+    name = "prometheus"
   }
   health_check {
     healthy_threshold   = 2
@@ -111,15 +126,24 @@ resource "aws_lb_target_group" "prometheus" {
   }
 }
 
-resource "aws_lb_listener_rule" "prometheus" {
-  listener_arn = var.private_lb_https_listener_arn
-  condition {
-    host_header {
-      values = [aws_route53_record.prometheus.fqdn]
-    }
-  }
-  action {
+## If so they need their own target groups.
+resource "aws_lb_listener" "prometheus" {
+  load_balancer_arn = data.aws_lb.private_alb.arn
+  port              = 9090
+  protocol          = "HTTPS"
+  certificate_arn = var.root_domain_wildcard_acm_cert_arn
+  default_action {
     target_group_arn = aws_lb_target_group.prometheus.arn
-    type = "forward"
+    type             = "forward"
+  }
+}
+resource "aws_route53_record" "prometheus" {
+  name    = "prometheus"
+  type    = "A"
+  zone_id = data.aws_route53_zone.rootzone.zone_id
+  alias {
+    evaluate_target_health = false
+    name                   = data.aws_lb.private_alb.dns_name
+    zone_id                = data.aws_lb.private_alb.zone_id
   }
 }

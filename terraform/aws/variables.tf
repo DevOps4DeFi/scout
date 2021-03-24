@@ -47,6 +47,10 @@ variable "ethnode_url_ssm_parameter_name" {
   description = "The URL of an eth node for scout-collector to pull blocks from"
 }
 
+variable "bsc_url_ssm_parameter_name" { ## TODO: make optional
+  type        = string
+  description = "The URL of an eth node for scout-collector to pull blocks from"
+}
 variable "scout_docker_image" {
   default = null
 }
@@ -73,10 +77,6 @@ variable "ebs_snapshot_id" {
   description = "The Snapshot id of a snapshot volume from a prior scout instance"
 }
 
-variable "discord_notifier_webhook_ssm_name" {
-  type=string
-  default = "/DevOps4DeFi/discord_default_grafana_notifier_webhook_url"
-}
 variable "public_lb_https_listener_arn" {
   type=string
   description = "The arn to an https alb listener that will be used for load balancing public facing services"
@@ -112,6 +112,7 @@ variable "ssm_base" {
   description = "a path followed by a where this module should output new ssm parameters"
 }
 
-variable "grafana_anon_role" {
-  default = "Viewer"
+variable "root_domain_wildcard_acm_cert_arn" {
+  type=string
+  description = "An arn to a wildcard cert for the root domain."
 }
