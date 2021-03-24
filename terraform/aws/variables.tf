@@ -116,3 +116,7 @@ variable "root_domain_wildcard_acm_cert_arn" {
   type=string
   description = "An arn to a wildcard cert for the root domain."
 }
+
+variable "create_ecr" {
+  default = true
+}

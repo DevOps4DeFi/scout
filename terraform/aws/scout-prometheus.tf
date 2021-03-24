@@ -1,10 +1,10 @@
 locals {
-  prometheus_docker_image = var.prometheus_docker_image == null ? aws_ecr_repository.prometheus.repository_url : var.prometheus_docker_image
-  scout_docker_image      = var.scout_docker_image == null ? aws_ecr_repository.scout.repository_url : var.scout_docker_image
+  prometheus_docker_image = var.prometheus_docker_image == null ? aws_ecr_repository.prometheus[0].repository_url : var.prometheus_docker_image
+  scout_docker_image      = var.scout_docker_image == null ? aws_ecr_repository.scout[0].repository_url : var.scout_docker_image
 }
 
 resource "aws_ecs_service" "prometheus" {
-  name            = "prometheus"
+  name            = "${var.app_name}-prometheus"
   task_definition = aws_ecs_task_definition.prometheus.id
   cluster         = aws_ecs_cluster.scout.name
   desired_count   = 1

@@ -1,5 +1,5 @@
 locals {
-  grafana_docker_image = var.grafana_docker_image == null ? aws_ecr_repository.grafana.repository_url : var.grafana_docker_image
+  grafana_docker_image = var.grafana_docker_image == null ? aws_ecr_repository.grafana[0].repository_url : var.grafana_docker_image
 }
 
 resource "aws_ecs_service" "grafana" {
@@ -17,7 +17,7 @@ resource "aws_ecs_service" "grafana" {
 }
 
 resource "aws_ecs_task_definition" "grafana" {
-  family                   = "grafana"
+  family                   = "${var.app_name}-grafana"
   container_definitions = jsonencode(concat(
   jsondecode(module.grafana-container-definition.json_map_encoded_list),
   jsondecode(module.grafana-render-container-definition.json_map_encoded_list)))
