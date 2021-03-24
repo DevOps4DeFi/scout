@@ -73,7 +73,7 @@ resource "aws_iam_user_policy_attachment" "scout-deployer" {
 }
 resource "aws_iam_access_key" "scout-deployer" {
   count = var.create_ecr == true ? 1 :0
-  user = aws_iam_user.scout-deployer.name
+  user = aws_iam_user.scout-deployer[0].name
 }
 resource "aws_ssm_parameter" "scout-deployer-access-key" {
   count = var.create_ecr == true ? 1 :0

@@ -29,8 +29,9 @@ resource "aws_iam_policy" "ecs-service" {
   policy = file("${path.module}/iam_policies/ecsServicePolicy.json")
 }
 resource "aws_iam_role_policy_attachment" "ecs_service_main_policy" {
+  count = var.create_ecr == true ? 1 : 0
   role   = aws_iam_role.ecs_service.id
-  policy_arn = aws_iam_policy.scout-reader.arn
+  policy_arn = aws_iam_policy.scout-reader[0].arn
 }
 
 /*
