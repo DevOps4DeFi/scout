@@ -120,3 +120,9 @@ variable "root_domain_wildcard_acm_cert_arn" {
 variable "create_ecr" {
   default = true
 }
+
+variable "prometheus_lb_port" {
+  default = 9090
+  description = "The port prometheus will listen on"
+  type = number
+}

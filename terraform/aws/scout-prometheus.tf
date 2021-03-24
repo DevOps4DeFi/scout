@@ -129,7 +129,7 @@ resource "aws_lb_target_group" "prometheus" {
 ## If so they need their own target groups.
 resource "aws_lb_listener" "prometheus" {
   load_balancer_arn = data.aws_lb.private_alb.arn
-  port              = 9090
+  port              = var.prometheus_lb_port
   protocol          = "HTTPS"
   certificate_arn = var.root_domain_wildcard_acm_cert_arn
   default_action {
@@ -138,7 +138,7 @@ resource "aws_lb_listener" "prometheus" {
   }
 }
 resource "aws_route53_record" "prometheus" {
-  name    = "prometheus"
+  name    = "${var.app_name}-prometheus"
   type    = "A"
   zone_id = data.aws_route53_zone.rootzone.zone_id
   alias {
