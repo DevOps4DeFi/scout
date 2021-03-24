@@ -38,3 +38,7 @@ override.tf.json
 
 ## Ignore provider lock files
 .terraform.lock.hcl
+
+build/
+venv/
+__pycache__/

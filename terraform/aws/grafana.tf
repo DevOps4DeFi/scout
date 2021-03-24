@@ -17,7 +17,7 @@ resource "aws_ecs_service" "grafana" {
 }
 
 resource "aws_ecs_task_definition" "grafana" {
-  family                   = "grafana${local.name_suffix}"
+  family                   = "grafana"
   container_definitions = jsonencode(concat(
   jsondecode(module.grafana-container-definition.json_map_encoded_list),
   jsondecode(module.grafana-render-container-definition.json_map_encoded_list)))
@@ -56,11 +56,8 @@ module "grafana-container-definition" {
     {
       name = "GF_SECURITY_ADMIN_PASSWORD"
       valueFrom = var.grafana_admin_password_ssm_name
-    },
-    {
-      name = "DEFAULT_DISCORD_NOTIFIER_WEBHOOK"
-      valueFrom = var.discord_notifier_webhook_ssm_name
-    }]
+    }
+  ]
   environment = [
     {
       name = "GF_SERVER_ROOT_URL"
@@ -84,7 +81,7 @@ module "grafana-container-definition" {
     },
     {
       name  = "PROMETHEUS_URL"
-      value = "https://${aws_route53_record.prometheus.fqdn}"
+      value = "https://${aws_route53_record.prometheus.fqdn}:9090"
     },
     {
       name = "GF_SECURITY_ADMIN_USER"
@@ -104,7 +101,7 @@ module "grafana-container-definition" {
     },
     {
       name = "GF_AUTH_ANONYMOUS_ORG_ROLE"
-      value = var.grafana_anon_role
+      value = "Viewer"
     }
   ]
   port_mappings = [
@@ -151,13 +148,13 @@ module "grafana-render-container-definition" {
 }
 
 resource "aws_lb_target_group" "grafana" {
-  name        = "grafana${local.name_suffix}"
+  name        = "grafana"
   protocol    = "HTTP"
   port        = 3000
   target_type = "instance"
   vpc_id      = local.vpc_id
   tags = {
-    name = "grafana${local.name_suffix}"
+    name = "grafana"
   }
   health_check {
     healthy_threshold   = 2
@@ -173,7 +170,8 @@ resource "aws_lb_listener_rule" "https_grafana" {
   listener_arn = var.public_lb_https_listener_arn
   condition {
     host_header {
-      values = [aws_route53_record.grafana.fqdn]
+      values = [
+        "grafana.${var.route53_root_fqdn}"]
     }
   }
     action {
