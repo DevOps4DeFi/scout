@@ -148,7 +148,7 @@ module "grafana-render-container-definition" {
 }
 
 resource "aws_lb_target_group" "grafana" {
-  name        = "grafana"
+  name        = "${var.app_name}-grafana"
   protocol    = "HTTP"
   port        = 3000
   target_type = "instance"
