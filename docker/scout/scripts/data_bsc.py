@@ -94,9 +94,6 @@ class TokenBalance:
         return info
 
 badger_wallets_input  = {
-
-}
-badger_wallets = {
     "deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
     "guardian": "0x29F7F8896Fb913CF7f9949C623F896a154727919",
     "keeper": "0x872213E29C85d7e30F1C8202FC47eD1Ec124BB1D",
@@ -104,6 +101,7 @@ badger_wallets = {
     "opsMultisig": "0x7c7054bd87431378C837B2679f223f6d6aa602C1",
     "devProxyAdmin": "0x6354e79f21b56c11f48bcd7c451be456d7102a36",
 }
+badger_wallets = {}
 for name, address in badger_wallets_input.items():
     badger_wallets[name] = Web3.toChecksumAddress(address)
 

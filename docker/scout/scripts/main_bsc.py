@@ -108,20 +108,22 @@ def main():
             except:
                 console.print(f"Failed to find USD price for lptoken {token.name}")
 
-    # process wallets for one treasury token
-        tokenAddress = treasury_tokens_address_list[step % number_treasury_tokens]
-        name = treasury_tokens_name_list[step % number_treasury_tokens]
-        console.print(f'Processing wallet balances for [bold]{name}:{tokenAddress}...')
-        info = wallet_balances_by_token[tokenAddress]
-        for metric in info.describe():
-            wallet_web3_addr =  Web3.toChecksumAddress(metric["walletAddress"])
-            wallets_gauge.labels(metric["walletName"], metric["walletAddress"], metric["tokenName"], metric["tokenAddress"], "balance").set(metric["balance"])
-            wallets_gauge.labels(metric["walletName"], metric["walletAddress"], "BNB", "None", "balance").set(float(w3.fromWei(w3.eth.getBalance(wallet_web3_addr), 'ether')))
+        for name, address in badger_wallets.items():
+            wallets_gauge.labels(name, address, "BNB", "None", "balance").set(float(w3.fromWei(w3.eth.getBalance(address), 'ether')))
             try:
-                wallets_gauge.labels(metric["walletName"], metric["walletAddress"], "ETH", "None", "usdBalance").set(float(w3.fromWei(w3.eth.getBalance(wallet_web3_addr), 'ether')) * usd_prices_by_token_address[treasury_tokens["WBNB"]])
-                wallets_gauge.labels(metric["walletName"], metric["walletAddress"], metric["tokenName"], metric["tokenAddress"], "usdBalance").set(metric["balance"] * usd_prices_by_token_address[tokenAddress])
+                wallets_gauge.labels(name, address, "BNB", "None", "usdBalance").set(float(w3.fromWei(w3.eth.getBalance(address), 'ether')) * usd_prices_by_token_address[treasury_tokens["WBNB"]])
             except:
-                console.print(f"error calculating USD token balance")
+                console.print("Can't find USD price for BNB")
+
+        for token, address in treasury_tokens.items():
+            console.print(f'Processing wallet balances for [bold]{token}:{address}...')
+            info = wallet_balances_by_token[address]
+            for metric in info.describe():
+                wallets_gauge.labels(metric["walletName"], metric["walletAddress"], metric["tokenName"], metric["tokenAddress"], "balance").set(metric["balance"])
+                try:
+                    wallets_gauge.labels(metric["walletName"], metric["walletAddress"], metric["tokenName"], metric["tokenAddress"], "usdBalance").set(metric["balance"] * usd_prices_by_token_address[address])
+                except:
+                    console.print(f"error calculating USD token balance")
 
 
         ### Setts
