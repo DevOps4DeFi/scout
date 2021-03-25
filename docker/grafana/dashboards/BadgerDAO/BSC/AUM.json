@@ -178,49 +178,26 @@
             "mode": "absolute",
             "steps": []
           },
-          "unit": "none"
+          "unit": "currencyBTC"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/BTC/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "currencyBTC"
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byRegexp",
-              "options": "/BADGER/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "short"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 7,
         "w": 12,
-        "x": 12,
-        "y": 0
+        "x": 0,
+        "y": 11
       },
       "hiddenSeries": false,
-      "id": 3,
+      "id": 11,
       "legend": {
         "alignAsTable": true,
         "avg": true,
         "current": true,
+        "hideEmpty": true,
+        "hideZero": true,
         "max": true,
         "min": true,
         "show": true,
@@ -240,130 +217,8 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:461",
-          "alias": "/BTC/",
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "(bsc_sett{token=\"cakebBadgerBtcb\", param=\"balance\"} /  on (token) (bsc_lp{token=\"cakebBadgerBtcb\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=\"cakebBadgerBtcb\", param=\"BTCB_supply\"})    ",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{token}} -  BTCb",
-          "refId": "B"
-        },
-        {
-          "exemplar": false,
-          "expr": "(bsc_sett{token=\"cakebBadgerBtcb\", param=\"balance\"} /  on (token) (bsc_lp{token=\"cakebBadgerBtcb\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=\"cakebBadgerBtcb\", param=\"bBADGER_supply\"})    ",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{token}} - bBADGER",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "bBADGER LP deposits",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:474",
-          "format": "short",
-          "label": "bBADGER",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:475",
-          "format": "currencyBTC",
-          "label": "BTCb",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
-          "unit": "currencyBTC"
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 11
-      },
-      "hiddenSeries": false,
-      "id": 11,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "hideEmpty": true,
-        "hideZero": true,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.0",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
           "$$hashKey": "object:1074",
-          "alias": "/- WBTC/",
+          "alias": "/BTCb/",
           "yaxis": 2
         }
       ],
@@ -382,7 +237,7 @@
           "expr": "(bsc_sett{token=\"cakebDiggBtcb\", param=\"balance\"} /  on (token) (bsc_lp{token=\"cakebDiggBtcb\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=\"cakebDiggBtcb\", param=\"BTCB_supply\"})    ",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{token}} - WBTC",
+          "legendFormat": "{{token}} - BTCb",
           "refId": "B"
         }
       ],
@@ -409,7 +264,7 @@
           "$$hashKey": "object:75",
           "decimals": 2,
           "format": "currencyBTC",
-          "label": "DIGG",
+          "label": "bDIGG",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -446,22 +301,9 @@
             "mode": "absolute",
             "steps": []
           },
-          "unit": "none"
+          "unit": "short"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "/BTC/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "currencyBTC"
-              }
-            ]
-          }
-        ]
+        "overrides": []
       },
       "fill": 1,
       "fillGradient": 0,
@@ -472,15 +314,18 @@
         "y": 11
       },
       "hiddenSeries": false,
-      "id": 3,
+      "id": 16,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "hideEmpty": true,
+        "hideZero": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -493,31 +338,37 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1074",
+          "alias": "/BTCb/",
+          "yaxis": 2
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(bsc_sett{token=~\".*WbtcBadger\", param=\"balance\"} /  on (token) (bsc_lp{token=~\".*WbtcBadger\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=~\".*WbtcBadger\", param=\"BADGER_supply\"})",
+          "expr": "(bsc_sett{token=\"cakebBadgerBtcb\", param=\"balance\"} /  on (token) (bsc_lp{token=\"cakebBadgerBtcb\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=\"cakebBadgerBtcb\", param=\"bBADGER_supply\"})  ",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{token}} -  BADGER",
-          "refId": "B"
+          "legendFormat": "{{token}} - DIGG",
+          "refId": "A"
         },
         {
-          "expr": "(bsc_sett{token=~\".*WbtcBadger\", param=\"balance\"} /  on (token) (bsc_lp{token=~\".*WbtcBadger\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=~\".*WbtcBadger\", param=\"WBTC_supply\"})",
+          "expr": "(bsc_sett{token=\"cakebBadgerBtcb\", param=\"balance\"} /  on (token) (bsc_lp{token=\"cakebBadgerBtcb\",param=\"totalLpTokenSupply\"})) *  on (token) (bsc_lp{token=\"cakebBadgerBtcb\", param=\"BTCB_supply\"})  ",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{token}} - WBTC",
-          "refId": "A"
+          "legendFormat": "{{token}} - BTCb",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Badger LP deposits",
+      "title": "bBADGER LP deposits",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -533,16 +384,20 @@
       },
       "yaxes": [
         {
-          "format": "none",
-          "label": null,
+          "$$hashKey": "object:75",
+          "decimals": 2,
+          "format": "short",
+          "label": "bBADGER",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
+          "$$hashKey": "object:76",
+          "decimals": 2,
           "format": "short",
-          "label": null,
+          "label": "BTCb",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -550,8 +405,8 @@
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": true,
+        "alignLevel": 0
       }
     },
     {
@@ -729,7 +584,7 @@
         {
           "expr": "bsc_sett{token=\"cakeBnbBtcb\",param=\"balance\"} ",
           "interval": "",
-          "legendFormat": "WBTC/ETH slp tokens",
+          "legendFormat": "BTCb/BNB Cake LP tokens",
           "refId": "A"
         }
       ],
