@@ -16,8 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 6009,
-  "iteration": 1616178028979,
+  "iteration": 1616640681274,
   "links": [],
   "panels": [
     {
@@ -262,18 +261,12 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": [
-            "slpEthBBadger",
-            "slpEthBDigg"
-          ],
-          "value": [
-            "slpEthBBadger",
-            "slpEthBDigg"
-          ]
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": null,
-        "definition": "coingecko_prices{countercurrency=\"usd\", token=~\".*\"}",
+        "definition": "bsc_wallets{token=~\".*\"}",
         "description": null,
         "error": null,
         "hide": 1,
@@ -283,7 +276,7 @@
         "name": "token",
         "options": [],
         "query": {
-          "query": "coingecko_prices{countercurrency=\"usd\", token=~\".*\"}",
+          "query": "bsc_wallets{token=~\".*\"}",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -299,7 +292,7 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
