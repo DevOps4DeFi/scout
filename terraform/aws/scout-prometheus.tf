@@ -109,7 +109,7 @@ module "scout-container-definition" {
   }]
 }
 resource "aws_lb_target_group" "prometheus" {
-  name        = "${var.app_name}prometheus"
+  name        = "${var.app_name}-prometheus"
   protocol    = "HTTP"
   port        = 9090
   target_type = "instance"
