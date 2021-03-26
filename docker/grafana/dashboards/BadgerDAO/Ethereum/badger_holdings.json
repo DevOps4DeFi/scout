@@ -12,6 +12,7 @@
       }
     ]
   },
+  "description": "A overview across all of our wallets and what the DAO holds",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -68,7 +69,7 @@
           }
         ]
       },
-      "fill": 0,
+      "fill": 1,
       "fillGradient": 2,
       "gridPos": {
         "h": 9,
@@ -99,17 +100,33 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:88",
+          "alias": "/Total/",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:93"
+        }
+      ],
       "spaceLength": 10,
-      "stack": true,
+      "stack": false,
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by(token) (wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\"}) != 0",
+          "expr": "sort_desc(sum by(token) (wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\", walletName!~\"uniswap_rewards\"}) != 0)",
           "hide": false,
           "interval": "",
           "legendFormat": "{{token}}",
           "refId": "A"
+        },
+        {
+          "expr": "sum(wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\", walletName!~\"uniswap_rewards\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Grand Total",
+          "refId": "B"
         }
       ],
       "thresholds": [],
@@ -135,7 +152,7 @@
           "$$hashKey": "object:1966",
           "decimals": 4,
           "format": "currencyUSD",
-          "label": "USD",
+          "label": "Tokens",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -148,7 +165,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": false
+          "show": true
         }
       ],
       "yaxis": {
@@ -1019,12 +1036,12 @@
     "list": []
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Treasury v3",
+  "title": "Treasury",
   "uid": "_UPPSJUGk",
   "version": 1
 }
