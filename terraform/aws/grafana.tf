@@ -102,7 +102,11 @@ module "grafana-container-definition" {
     {
       name = "GF_AUTH_ANONYMOUS_ORG_ROLE"
       value = "Viewer"
+    },{
+      name = "GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH"
+      value= var.home_dashboard_path
     }
+
   ]
   port_mappings = [
     {

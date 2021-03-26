@@ -126,3 +126,9 @@ variable "prometheus_lb_port" {
   description = "The port prometheus will listen on"
   type = number
 }
+
+variable "home_dashboard_path" {
+  type = string
+  default = "/etc/grafana/dashboards/homepage.json"
+  description = "The path on the server to dashboard json that will be used as the homepage."
+}
