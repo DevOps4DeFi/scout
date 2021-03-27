@@ -14,6 +14,7 @@ import os
 ETHNODEURL = os.environ["ETHNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
+native_tokens = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
 
 warnings.simplefilter( "ignore" )
 console = Console()
@@ -49,6 +50,7 @@ def main():
     crvtoken_gauge = Gauge('crvtokens', "CRV token data", ['token', 'param', 'tokenAddress'])
     wallets_gauge = Gauge('wallets', 'Watched Wallet Balances', ['walletName', 'walletAddress', 'token', 'tokenAddress', 'param'])
     block_gauge = Gauge('blocks', 'Information about blocks processed')
+    xchain_bridge_gauge = Gauge('xchainBridge', 'Information about tokens in custody', ['chain', 'token', 'bridge', 'param'])
     start_http_server( 8801 )
     lpTokens = get_lp_data()
     setts = get_sett_data()
@@ -136,7 +138,18 @@ def main():
             crvtoken_gauge.labels(token, "usdPricePerShare", treasury_tokens["WBTC"]).set(usd_price)
             usd_prices_by_token_address[treasury_tokens[token]] = usd_price
 
-    # process wallets for one treasury token
+        #  Processing Bridged tokens
+        custodians = {
+            "multiswap": Web3.toChecksumAddress("0x533e3c0e6b48010873B947bddC4721b1bDFF9648")
+        }
+        for custodian, address in custodians.items():
+            console.print(f"Checking Balances on bridge {custodian} address {address}")
+            for token in native_tokens:
+                ti = token_interfaces[treasury_tokens[token]]
+                xchain_bridge_gauge.labels("BSC", token, custodian, "balance").set(ti.balanceOf(address)/(10 ** ti.decimals()))
+                xchain_bridge_gauge.labels("BSC", token, custodian, "usdBalance").set(ti.balanceOf(address)/(10 ** ti.decimals()) * usd_prices_by_token_address[treasury_tokens[token]])
+
+        # process wallets for one treasury token
         tokenAddress = treasury_tokens_address_list[step % number_treasury_tokens]
         name = treasury_tokens_name_list[step % number_treasury_tokens]
         console.print(f'Processing wallet balances for [bold]{name}:{tokenAddress}...')
