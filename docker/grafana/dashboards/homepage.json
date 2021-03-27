@@ -392,14 +392,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\"}) + sum(bsc_wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\"}) != 0",
+          "expr": "sum(wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\",walletName!~\"uniswap_rewards\"}) + sum(bsc_wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\",walletName!~\"uniswap_rewards\"}) != 0",
           "hide": false,
           "interval": "",
           "legendFormat": "Grand Total",
           "refId": "C"
         },
         {
-          "expr": "sum by(token) (wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\"}) != 0",
+          "expr": "sum by(token) (wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\",walletName!~\"uniswap_rewards\"}) != 0",
           "hide": false,
           "interval": "",
           "legendFormat": "{{token}}",
