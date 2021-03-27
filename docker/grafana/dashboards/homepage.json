@@ -505,7 +505,7 @@
           "refId": "A"
         },
         {
-          "expr": "sum(crvtokens)",
+          "expr": "bsc_blocks",
           "hide": false,
           "interval": "",
           "legendFormat": "Binance Smart Chain",
