@@ -640,12 +640,12 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Sett Deposits/AUM Overview - BSC",
   "uid": "BSC_94F7baUGk",
-  "version": 3
+  "version": 1
 }

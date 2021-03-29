@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 11,
+  "id": 14,
   "links": [],
   "panels": [
     {
@@ -40,7 +40,7 @@
       },
       "id": 14,
       "options": {
-        "content": "## Badger DAOWatch - Community Metrics\n\nThese metrics are collected real time from the blockchain and stored in a database.  As a result the data here is very very very current, but may have historical glitches when there were collection problems.  These dashboards are intended to understand the basic state of things and should not be taken as absolute truth.\n\n#### WHat you can do\n\n- Click on the info link (top left) of any panel to go to a more detailed dashboards\n- Select the timerange you would like to view using the time picker on the top left\n- Use the search icon to explore/search for all other available dashboards.\n\n#### How you can contribute\nThis is an opensource project.  Grafana is easy to use.  We are happy to give editor access to anyone who would like to experiment with creating dashboards.  Also welcome contributions on the collector.\n\nContact Tritium - VLK in Badger Discord for editor UI access.\n\nAll sourcode to bring this online can be found [HERE][https://github.com/DevOps4DeFi/scout]. Forks and pull requests are welcomed.\n",
+        "content": "## Badger DAOWatch - Community Metrics\n\nThese metrics are collected real time from the blockchain and stored in a database.  As a result the data here is very very very current, but may have historical glitches when there were collection problems.  These dashboards are intended to understand the basic state of things and should not be taken as absolute truth.  All USD prices are based on the Coingecko API.\n\n#### WHat you can do\n\n- Click on the info link (top left) of any panel to go to a more detailed dashboards\n- Select the timerange you would like to view using the time picker on the top left\n- Use the search icon to explore/search for all other available dashboards.\n\n#### How you can contribute\nThis is an opensource project.  Grafana is easy to use.  We are happy to give editor access to anyone who would like to experiment with creating dashboards.  Also welcome contributions on the collector.\n\nContact Tritium - VLK in Badger Discord for editor UI access.\n\nAll sourcode to bring this online can be found at https://github.com/DevOps4DeFi/scout. Forks and pull requests are welcomed.\n",
         "mode": "markdown"
       },
       "pluginVersion": "7.4.0",
@@ -50,12 +50,78 @@
       "type": "text"
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 22,
+        "x": 0,
+        "y": 7
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "sum by (token) (coingecko_prices{token=~\".*BADGER\",countercurrency=\"usd\"})",
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (token) (coingecko_prices{token=\"WBTC\", countercurrency=\"usd\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "BTC",
+          "refId": "C"
+        },
+        {
+          "expr": "sum by (token) (coingecko_prices{token=~\".*DIGG\",countercurrency=\"usd\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Coingecko - Spot Price",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "decimals": 4,
+      "decimals": 2,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -80,19 +146,19 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 11,
         "x": 0,
-        "y": 7
+        "y": 10
       },
       "hiddenSeries": false,
       "id": 6,
       "legend": {
         "alignAsTable": true,
-        "avg": true,
+        "avg": false,
         "current": true,
-        "hideEmpty": false,
-        "hideZero": false,
+        "hideEmpty": true,
+        "hideZero": true,
         "max": true,
         "min": true,
         "show": true,
@@ -107,7 +173,7 @@
           "url": "https://daowatch.badger.guru/d/94F7baUGk/sett-deposits-aum-overview?orgId=1"
         }
       ],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": true
       },
@@ -223,74 +289,156 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
       "datasource": null,
+      "decimals": 4,
+      "description": "",
       "fieldConfig": {
         "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
           "custom": {},
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          }
+          "unit": "currencyUSD"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "G"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grand Total"
+              }
+            ]
+          }
+        ]
       },
+      "fill": 1,
+      "fillGradient": 0,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 11,
         "x": 11,
-        "y": 7
+        "y": 10
       },
-      "id": 12,
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "hideEmpty": false,
+        "hideZero": false,
+        "max": true,
+        "min": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [
+        {
+          "title": "Detailed BSC AUM Dashboard",
+          "url": "https://daowatch.badger.guru/d/BSC_94F7baUGk/sett-deposits-aum-overview-bsc?orgId=1&from=now-2d&to=now"
+        }
+      ],
+      "nullPointMode": "connected",
       "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "text": {},
-        "textMode": "auto"
+        "alertThreshold": true
       },
+      "percentage": false,
       "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:953",
+          "alias": "/Total/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
       "targets": [
         {
-          "expr": "sett{param=\"pricePerShare\", sett!~\"bDIGG\"}",
-          "format": "time_series",
+          "expr": "sum(bsc_sett{param=\"usdBalance\"})",
           "hide": false,
-          "instant": false,
           "interval": "",
-          "legendFormat": "{{sett}}",
+          "legendFormat": "Grand Total",
           "refId": "A"
         },
         {
-          "expr": "bsc_sett{param=\"pricePerShare\"}",
+          "expr": "bsc_sett{token=\"cakebDiggBtcb\", param=\"usdBalance\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{sett}}",
-          "refId": "B"
+          "legendFormat": "DIGG LP",
+          "refId": "E"
         },
         {
-          "expr": "sett{param=\"balance\", sett=\"bDIGG\"} / on (sett) sett{param=\"totalSupply\", sett=\"bDIGG\"} *(10^9)",
+          "expr": "bsc_sett{token=\"cakebBadgerBtcb\", param=\"usdBalance\"} ",
           "hide": false,
-          "instant": false,
           "interval": "",
-          "legendFormat": "bDIGG",
-          "refId": "C"
+          "legendFormat": "BBADGER LP",
+          "refId": "D"
+        },
+        {
+          "expr": "bsc_sett{token=\"cakeBnbBtcb\", param=\"usdBalance\"}  ",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "BTC/BNB",
+          "refId": "B"
         }
       ],
+      "thresholds": [],
       "timeFrom": null,
+      "timeRegions": [],
       "timeShift": null,
-      "title": "Native tokens per bToken",
-      "type": "stat"
+      "title": "BSC - Total AUM - USD",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:720",
+          "decimals": null,
+          "format": "currencyUSD",
+          "label": "Per Group",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:721",
+          "decimals": null,
+          "format": "currencyUSD",
+          "label": "Total",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     },
     {
       "aliasColors": {},
@@ -346,10 +494,10 @@
       "fill": 1,
       "fillGradient": 1,
       "gridPos": {
-        "h": 10,
+        "h": 8,
         "w": 11,
         "x": 0,
-        "y": 16
+        "y": 18
       },
       "hiddenSeries": false,
       "id": 10,
@@ -371,7 +519,7 @@
           "url": "https://daowatch.badger.guru/d/PXsylfUGz/badger-holdings-research?orgId=1"
         }
       ],
-      "nullPointMode": "null as zero",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": false
       },
@@ -458,6 +606,262 @@
       }
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": 3,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 11,
+        "y": 18
+      },
+      "hiddenSeries": false,
+      "id": 18,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1493",
+          "alias": "/DIGG/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (token) (wallets{token=~\".*BADGER\", param=\"balance\"}) > 100",
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (token) (wallets{token=~\".*DIGG\", param=\"balance\"}) > 1  ",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Badger Treasury / Native Tokens Locked",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1465",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1466",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 11,
+        "x": 0,
+        "y": 26
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "sett{param=\"pricePerShare\", sett!~\"bDIGG\"}",
+          "format": "time_series",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        },
+        {
+          "expr": "bsc_sett{param=\"pricePerShare\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "B"
+        },
+        {
+          "expr": "sett{param=\"balance\", sett=\"bDIGG\"} / on (sett) sett{param=\"totalSupply\", sett=\"bDIGG\"} *(10^9)",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "bDIGG",
+          "refId": "C"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Native tokens per bToken",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "displayName": "rewards",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 11,
+        "x": 11,
+        "y": 26
+      },
+      "id": 8,
+      "links": [
+        {
+          "title": "Badgertree Details",
+          "url": "https://daowatch.badger.guru/d/DAO3h23e0YMz/rewards-availability?orgId=1&from=now-2d&to=now"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "time()-(badgertree)",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Time since last cycle",
+      "type": "stat"
+    },
+    {
       "datasource": null,
       "description": "",
       "fieldConfig": {
@@ -478,13 +882,13 @@
         "h": 3,
         "w": 11,
         "x": 11,
-        "y": 16
+        "y": 29
       },
       "id": 4,
       "options": {
         "colorMode": "value",
         "graphMode": "area",
-        "justifyMode": "center",
+        "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
           "calcs": [
@@ -521,27 +925,26 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "",
+      "decimals": 3,
       "fieldConfig": {
         "defaults": {
-          "color": {},
           "custom": {},
-          "displayName": "rewards",
-          "unit": "s"
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 7,
+        "h": 6,
         "w": 11,
         "x": 11,
-        "y": 19
+        "y": 32
       },
       "hiddenSeries": false,
-      "id": 8,
+      "id": 20,
       "legend": {
+        "alignAsTable": false,
         "avg": false,
         "current": false,
         "max": false,
@@ -552,137 +955,7 @@
       },
       "lines": true,
       "linewidth": 1,
-      "links": [
-        {
-          "title": "Badgertree Details",
-          "url": "https://daowatch.badger.guru/d/DAO3h23e0YMz/rewards-availability?orgId=1&from=now-2d&to=now"
-        }
-      ],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": false
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.0",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "time()-(badgertree)",
-          "format": "time_series",
-          "instant": false,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Time since last cycle",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:189",
-          "format": "s",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:190",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "decimals": 4,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "unit": "currencyUSD"
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byFrameRefID",
-              "options": "G"
-            },
-            "properties": [
-              {
-                "id": "displayName",
-                "value": "Grand Total"
-              }
-            ]
-          }
-        ]
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 11,
-        "x": 0,
-        "y": 26
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "hideEmpty": false,
-        "hideZero": false,
-        "max": true,
-        "min": true,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "links": [
-        {
-          "title": "Detailed BSC AUM Dashboard",
-          "url": "https://daowatch.badger.guru/d/BSC_94F7baUGk/sett-deposits-aum-overview-bsc?orgId=1&from=now-2d&to=now"
-        }
-      ],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": true
       },
@@ -693,8 +966,8 @@
       "renderer": "flot",
       "seriesOverrides": [
         {
-          "$$hashKey": "object:953",
-          "alias": "/Total/",
+          "$$hashKey": "object:1587",
+          "alias": "/DIGG/",
           "yaxis": 2
         }
       ],
@@ -703,31 +976,16 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bsc_sett{param=\"usdBalance\"})",
-          "hide": false,
+          "expr": "sum by (token) (coingecko_prices{token=~\".*BADGER\",countercurrency=\"usd\"})",
           "interval": "",
-          "legendFormat": "Grand Total",
+          "legendFormat": "{{token}}",
           "refId": "A"
         },
         {
-          "expr": "bsc_sett{token=\"cakebDiggBtcb\", param=\"usdBalance\"}",
+          "expr": "sum by (token) (coingecko_prices{token=~\".*DIGG\",countercurrency=\"usd\"})",
           "hide": false,
           "interval": "",
-          "legendFormat": "DIGG LP",
-          "refId": "E"
-        },
-        {
-          "expr": "bsc_sett{token=\"cakebBadgerBtcb\", param=\"usdBalance\"} ",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "BBADGER LP",
-          "refId": "D"
-        },
-        {
-          "expr": "bsc_sett{token=\"cakeBnbBtcb\", param=\"usdBalance\"}  ",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "BTC/BNB",
+          "legendFormat": "{{token}}",
           "refId": "B"
         }
       ],
@@ -735,7 +993,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "BSC - Total AUM - USD",
+      "title": "USD Prices - Native Tokens (Coingecko)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -751,20 +1009,18 @@
       },
       "yaxes": [
         {
-          "$$hashKey": "object:720",
-          "decimals": 1,
+          "$$hashKey": "object:1559",
           "format": "currencyUSD",
-          "label": "Per Group",
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
           "show": true
         },
         {
-          "$$hashKey": "object:721",
-          "decimals": 3,
+          "$$hashKey": "object:1560",
           "format": "currencyUSD",
-          "label": "Total",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
@@ -791,25 +1047,27 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 11,
-        "x": 11,
-        "y": 26
+        "x": 0,
+        "y": 38
       },
       "hiddenSeries": false,
       "id": 16,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": true
       },
@@ -821,7 +1079,7 @@
       "seriesOverrides": [
         {
           "$$hashKey": "object:299",
-          "alias": "/USD/",
+          "alias": "/DIGG/",
           "yaxis": 2
         }
       ],
@@ -830,24 +1088,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "xchainBridge{param=\"balance\"} !=0",
+          "expr": "xchainBridge{param=\"balance\",token!~\"BADGER\"} !=0",
           "interval": "",
           "legendFormat": "{{token}}",
           "refId": "A"
-        },
-        {
-          "expr": "xchainBridge{param=\"usdBalance\"} !=0",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{token}} USD",
-          "refId": "B"
-        },
-        {
-          "expr": "",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "",
-          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -872,7 +1116,7 @@
         {
           "$$hashKey": "object:249",
           "format": "short",
-          "label": "Native Token",
+          "label": "bBADGER",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -880,8 +1124,116 @@
         },
         {
           "$$hashKey": "object:250",
-          "format": "currencyUSD",
-          "label": "USD",
+          "format": "short",
+          "label": "bDIGG",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "Tokens that are in the Mutliswap BSC crosschain wallet but do not exist on BSC.  These are either fees or tokens in transit.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 11,
+        "x": 11,
+        "y": 38
+      },
+      "hiddenSeries": false,
+      "id": 23,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:587",
+          "alias": "/DIGG/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "exemplar": false,
+          "expr": "xchainBridge{param=\"balance\"} -  on(token) bsc_xtokens",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "BSC Multiswap Bridge Void",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:310",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:311",
+          "format": "short",
+          "label": null,
           "logBase": 1,
           "max": null,
           "min": null,
@@ -906,7 +1258,7 @@
   },
   "timepicker": {},
   "timezone": "utc",
-  "title": "Homepage",
-  "uid": "IVTgOlwGz",
-  "version": 2
+  "title": "Homepage - DAOwatch",
+  "uid": "t-iPzqwMz",
+  "version": 6
 }
