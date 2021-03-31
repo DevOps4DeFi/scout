@@ -15,7 +15,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 14,
   "links": [],
   "panels": [
     {
@@ -57,16 +56,18 @@
             "mode": "thresholds"
           },
           "custom": {},
+          "decimals": 2,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": []
-          }
+          },
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 3,
+        "h": 2,
         "w": 22,
         "x": 0,
         "y": 7
@@ -116,6 +117,79 @@
       "type": "stat"
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "decimals": 8,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "unit": "currencyBTC"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 22,
+        "x": 0,
+        "y": 9
+      },
+      "id": 25,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "sum(sett{token=\"crvTBTC\", param=\"pricePerShare\"}) *  sum(crvtokens{token=\"crvTBTC\", param=\"pricePerShare\"})",
+          "interval": "",
+          "legendFormat": "bcrvTBTC",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(sett{sett=\"bcrvRenBTC\", param=\"pricePerShare\"}) *  sum(crvtokens{token=\"crvRenBTC\", param=\"pricePerShare\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "bcrvRenBTC",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(sett{sett=\"bharvestcrvRenBTC\", param=\"pricePerShare\"}) *  sum(crvtokens{token=\"crvRenBTC\", param=\"pricePerShare\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "bharvestcrvRenBTC",
+          "refId": "D"
+        },
+        {
+          "expr": "sum(sett{sett=\"bcrvSBTC\", param=\"pricePerShare\"}) *  sum(crvtokens{token=\"crvSBTC\", param=\"pricePerShare\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "bcrvRenBTC",
+          "refId": "C"
+        }
+      ],
+      "title": "Bitcoin value of BTC native Setts",
+      "type": "stat"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -149,7 +223,7 @@
         "h": 8,
         "w": 11,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 6,
@@ -322,7 +396,7 @@
         "h": 8,
         "w": 11,
         "x": 11,
-        "y": 10
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 2,
@@ -497,7 +571,7 @@
         "h": 8,
         "w": 11,
         "x": 0,
-        "y": 18
+        "y": 19
       },
       "hiddenSeries": false,
       "id": 10,
@@ -625,7 +699,7 @@
         "h": 8,
         "w": 11,
         "x": 11,
-        "y": 18
+        "y": 19
       },
       "hiddenSeries": false,
       "id": 18,
@@ -663,7 +737,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (token) (wallets{token=~\".*BADGER\", param=\"balance\"}) > 100",
+          "expr": "sum(wallets{token=\"BADGER\", param=\"balance\"}) + 627538",
           "interval": "",
           "legendFormat": "{{token}}",
           "refId": "A"
@@ -674,6 +748,13 @@
           "interval": "",
           "legendFormat": "{{token}}",
           "refId": "B"
+        },
+        {
+          "expr": "sum(wallets{token=\"bBADGER\", param=\"balance\"}) > 10000",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -739,7 +820,7 @@
         "h": 12,
         "w": 11,
         "x": 0,
-        "y": 26
+        "y": 27
       },
       "id": 12,
       "options": {
@@ -821,7 +902,7 @@
         "h": 3,
         "w": 11,
         "x": 11,
-        "y": 26
+        "y": 27
       },
       "id": 8,
       "links": [
@@ -882,7 +963,7 @@
         "h": 3,
         "w": 11,
         "x": 11,
-        "y": 29
+        "y": 30
       },
       "id": 4,
       "options": {
@@ -939,7 +1020,7 @@
         "h": 6,
         "w": 11,
         "x": 11,
-        "y": 32
+        "y": 33
       },
       "hiddenSeries": false,
       "id": 20,
@@ -1050,7 +1131,7 @@
         "h": 7,
         "w": 11,
         "x": 0,
-        "y": 38
+        "y": 39
       },
       "hiddenSeries": false,
       "id": 16,
@@ -1156,7 +1237,7 @@
         "h": 7,
         "w": 11,
         "x": 11,
-        "y": 38
+        "y": 39
       },
       "hiddenSeries": false,
       "id": 23,
@@ -1206,7 +1287,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "BSC Multiswap Bridge Void",
+      "title": "Multiswap Void",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1253,12 +1334,12 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "utc",
-  "title": "Homepage - DAOwatch",
-  "uid": "t-iPzqwMz",
-  "version": 6
+  "title": "Homepage",
+  "uid": "IVTgOlwGz",
+  "version": 19
 }
