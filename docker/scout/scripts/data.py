@@ -156,7 +156,8 @@ badger_wallets_input  = {
     "ops_multisig": Web3.toChecksumAddress("0xD4868d98849a58F743787c77738D808376210292"),
     "ops_keeper": Web3.toChecksumAddress("0x872213E29C85d7e30F1C8202FC47eD1Ec124BB1D"),
     "ops_guardian": Web3.toChecksumAddress("0x29F7F8896Fb913CF7f9949C623F896a154727919"),
-    "ops_root-validator": Web3.toChecksumAddress("0x626f69162ea1556a75dd4443d87d2fe38dd25901")
+    "ops_root-validator": Web3.toChecksumAddress("0x626f69162ea1556a75dd4443d87d2fe38dd25901"),
+    "digg_treasury": Web3.toChecksumAddress("0x5A54Ca44e8F5A1A695f8621f15Bfa159a140bB61")
 }
 badger_wallets = {}
 for name, address in badger_wallets_input.items():
