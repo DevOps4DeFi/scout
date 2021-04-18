@@ -53,6 +53,24 @@ class lpToken:
         return info
 
 @dataclass
+class yearnVault:
+    name: str
+    vault: InterfaceContainer
+
+    def describe(self):
+        scale = 10 ** self.vault.decimals()
+        try:
+            info = {
+                "pricePerShare": self.vault.pricePerShare() / scale,
+                "totalSupply"  : self.vault.totalSupply() / scale,
+                "balance": (self.vault.pricePerShare() / scale) * (self.vault.totalSupply() / scale)
+            }
+        except ValueError as e:
+            info = {}
+            log.exception( str( e ) )
+        return info
+
+@dataclass
 class Sett:
     name: str
     sett: InterfaceContainer
@@ -64,7 +82,7 @@ class Sett:
                     "pricePerShare": self.sett.getPricePerFullShare() / scale,
                     "totalSupply"  : self.sett.totalSupply() / scale,
                     "balance": self.sett.balance() / scale,
-                    "available"    : self.sett.available() / scale,
+                    "available"    : self.sett.available() / scale
                     }
         except ValueError as e:
             info = {}
@@ -175,6 +193,14 @@ sett_vault_input = {
         "bslpWbtcDigg"  : "0x88128580ACdD9c04Ce47AFcE196875747bF2A9f6",
         "bslpWbtcEth"   : "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D",
         }
+yearn_vaults_input = {
+    "byvWBTC" : "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"
+}
+yearn_vaults = {}
+for name, address in yearn_vaults_input.items():
+    yearn_vaults[name] = Web3.toChecksumAddress(address)
+
+
 sett_vaults = {}
 for name, address in sett_vault_input.items():
     sett_vaults[name] = Web3.toChecksumAddress(address)
@@ -237,7 +263,10 @@ def get_lp_data():
     return [lpToken( name=f'{name}', token=interface.lpToken(token)) for name, token in lp_tokens.items()]
 
 def get_sett_data():
-    return [Sett( name=f'{name}', sett=interface.Sett( sett ) ) for name, sett in sett_vaults.items()]
+    return [Sett( name=f'{name}', sett=interface.Sett(sett)) for name, sett in sett_vaults.items()]
+
+def get_yvault_data():
+    return [yearnVault( name=f'{name}', vault=interface.yearnVault(vault)) for name, vault in yearn_vaults.items()]
 
 def get_treasury_data():
     return [Treasury( name=f'{name}', token=interface.ERC20( token ) ) for name, token in treasury_tokens.items()]

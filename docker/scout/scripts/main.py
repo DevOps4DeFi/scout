@@ -3,7 +3,7 @@ from rich.console import Console
 from prometheus_client import Gauge, start_http_server
 import warnings
 import datetime
-from scripts.data import get_sett_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data, get_token_balance_data, treasury_tokens, sett_vaults,crvpools, lp_tokens, badger_wallets
+from scripts.data import get_sett_data, get_yvault_data, get_treasury_data, get_digg_data, get_badgertree_data, get_json_request, get_lp_data, get_token_balance_data, treasury_tokens, sett_vaults,crvpools, lp_tokens, badger_wallets, yearn_vaults
 from brownie import chain
 from brownie import interface
 from web3 import Web3
@@ -54,6 +54,7 @@ def main():
     start_http_server( 8801 )
     lpTokens = get_lp_data()
     setts = get_sett_data()
+    yvaults = get_yvault_data()
     wallet_balances_by_token = {}
     for tokenName, tokenAddress in treasury_tokens.items():
         wallet_balances_by_token[tokenAddress] = get_token_balance_data(badger_wallets, tokenAddress, tokenName)
@@ -176,6 +177,20 @@ def main():
             except:
                 console.print (f"Could not set USD price for Sett {sett.name}")
                 pass
+
+        for vault in yvaults:
+            info = vault.describe()
+            console.print(f'Processing Yearn Sett [bold]{vault.name}')
+            for param, value in info.items():
+                sett_gauge.labels(vault.name, param, yearn_vaults[vault.name], vault.name[3:]).set(value)
+            try:
+                usd_prices_by_token_address[yearn_vaults[vault.name]] = info["pricePerShare"] * usd_prices_by_token_address[treasury_tokens[vault.name[3:]]]
+                sett_gauge.labels(vault.name, "usdBalance", yearn_vaults[vault.name], vault.name[3:]).set(usd_prices_by_token_address[yearn_vaults[vault.name]]*info["balance"])
+            except:
+                console.print (f"Could not set USD price for Sett {vault.name}")
+                pass
+
+
 
         price = digg_prices.describe()
         last_cycle_unixtime = badgertree_cycles.describe()
