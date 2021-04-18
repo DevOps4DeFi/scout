@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
+  "id": 18,
   "links": [],
   "panels": [
     {
@@ -24,7 +24,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "decimals": 4,
+      "decimals": null,
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -35,7 +35,7 @@
           {
             "matcher": {
               "id": "byFrameRefID",
-              "options": "G"
+              "options": "I"
             },
             "properties": [
               {
@@ -49,7 +49,7 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 11,
+        "h": 9,
         "w": 24,
         "x": 0,
         "y": 0
@@ -58,12 +58,13 @@
       "id": 13,
       "legend": {
         "alignAsTable": true,
-        "avg": true,
+        "avg": false,
         "current": true,
         "hideEmpty": false,
         "hideZero": false,
         "max": true,
         "min": true,
+        "rightSide": true,
         "show": true,
         "total": false,
         "values": true
@@ -96,6 +97,13 @@
           "interval": "",
           "legendFormat": "Curve Pools",
           "refId": "A"
+        },
+        {
+          "expr": "(sum(sett{token=\"WBTC\", param=\"balance\"}) or vector(0)  * on (token) (sett{token=\"WBTC\", param=\"pricePerShare\"})  or vector(0)) * sum(coingecko_prices{token=\"WBTC\", countercurrency=\"usd\"}) ",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Yearn Pool(s)",
+          "refId": "Aa"
         },
         {
           "expr": "sett{token=\"slpWbtcEth\", param=\"balance\"}  * on(token) lptokens{token=\"slpWbtcEth\", param=\"usdPricePerShare\"}",
@@ -134,9 +142,9 @@
         },
         {
           "datasource": "__expr__",
-          "expression": "$A+$B+$C+$D+$E+$F",
+          "expression": "$A+$B+$C+$D+$E+$F+$Aa",
           "hide": false,
-          "refId": "G",
+          "refId": "I",
           "type": "math"
         }
       ],
@@ -161,7 +169,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:720",
-          "decimals": 1,
+          "decimals": null,
           "format": "currencyUSD",
           "label": "Per Group",
           "logBase": 1,
@@ -171,7 +179,7 @@
         },
         {
           "$$hashKey": "object:721",
-          "decimals": 3,
+          "decimals": null,
           "format": "currencyUSD",
           "label": "Total",
           "logBase": 1,
@@ -183,6 +191,245 @@
       "yaxis": {
         "align": false,
         "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "badger-prometheus",
+      "description": "crv tokens that repreent a reasonably close 1/1 value with btc (although not exact)",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyBTC"
+        },
+        "overrides": []
+      },
+      "fill": 2,
+      "fillGradient": 4,
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 16,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "connected",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:295",
+          "alias": "/Total/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "expr": "sett{param=\"balance\", sett=~\".*crv.*\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "queryType": "randomWalk",
+          "refId": "crv token balances"
+        },
+        {
+          "expr": "sett{param=\"balance\", sett=~\"byvWBTC\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(sett{param=\"balance\", sett=~\".*crv.*\"}) + sum(sett{param=\"balance\", sett=\"byvWBTC\"} or vector(0)) ",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total",
+          "refId": "Total"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Sett Deposits - BTCesque denominated",
+      "tooltip": {
+        "shared": true,
+        "sort": 2,
+        "value_type": "individual"
+      },
+      "transparent": true,
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1222",
+          "decimals": null,
+          "format": "currencyBTC",
+          "label": "pools",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1223",
+          "decimals": null,
+          "format": "currencyBTC",
+          "label": "Total",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 2,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:247",
+          "alias": "/bBADGER/",
+          "yaxis": 2
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sett{param=\"totalSupply\", sett=\"bBADGER\"}",
+          "interval": "",
+          "legendFormat": "bBADGER",
+          "refId": "A"
+        },
+        {
+          "expr": "sett{param=\"pricePerShare\", sett=\"bBADGER\"} * on (sett) sett{param=\"totalSupply\", sett=\"bBADGER\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "BADGER",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Badger Sett deposits",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:75",
+          "decimals": 2,
+          "format": "short",
+          "label": "BADGER",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:76",
+          "decimals": 2,
+          "format": "short",
+          "label": "bBADGER",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": true,
+        "alignLevel": 100
       }
     },
     {
@@ -235,10 +482,10 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 16
       },
       "hiddenSeries": false,
-      "id": 3,
+      "id": 18,
       "legend": {
         "avg": false,
         "current": false,
@@ -347,7 +594,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 11
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 9,
@@ -468,242 +715,6 @@
           },
           "unit": "none"
         },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "/BTC/"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "currencyBTC"
-              }
-            ]
-          }
-        ]
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 12,
-        "y": 11
-      },
-      "hiddenSeries": false,
-      "id": 3,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.0",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "(sett{token=~\".*WbtcBadger\", param=\"balance\"} /  on (token) (lptokens{token=~\".*WbtcBadger\",param=\"totalLpTokenSupply\"})) *  on (token) (lptokens{token=~\".*WbtcBadger\", param=\"BADGER_supply\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{token}} -  BADGER",
-          "refId": "B"
-        },
-        {
-          "expr": "(sett{token=~\".*WbtcBadger\", param=\"balance\"} /  on (token) (lptokens{token=~\".*WbtcBadger\",param=\"totalLpTokenSupply\"})) *  on (token) (lptokens{token=~\".*WbtcBadger\", param=\"WBTC_supply\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{token}} - WBTC",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Badger LP deposits",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "none",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 7,
-        "w": 12,
-        "x": 0,
-        "y": 18
-      },
-      "hiddenSeries": false,
-      "id": 2,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.0",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:247",
-          "alias": "/bBADGER/",
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "sett{param=\"totalSupply\", sett=\"bBADGER\"}",
-          "interval": "",
-          "legendFormat": "bBADGER",
-          "refId": "A"
-        },
-        {
-          "expr": "sett{param=\"pricePerShare\", sett=\"bBADGER\"} * on (sett) sett{param=\"totalSupply\", sett=\"bBADGER\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "BADGER",
-          "refId": "B"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Badger Sett deposits",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:75",
-          "decimals": 2,
-          "format": "short",
-          "label": "BADGER",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:76",
-          "decimals": 2,
-          "format": "short",
-          "label": "bBADGER",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": true,
-        "alignLevel": 100
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {},
-          "custom": {},
-          "thresholds": {
-            "mode": "absolute",
-            "steps": []
-          },
-          "unit": "none"
-        },
         "overrides": []
       },
       "fill": 1,
@@ -712,7 +723,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 18
+        "y": 23
       },
       "hiddenSeries": false,
       "id": 11,
@@ -815,125 +826,6 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "badger-prometheus",
-      "description": "crv tokens that repreent a reasonably close 1/1 value with btc (although not exact)",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {},
-          "unit": "currencyBTC"
-        },
-        "overrides": []
-      },
-      "fill": 2,
-      "fillGradient": 4,
-      "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 25
-      },
-      "hiddenSeries": false,
-      "id": 7,
-      "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "connected",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.4.0",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:295",
-          "alias": "/Total/",
-          "yaxis": 2
-        }
-      ],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": true,
-      "targets": [
-        {
-          "expr": "sett{param=\"balance\", sett=~\".*crv.*\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "{{sett}}",
-          "queryType": "randomWalk",
-          "refId": "crv token balances"
-        },
-        {
-          "expr": "sum(sett{param=\"balance\", sett=~\".*crv.*\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Total",
-          "refId": "Total"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Sett Deposits - BTCesque denominated",
-      "tooltip": {
-        "shared": true,
-        "sort": 2,
-        "value_type": "individual"
-      },
-      "transparent": true,
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:1222",
-          "decimals": 2,
-          "format": "currencyBTC",
-          "label": "pools",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:1223",
-          "decimals": 2,
-          "format": "currencyBTC",
-          "label": "Total",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": true,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
       "datasource": null,
       "fieldConfig": {
         "defaults": {
@@ -948,7 +840,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 32
+        "y": 30
       },
       "hiddenSeries": false,
       "id": 15,
@@ -1052,7 +944,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 32
+        "y": 30
       },
       "hiddenSeries": false,
       "id": 8,
@@ -1160,12 +1052,12 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Sett Deposits/AUM Overview",
-  "uid": "94F7baUGk",
-  "version": 13
+  "title": "Sett Deposits/AUM Overview - update Copy",
+  "uid": "tghrpPuGk",
+  "version": 3
 }

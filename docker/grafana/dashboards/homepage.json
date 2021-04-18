@@ -184,6 +184,13 @@
           "interval": "",
           "legendFormat": "bcrvRenBTC",
           "refId": "C"
+        },
+        {
+          "expr": "sum(sett{sett=\"byvWBTC\", param=\"pricePerShare\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "byvWBTC",
+          "refId": "E"
         }
       ],
       "title": "Bitcoin value of BTC native Setts",
@@ -280,6 +287,13 @@
           "interval": "",
           "legendFormat": "Curve Pools",
           "refId": "A"
+        },
+        {
+          "expr": "(sum(sett{token=\"WBTC\", param=\"balance\"}) or vector(0)  * on (token) (sett{token=\"WBTC\", param=\"pricePerShare\"})  or vector(0)) * sum(coingecko_prices{token=\"WBTC\", countercurrency=\"usd\"}) ",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Yearn Pool(s)",
+          "refId": "Aa"
         },
         {
           "expr": "sett{token=\"slpWbtcEth\", param=\"balance\"}  * on(token) lptokens{token=\"slpWbtcEth\", param=\"usdPricePerShare\"}",
@@ -1322,7 +1336,7 @@
         }
       ],
       "yaxis": {
-        "align": false,
+        "align": true,
         "alignLevel": null
       }
     }
@@ -1341,5 +1355,5 @@
   "timezone": "utc",
   "title": "Homepage",
   "uid": "IVTgOlwGz",
-  "version": 19
+  "version": 21
 }
