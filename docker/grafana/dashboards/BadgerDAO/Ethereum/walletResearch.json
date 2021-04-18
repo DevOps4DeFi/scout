@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 12,
-  "iteration": 1616794299321,
+  "id": 9,
+  "iteration": 1616178028979,
   "links": [],
   "panels": [
     {
@@ -262,12 +262,18 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": [
+            "slpEthBBadger",
+            "slpEthBDigg"
+          ],
+          "value": [
+            "slpEthBBadger",
+            "slpEthBDigg"
+          ]
         },
         "datasource": null,
-        "definition": "wallets{token=~\".*\"}",
+        "definition": "coingecko_prices{countercurrency=\"usd\", token=~\".*\"}",
         "description": null,
         "error": null,
         "hide": 1,
@@ -277,7 +283,7 @@
         "name": "token",
         "options": [],
         "query": {
-          "query": "wallets{token=~\".*\"}",
+          "query": "coingecko_prices{countercurrency=\"usd\", token=~\".*\"}",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -298,7 +304,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Badger Holdings Research - Working Copy",
-  "uid": "XSq5-lQGz",
+  "title": "Badger Holdings Research",
+  "uid": "PXsylfUGz",
   "version": 1
 }
