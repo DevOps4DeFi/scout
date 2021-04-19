@@ -1,4 +1,4 @@
-FROM grafana/grafana:7.4.0-ubuntu
+FROM grafana/grafana:7.5.4-ubuntu
 # Disable Login form or not
 ENV GF_AUTH_DISABLE_LOGIN_FORM=false
 # Allow anonymous authentication or not
