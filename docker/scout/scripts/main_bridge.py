@@ -34,7 +34,7 @@ POLL_INTERVAL = 10
 warnings.simplefilter("ignore")
 console = Console()
 
-w3 = Web3(Web3.WebsocketProvider(ETHNODEURL))
+w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
 
 def process_prior_events(chain, filters, block_gauge, token_flow_counter, fees_counter):
