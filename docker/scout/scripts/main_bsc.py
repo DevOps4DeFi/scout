@@ -22,7 +22,7 @@ token_interfaces = {}
 for tokenname, address in treasury_tokens.items():
     token_interfaces.update({address: interface.ERC20(address)})
 
-
+native_tokens = ['bBADGER', 'bDIGG','BADGER']
 console.print ("Treasury Tokens")
 console.print (treasury_tokens)
 
@@ -36,6 +36,7 @@ def main():
     coingecko_price_gauge = Gauge('bsc_coingecko', 'Pricing data from Coingecko', ['token','countercurrency', 'tokenAddress'])
     wallets_gauge = Gauge('bsc_wallets', 'Watched Wallet Balances', ['walletName', 'walletAddress', 'token', 'tokenAddress', 'param'])
     block_gauge = Gauge('bsc_blocks', 'Information about blocks processed')
+    bridge_gauge = Gauge('bsc_xtokens', 'Native tokens on bsc', ['token', 'bridge', 'param'])
     start_http_server( 8801 )
     lpTokens = get_lp_data()
     setts = get_sett_data()
@@ -71,6 +72,7 @@ def main():
         for address, id in coingecko_tokens.items():
             token = token_name_by_address[address]
             console.print( f'Processing Coingecko price for [bold]{token}...' )
+
             try:
                 exists_test = token_prices[id]
                 coingecko_price_gauge.labels(token, "usd", address).set(token_prices[id][countertoken])
@@ -81,8 +83,11 @@ def main():
                 console.print(f"can't get coingeck price for: {token}")
 
 
-
-    ### LP Tokens
+        ### Bridge
+        for token in native_tokens:
+            scale = 10 ** token_interfaces[treasury_tokens[token]].decimals()
+            bridge_gauge.labels(token, "multiswap", "totalSupply").set(token_interfaces[treasury_tokens[token]].totalSupply() / scale)
+        ### LP Tokens
         for token in lpTokens:
             info = token.describe()
             console.print(f'Processing lpToken reserves [bold]{token.name}...')

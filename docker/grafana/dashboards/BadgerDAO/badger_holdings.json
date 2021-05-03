@@ -80,14 +80,15 @@
       "hiddenSeries": false,
       "id": 10,
       "legend": {
-        "alignAsTable": false,
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -115,6 +116,13 @@
       "steppedLine": false,
       "targets": [
         {
+          "expr": "(sum(wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\", walletName!~\"uniswap_rewards\"})) + sum(bsc_wallets{param=\"usdBalance\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Grand Total",
+          "refId": "B"
+        },
+        {
           "expr": "sort_desc(sum by(token) (wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\", walletName!~\"uniswap_rewards\"}) != 0)",
           "hide": false,
           "interval": "",
@@ -122,11 +130,11 @@
           "refId": "A"
         },
         {
-          "expr": "sum(wallets{param=\"usdBalance\", token!~\".*DIGG\", token!~\".*BADGER\", walletName!~\"uniswap_rewards\"})",
+          "expr": "sort_desc(sum by(token) (bsc_wallets{param=\"usdBalance\"}) != 0)",
           "hide": false,
           "interval": "",
-          "legendFormat": "Grand Total",
-          "refId": "B"
+          "legendFormat": "BSC - {{token}}",
+          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -182,7 +190,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "unit": "none"
+          "unit": "currencyBTC"
         },
         "overrides": []
       },
@@ -197,19 +205,19 @@
       "hiddenSeries": false,
       "id": 2,
       "legend": {
-        "alignAsTable": false,
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "rightSide": false,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": true
       },
@@ -218,20 +226,18 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [
-        {
-          "$$hashKey": "object:715",
-          "alias": "/- btc/",
-          "yaxis": 2
-        },
-        {
-          "$$hashKey": "object:402"
-        }
-      ],
+      "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
       "targets": [
+        {
+          "expr": "sum(wallets{token=~\"crv.*\", param=\"balance\"} *  on(token) group_left crvtokens{token=~\"crv.*\", param=\"pricePerShare\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total",
+          "refId": "D"
+        },
         {
           "expr": "sum by(token) (wallets{token=~\"crv.*\", param=\"balance\"} *  on(token) group_left crvtokens{token=~\"crv.*\", param=\"pricePerShare\"})",
           "hide": false,
@@ -241,24 +247,17 @@
         },
         {
           "expr": "sum by(token) (wallets{token=~\"crv.*\", param=\"balance\"})",
-          "hide": false,
+          "hide": true,
           "interval": "",
           "legendFormat": "{{token}} - crv",
           "refId": "B"
         },
         {
           "expr": "sum (wallets{token=~\"crv.*\", param=\"balance\"})",
-          "hide": false,
+          "hide": true,
           "interval": "",
           "legendFormat": "Total - crv",
           "refId": "C"
-        },
-        {
-          "expr": "sum(wallets{token=~\"crv.*\", param=\"balance\"} *  on(token) group_left crvtokens{token=~\"crv.*\", param=\"pricePerShare\"})",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Total - btc",
-          "refId": "D"
         }
       ],
       "thresholds": [],
@@ -282,9 +281,9 @@
       "yaxes": [
         {
           "$$hashKey": "object:1966",
-          "decimals": 3,
-          "format": "none",
-          "label": "crv token",
+          "decimals": null,
+          "format": "currencyBTC",
+          "label": "",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -293,16 +292,16 @@
         {
           "$$hashKey": "object:1967",
           "decimals": 3,
-          "format": "none",
-          "label": "BTC",
+          "format": "currencyBTC",
+          "label": "Total",
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
-        "align": true,
+        "align": false,
         "alignLevel": null
       }
     },
@@ -315,7 +314,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {},
-          "unit": "none"
+          "unit": "currencyUSD"
         },
         "overrides": []
       },
@@ -330,15 +329,15 @@
       "hiddenSeries": false,
       "id": 11,
       "legend": {
-        "alignAsTable": false,
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "rightSide": false,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -354,7 +353,7 @@
       "seriesOverrides": [
         {
           "$$hashKey": "object:715",
-          "alias": "/- btc/",
+          "alias": "/Total/",
           "yaxis": 2
         },
         {
@@ -376,7 +375,7 @@
           "expr": "sum(wallets{token=~\".*crv.*\", param=\"usdBalance\"} != 0)",
           "hide": false,
           "interval": "",
-          "legendFormat": "TOTAL",
+          "legendFormat": "Grand Total",
           "refId": "B"
         }
       ],
@@ -384,7 +383,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Curve Pools",
+      "title": "Curve Pools - USD",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -402,7 +401,7 @@
         {
           "$$hashKey": "object:1966",
           "decimals": 3,
-          "format": "none",
+          "format": "currencyUSD",
           "label": "",
           "logBase": 1,
           "max": null,
@@ -412,16 +411,16 @@
         {
           "$$hashKey": "object:1967",
           "decimals": 3,
-          "format": "none",
-          "label": "BTC",
+          "format": "currencyUSD",
+          "label": "Total",
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": false
+          "show": true
         }
       ],
       "yaxis": {
-        "align": true,
+        "align": false,
         "alignLevel": null
       }
     },
@@ -474,13 +473,14 @@
       "hiddenSeries": false,
       "id": 5,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -590,13 +590,14 @@
       "hiddenSeries": false,
       "id": 8,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -703,17 +704,18 @@
       "hiddenSeries": false,
       "id": 3,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "options": {
         "alertThreshold": true
       },
@@ -734,14 +736,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(wallets{token=~\"xSUSHI\", param=\"balance\"}) != 0   ",
+          "expr": "wallets{token=~\"xSUSHI\", param=\"balance\", walletName!~\"ops_badger_deployer\"} != 0   ",
           "hide": false,
           "interval": "",
           "legendFormat": "{{token}} - {{walletName}}",
           "refId": "A"
         },
         {
-          "expr": "(wallets{token=~\"FARM\", param=\"balance\"}) != 0",
+          "expr": "wallets{token=~\"FARM\", param=\"balance\", walletName!~\"ops_badger_deployer\"} != 0",
           "hide": false,
           "interval": "",
           "legendFormat": "{{token}} - {{walletName}}",
@@ -834,13 +836,14 @@
       "hiddenSeries": false,
       "id": 7,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -935,6 +938,125 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 2,
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "hiddenSeries": false,
+      "id": 15,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:247",
+          "alias": "/Total/",
+          "yaxis": 2
+        },
+        {
+          "$$hashKey": "object:252"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum (bsc_wallets{param=\"usdBalance\"}) != 0",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Grand Total",
+          "refId": "B"
+        },
+        {
+          "expr": "sum by(token) (bsc_wallets{param=\"usdBalance\"}) != 0",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "BSC - USD",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1966",
+          "decimals": 4,
+          "format": "currencyUSD",
+          "label": "Tokens",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1967",
+          "format": "currencyUSD",
+          "label": "Total",
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -945,21 +1067,23 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
+        "h": 7,
         "w": 24,
         "x": 0,
-        "y": 36
+        "y": 45
       },
       "hiddenSeries": false,
       "id": 13,
       "legend": {
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -1036,12 +1160,12 @@
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Treasury",
   "uid": "_UPPSJUGk",
-  "version": 1
+  "version": 2
 }
