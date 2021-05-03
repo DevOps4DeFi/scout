@@ -7,7 +7,7 @@ services:
       - '8803:8801'
     environment:
       - ETHNODEURL
-    container_name: scout-collector
+    container_name: bsc-collector
     entrypoint:
       - "./startBsc.sh"
   events:
