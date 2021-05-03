@@ -12,7 +12,8 @@ services:
   events:
     build:
       context: ./scout
-    ports: '8802:8801'
+    ports:
+      - '8802:8801'
     environment:
       - ETHNODEURL
     entrypoint:
