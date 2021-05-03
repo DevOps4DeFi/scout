@@ -3,7 +3,8 @@ services:
   bsc_scout:
     build:
       context: ./scout
-    ports: '8803:8801'
+    ports:
+      - '8803:8801'
     environment:
       - ETHNODEURL
     container_name: scout-collector
