@@ -17,6 +17,7 @@ services:
       - '8802:8801'
     environment:
       - ETHNODEURL
+    container_name: events
     entrypoint:
       - "./startBridge.sh"
   scout:
