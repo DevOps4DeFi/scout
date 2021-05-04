@@ -184,11 +184,7 @@ def main():
         documentation="token,event,direction",
         labelnames=["token", "event", "direction"],
     )
-    fees_counter = Counter(
-        name="fees",
-        documentation="entity",
-        labelnames=["entity"],
-    )
+    fees_counter = Counter(name="fees", documentation="entity", labelnames=["entity"],)
 
     console.log(
         f"Initialized Prometheus metrics server at http://localhost:{PROMETHEUS_PORT}"
@@ -243,5 +239,5 @@ def main():
     )
 
     while True:
-        run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter),
+        run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter)
         time.sleep(POLL_INTERVAL)
