@@ -3,6 +3,7 @@ import logging
 import math
 import os
 import warnings
+from datetime import datetime
 
 from brownie.network.state import Chain
 from prometheus_client import Counter, Gauge, start_http_server
@@ -34,27 +35,16 @@ logging.basicConfig(
     datefmt="[%X]",
     handlers=[RichHandler(rich_tracebacks=True)],
 )
-log = logging.getLogger("rich")
+logger = logging.getLogger("rich")
 
 
-def trunc(number, digits):
-    """Truncates a number to a set number of decimals.
-
-    https://stackoverflow.com/a/37697840
-    """
-    stepper = 10.0 ** digits
-    return math.trunc(stepper * number) / stepper
-
-
-def process_event(chain, event, block_gauge, token_flow_counter, fees_counter):
-    block_number = event["blockNumber"]
-    block_timestamp = chain[block_number]["timestamp"]
-
-    tx_hash = event["transactionHash"]
+def process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter):
+    chain = Chain()
     tx = chain.get_transaction(tx_hash)
 
-    # FIX: Works locally, but when run in Docker, the `brownie.network.event.EventDict`
-    # object contains raw event topics?
+    block_number = tx.block_number
+    block_timestamp = tx.timestamp
+
     tx_transfers = tx.events["Transfer"]
 
     tokens = {
@@ -91,8 +81,8 @@ def process_event(chain, event, block_gauge, token_flow_counter, fees_counter):
     fees_counter.labels("Badger Bridge Team").inc(balances["fee_badger_bridge"])
     fees_counter.labels("RenVM Darknodes").inc(balances["fee_darknodes"])
 
-    log.info(
-        f"Processed event: block timestamp {block_timestamp} block number {block_number}, hash {tx_hash.hex()}"
+    logger.info(
+        f"Processed event: block timestamp {block_timestamp} block number {block_number}, hash {tx_hash}"
     )
 
     return tokens, balances
@@ -181,8 +171,8 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         and transfer_to == ADDRS["bridge_v2"]
     ):
         # WBTC; unk_curve_1 -> bridge -> EOA
-        log.debug(
-            f"Transaction partial match, unk_curve_1: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash.hex()}\n"
+        logger.debug(
+            f"Transaction partial match, unk_curve_1: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
         pass
 
@@ -192,18 +182,18 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         and transfer_to == ADDRS["unk_curve_2"]
     ):
         # WBTC; EOA -> bridge -> unk_curve_2 -> unk_curve_1
-        log.debug(
-            f"Transaction partial match, unk_curve_2: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash.hex()}\n"
+        logger.debug(
+            f"Transaction partial match, unk_curve_2: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
         pass
 
     else:
-        log.debug(
-            f"Transaction unmatched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash.hex()}\n"
+        logger.debug(
+            f"Transaction unmatched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
 
-    log.debug(
-        f"Transaction matched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash.hex()}\n"
+    logger.debug(
+        f"Transaction matched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
     )
 
     return tokens
@@ -250,3 +240,12 @@ def calc_balances(tokens):
         balances["fee_darknodes"] = trunc(tokens["ren_burned"] * 0.001, 8)
 
     return balances
+
+
+def trunc(number, digits):
+    """Truncates a number to a set number of decimals.
+
+    https://stackoverflow.com/a/37697840
+    """
+    stepper = 10.0 ** digits
+    return math.trunc(stepper * number) / stepper
