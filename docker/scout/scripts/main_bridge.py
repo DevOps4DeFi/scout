@@ -78,7 +78,7 @@ class BridgeScannerState(EventScannerState):
         try:
             self.state = json.load(open(self.fname, "rt"))
             console.log(
-                f"Restored the state, previously blocks up to block {self.state['last_scanned_block']} have been scanned"
+                f"Restored previous state up to block {self.state['last_scanned_block']}"
             )
         except (IOError, json.decoder.JSONDecodeError):
             console.log("State JSON not found, starting from scratch")
@@ -112,10 +112,6 @@ class BridgeScannerState(EventScannerState):
         if time.time() - self.last_save > 60:
             self.save()
 
-        # ---------------------------------------------------------
-        #  PROCESS TRANSACTION TRANSFER EVENTS AND UPDATE COUNTERS
-        # ---------------------------------------------------------
-
     def process_event(self, block_when: datetime.datetime, event: AttributeDict) -> str:
         """Record an event in the JSON database."""
         # events are keyed by their transaction hash and log index
@@ -128,13 +124,11 @@ class BridgeScannerState(EventScannerState):
         block_number = event.blockNumber
 
         # save transaction hash only; will look up tx and tx events separately
-        # create empty dict as the block that contains all transactions by txhash
         if block_number not in self.state["blocks"]:
-            self.state["blocks"][block_number] = {}
+            self.state["blocks"][block_number] = []
 
-        # dummy var so store only unique hashes
-        # issue with set() and list(set()) serializing as json
-        self.state["blocks"][block_number][tx_hash] = ""
+        if tx_hash not in self.state["blocks"][block_number]:
+            self.state["blocks"][block_number].append(tx_hash)
 
         # return a label that allows us to look up this event later if needed
         return f"{block_number}-{tx_hash}"
@@ -164,9 +158,9 @@ def run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter):
 
     # process new mint/burn transactions
     tx_hashes = []
-    for block_number, hash_dict in state.state["blocks"].items():
+    for block_number, hash_list in state.state["blocks"].items():
         if int(block_number) >= start_block and int(block_number) <= end_block:
-            tx_hashes.extend(list(hash_dict.keys()))
+            tx_hashes.extend(hash_list)
 
     console.log(f"Processing transaction events from {start_block} to {end_block}")
     for tx_hash in tx_hashes:
@@ -190,10 +184,14 @@ def main():
         documentation="token,event,direction",
         labelnames=["token", "event", "direction"],
     )
-    fees_counter = Counter(name="fees", documentation="entity", labelnames=["entity"],)
+    fees_counter = Counter(
+        name="fees",
+        documentation="entity",
+        labelnames=["entity"],
+    )
 
     console.log(
-        f"Initializing Prometheus metrics server at http://localhost:{PROMETHEUS_PORT}"
+        f"Initialized Prometheus metrics server at http://localhost:{PROMETHEUS_PORT}"
     )
     start_http_server(PROMETHEUS_PORT)
 
@@ -228,7 +226,7 @@ def main():
     # wbtc = w3.eth.contract(address=ADDRS["WBTC"], abi=erc20_abi)
     # renbtc = w3.eth.contract(address=ADDRS["renBTC"], abi=erc20_abi)
 
-    console.log(f"Reading Badger BTC Bridge contract at address {ADDRS['bridge_v2']}")
+    console.log(f"Read Badger BTC Bridge contract at address {ADDRS['bridge_v2']}")
     bridge_abi = json.load(open("interfaces/Bridge.json", "r"))
     bridge = w3.eth.contract(address=ADDRS["bridge_v2"], abi=bridge_abi)
 
