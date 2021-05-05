@@ -35,8 +35,9 @@ ADDRS = {
 }
 ADDRS = {label: Web3.toChecksumAddress(addr) for label, addr in ADDRS.items()}
 
+# BLOCK_START = 12368358
 BLOCK_START = 12285143
-CHAIN_REORG_SAFETY_BLOCKS = 10
+CHAIN_REORG_SAFETY_BLOCKS = 20
 POLL_INTERVAL = 60
 
 warnings.simplefilter("ignore")
