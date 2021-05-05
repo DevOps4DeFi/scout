@@ -1,5 +1,25 @@
 version: '3'
 services:
+  bsc_scout:
+    build:
+      context: ./scout
+    ports:
+      - '8803:8801'
+    environment:
+      - ETHNODEURL
+    container_name: bsc-collector
+    entrypoint:
+      - "./startBsc.sh"
+  events:
+    build:
+      context: ./scout
+    ports:
+      - '8802:8801'
+    environment:
+      - ETHNODEURL
+    container_name: events
+    entrypoint:
+      - "./startBridge.sh"
   scout:
     build:
       context: ./scout
