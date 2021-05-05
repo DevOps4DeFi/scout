@@ -28,7 +28,7 @@ from web3.exceptions import BlockNotFound
 
 console = Console()
 logging.basicConfig(
-    level="INFO",
+    level="DEBUG",
     format="%(message)s",
     datefmt="[%X]",
     handlers=[RichHandler(rich_tracebacks=True)],
@@ -102,6 +102,7 @@ class EventScanner:
         state: EventScannerState,
         events: List,
         filters: {},
+        num_blocks_rescan_for_forks: int,
         max_chunk_scan_size: int = 10000,
         max_request_retries: int = 30,
         request_retry_seconds: float = 3.0,
@@ -122,6 +123,8 @@ class EventScanner:
         self.events = events
         self.filters = filters
 
+        self.num_blocks_rescan_for_forks = num_blocks_rescan_for_forks
+
         # Our JSON-RPC throttling parameters
         self.min_scan_chunk_size = 10  # 12 s/block = 120 seconds period
         self.max_scan_chunk_size = max_chunk_scan_size
@@ -137,7 +140,7 @@ class EventScanner:
 
     @property
     def address(self):
-        return self.token_address
+        return self.contract
 
     def get_block_timestamp(self, block_num) -> datetime.datetime:
         """Get Ethereum block timestamp"""
@@ -162,7 +165,7 @@ class EventScanner:
 
         end_block = self.get_last_scanned_block()
         if end_block:
-            return max(1, end_block - self.NUM_BLOCKS_RESCAN_FOR_FORKS)
+            return max(1, end_block - self.num_blocks_rescan_for_forks)
         return 1
 
     def get_suggested_scan_end_block(self):
@@ -237,9 +240,7 @@ class EventScanner:
                 block_when = get_block_when(block_number)
 
                 logger.debug(
-                    "Processing event %s, block:%d count:%d",
-                    evt["event"],
-                    evt["blockNumber"],
+                    f"Processing event {evt['event']}, block:{evt['blockNumber']}"
                 )
                 processed = self.state.process_event(block_when, evt)
                 all_processed.append(processed)
