@@ -1,19 +1,19 @@
 #!/usr/local/bin/python3
+import json
 import logging
 import math
 import os
 import warnings
-import json
 
-from eth_abi.codec import ABICodec
-from brownie.network.state import Chain
 from brownie.exceptions import EventLookupError
-from web3.exceptions import MismatchedABI
+from brownie.network.state import Chain
+from eth_abi.codec import ABICodec
 from prometheus_client import Counter, Gauge, start_http_server
 from rich.console import Console
 from rich.logging import RichHandler
 from web3 import Web3
 from web3._utils.events import get_event_data
+from web3.exceptions import MismatchedABI
 
 ADDRS = {
     "zero_addr": "0x0000000000000000000000000000000000000000",
@@ -41,20 +41,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger("rich")
 
-ETHNODEURL = os.environ["ETHNODEURL"]
-w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
-
-def process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter):
-    tx = w3.eth.getTransaction(tx_hash)
-    tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-    tx_logs = tx_receipt.logs
+def process_transaction(web3, tx_hash, block_gauge, token_flow_counter, fees_counter):
+    tx = web3.eth.getTransaction(tx_hash)
+    tx_logs = web3.eth.getTransactionReceipt(tx_hash).logs
 
     block_number = tx.blockNumber
-    block_timestamp = w3.eth.get_block(block_number)["timestamp"]
+    block_timestamp = web3.eth.get_block(block_number)["timestamp"]
 
     erc20_abi = json.load(open("interfaces/ERC20.json", "r"))
-    erc20 = w3.eth.contract(abi=erc20_abi)
+    erc20 = web3.eth.contract(abi=erc20_abi)
     erc20_transfer_abi = erc20.events.Transfer._get_event_abi()
 
     tokens = {
@@ -74,42 +70,10 @@ def process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter):
 
     for log in tx_logs:
         try:
-            log_event = get_event_data(w3.codec, erc20_transfer_abi, log)
-            tokens = update_tokens(tx_hash, log_event, tokens)
+            event_data = get_event_data(web3.codec, erc20_transfer_abi, log)
+            tokens = update_tokens(tx_hash, event_data, tokens)
         except MismatchedABI:  # not ERC20 transfer, so skip
             continue
-
-    # chain = Chain()
-    # tx = chain.get_transaction(tx_hash)
-
-    # block_number = tx.block_number
-    # block_timestamp = tx.timestamp
-
-    # print(tx.events)
-    # try:
-    #     tx_transfers = tx.events["Transfer"]
-    #     print("event okay")
-    # except EventLookupError:
-    #     print("event lookup error 1: trying to decode")
-
-    #     tx_receipt = w3.eth.getTransactionReceipt(tx_hash)
-
-    #     bridge_abi = json.load(open("interfaces/Bridge.json", "r"))
-    #     bridge = w3.eth.contract(address=ADDRS["bridge_v2"], abi=bridge_abi)
-
-    #     bridge_event_mint_abi = bridge.events.Mint._get_event_abi()
-    #     bridge_event_burn_abi = bridge.events.Burn._get_event_abi()
-
-    #     try:
-    #         tx_events = get_event_data(w3.codec, bridge_event_mint_abi, tx.events)
-    #         print(tx_events)
-    #     except EventLookupError:
-    #         print("event loopup error 2: not mint event, trying burn")
-    #         tx_events = get_event_data(w3.codec, bridge_event_burn_abi, tx.events)
-    #         print(tx_events)
-
-    # for transfer in tx_transfers:
-    #     tokens = update_tokens(tx_hash, transfer, tokens)
 
     balances = calc_balances(tokens)
 
@@ -227,7 +191,7 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         logger.debug(
             f"Transaction partial match, unk_curve_1: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
-        pass
+        return tokens
 
     elif (
         token_addr == ADDRS["WBTC"]
@@ -238,17 +202,17 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         logger.debug(
             f"Transaction partial match, unk_curve_2: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
-        pass
+        return tokens
 
     else:
         logger.debug(
             f"Transaction unmatched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
+        return tokens
 
     logger.debug(
         f"Transaction matched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
     )
-
     return tokens
 
 
