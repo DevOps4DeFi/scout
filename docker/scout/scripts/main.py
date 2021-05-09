@@ -9,35 +9,57 @@ from prometheus_client import Gauge, start_http_server
 from rich.console import Console
 from web3 import Web3
 
-from scripts.data import (badger_wallets, crvpools, get_badgertree_data,
-                          get_digg_data, get_json_request, get_lp_data,
-                          get_sett_data, get_token_balance_data,
-                          get_treasury_data, lp_tokens, sett_vaults,
-                          treasury_tokens)
+from scripts.data import (
+    badger_wallets,
+    crvpools,
+    get_badgertree_data,
+    get_digg_data,
+    get_json_request,
+    get_lp_data,
+    get_sett_data,
+    get_token_balance_data,
+    get_treasury_data,
+    get_token_interfaces,
+    lp_tokens,
+    sett_vaults,
+    treasury_tokens,
+    get_wallet_balances_by_token,
+)
 
-## WEB3 INIT
+NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
+
+from scripts.addresses import ADDRESSES_ETH as ADDRESSES
+from scripts.addresses import checksum_address_dict
+
+ADDRESSES = checksum_address_dict(ADDRESSES)
+
+badger_wallets = ADDRESSES["badger_wallets"]
+sett_vaults = ADDRESSES["sett_vaults"]
+treasury_tokens = ADDRESSES["treasury_tokens"]
+lp_tokens = ADDRESSES["lp_tokens"]
+crv_pools = ADDRESSES["crv_pools"]
+oracles = ADDRESSES["oracles"]
+
 ETHNODEURL = os.environ["ETHNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
-
-native_tokens = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
 
 warnings.simplefilter("ignore")
 console = Console()
 
-token_interfaces = {}
-for tokenname, address in treasury_tokens.items():
-    token_interfaces.update({address: interface.ERC20(address)})
-
-
+# treasury tokens
 console.print("Treasury Tokens")
 console.print(treasury_tokens)
+treasury_tokens_address_list = list(treasury_tokens.values())
+number_treasury_tokens = len(treasury_tokens_address_list)
+treasury_tokens_name_list = list(treasury_tokens.keys())
 
-tree = Web3.toChecksumAddress("0x660802Fc641b154aBA66a62137e71f331B6d787A")
-
+# token interfaces
+token_interfaces = get_token_interfaces()
 badger = token_interfaces[treasury_tokens["BADGER"]]
 digg = token_interfaces[treasury_tokens["DIGG"]]
 wbtc = token_interfaces[treasury_tokens["WBTC"]]
-badgertree = interface.Badgertree(tree)
+
+# lp pairs?
 slpDiggWbtc = interface.Pair(
     Web3.toChecksumAddress("0x9a13867048e01c663ce8Ce2fE0cDAE69Ff9F35E3")
 )
@@ -45,9 +67,9 @@ uniDiggWbtc = interface.Pair(
     Web3.toChecksumAddress("0xe86204c4eddd2f70ee00ead6805f917671f56c52")
 )
 
-treasury_tokens_address_list = list(treasury_tokens.values())
-number_treasury_tokens = len(treasury_tokens_address_list)
-treasury_tokens_name_list = list(treasury_tokens.keys())
+# badger tree
+# tree = Web3.toChecksumAddress("0x660802Fc641b154aBA66a62137e71f331B6d787A")
+badgertree = interface.Badgertree(tree)
 
 
 def main():
@@ -82,11 +104,9 @@ def main():
     start_http_server(8801)
     lpTokens = get_lp_data()
     setts = get_sett_data()
-    wallet_balances_by_token = {}
-    for tokenName, tokenAddress in treasury_tokens.items():
-        wallet_balances_by_token[tokenAddress] = get_token_balance_data(
-            badger_wallets, tokenAddress, tokenName
-        )
+
+    wallet_balances_by_token = get_wallet_balances_by_token(badger_wallets)
+
     digg_prices = get_digg_data()
     badgertree_cycles = get_badgertree_data()
 

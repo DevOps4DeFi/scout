@@ -9,10 +9,18 @@ from prometheus_client import Gauge, start_http_server
 from rich.console import Console
 from web3 import Web3
 
-from scripts.data_bsc import (badger_wallets, coingecko_tokens,
-                              get_json_request, get_lp_data, get_sett_data,
-                              get_token_balance_data, lp_tokens, sett_vaults,
-                              treasury_tokens)
+from scripts.data_bsc import (
+    badger_wallets,
+    coingecko_tokens,
+    get_json_request,
+    get_lp_data,
+    get_sett_data,
+    get_token_balance_data,
+    lp_tokens,
+    sett_vaults,
+    treasury_tokens,
+    get_wallet_balances_by_token,
+)
 
 ## WEB3 INIT
 ETHNODEURL = os.environ["ETHNODEURL"]
@@ -61,21 +69,17 @@ def main():
     start_http_server(8801)
     lpTokens = get_lp_data()
     setts = get_sett_data()
-    wallet_balances_by_token = {}
-    for tokenName, tokenAddress in treasury_tokens.items():
-        wallet_balances_by_token[tokenAddress] = get_token_balance_data(
-            badger_wallets, tokenAddress, tokenName
-        )
+
+    walelt_balances_by_token = get_wallet_balances_by_token()
 
     countertoken_csv = "usd"
     countertoken = "usd"
     token_csv = ""
-    for key in coingecko_tokens.keys():
-        token_csv += coingecko_tokens[key] + ","
+    for address in coingecko_tokens.values():
+        token_csv += address + ","
     token_csv.rstrip(",")
-    token_name_by_address = {}
-    for name, address in treasury_tokens.items():
-        token_name_by_address[Web3.toChecksumAddress(address)] = name
+
+    tokens_by_address = get_tokens_by_address()
 
     step = 0
 
@@ -94,9 +98,8 @@ def main():
             request_type="get",
         )
 
-        for address, id in coingecko_tokens.items():
-            token = token_name_by_address[address]
-            console.print(f"Processing Coingecko price for [bold]{token}...")
+        for token_name, token_address in coingecko_tokens.items():
+            console.print(f"Processing Coingecko price for [bold]{token_name}...")
 
             try:
                 exists_test = token_prices[id]
