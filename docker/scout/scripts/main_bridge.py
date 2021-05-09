@@ -198,7 +198,11 @@ def main():
         documentation="token,event,direction",
         labelnames=["token", "event", "direction"],
     )
-    fees_counter = Counter(name="fees", documentation="entity", labelnames=["entity"],)
+    fees_counter = Counter(
+        name="fees",
+        documentation="entity",
+        labelnames=["entity"],
+    )
 
     console.log(
         f"Initialized Prometheus metrics server at http://localhost:{PROMETHEUS_PORT}"
