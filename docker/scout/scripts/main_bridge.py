@@ -36,18 +36,11 @@ ADDRS = {
 ADDRS = {label: Web3.toChecksumAddress(addr) for label, addr in ADDRS.items()}
 
 BLOCK_START = 12285143
-CHAIN_REORG_SAFETY_BLOCKS = 10
+CHAIN_REORG_SAFETY_BLOCKS = 20
 POLL_INTERVAL = 60
 
 warnings.simplefilter("ignore")
 console = Console()
-# logging.basicConfig(
-#     level="INFO",
-#     format="%(message)s",
-#     datefmt="[%X]",
-#     handlers=[RichHandler(rich_tracebacks=True)],
-# )
-# logger = logging.getLogger("rich")
 
 provider = Web3.HTTPProvider(ETHNODEURL)
 # remove the default JSON-RPC retry middleware to enable eth_getLogs block range throttling
@@ -81,7 +74,7 @@ class BridgeScannerState(EventScannerState):
                 f"Restored previous state up to block {self.state['last_scanned_block']}"
             )
         except (IOError, json.decoder.JSONDecodeError):
-            console.log("State JSON not found, starting from scratch")
+            console.log("State JSON not found; starting from scratch")
             self.reset()
 
     def save(self):
@@ -94,6 +87,21 @@ class BridgeScannerState(EventScannerState):
         """The number of the last block we have stored."""
         return self.state["last_scanned_block"]
 
+    def set_intended_last_block(self, block_number):
+        """Save the intended last block when the scan is started.
+
+        Dynamic chunk size throttling as implemented from the web3py docs has an issue
+        where later chunks can overshoot the intended last block (and actual number of blocks mined).
+        This becomes a problem when running a new scan as the new start block can be greater than
+        the new calculated end block. Additionally, incorrect start/end blocks may lead to
+        transactions being double-counted or missed when processed.
+
+        To address, store the intended last block separately from the last chunk block.
+        Then, at the end of a chunk or scan, check whether the last chunk block is larger than
+        intended and reset it if it is.
+        """
+        self.state["intended_last_scanned_block"] = block_number
+
     def delete_data(self, since_block):
         """Remove potentially reorganised blocks from the scan data."""
         for block_num in range(since_block, self.get_last_scanned_block()):
@@ -105,6 +113,9 @@ class BridgeScannerState(EventScannerState):
 
     def end_chunk(self, block_number):
         """Save at the end of each block, so we can resume in the case of a crash or CTRL+C"""
+        if block_number > self.state["intended_last_scanned_block"]:
+            block_number = self.state["intended_last_scanned_block"]
+
         # next time the scanner is started we will resume from this block
         self.state["last_scanned_block"] = block_number
 
@@ -120,7 +131,7 @@ class BridgeScannerState(EventScannerState):
         # event_name = event.event
         # log_index = event.logIndex  # log index within the block
         # transaction_index = event.transactionIndex  # transaction index within the block
-        tx_hash = event.transactionHash.hex()  # transaction hash
+        tx_hash = event.transactionHash.hex()
         block_number = event.blockNumber
 
         # save transaction hash only; will look up tx and tx events separately
@@ -146,6 +157,7 @@ def run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter):
         state.get_last_scanned_block() - CHAIN_REORG_SAFETY_BLOCKS, BLOCK_START
     )
     end_block = scanner.get_suggested_scan_end_block()
+    state.set_intended_last_block(end_block)
 
     console.log(
         f"Scanning for bridge contract transactions from block {start_block} to {end_block}"
@@ -159,15 +171,17 @@ def run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter):
     # process new mint/burn transactions
     tx_hashes = []
     for block_number, hash_list in state.state["blocks"].items():
-        if int(block_number) >= start_block and int(block_number) <= end_block:
+        if (
+            int(block_number) >= start_block
+            and int(block_number) < end_block - CHAIN_REORG_SAFETY_BLOCKS
+        ):
             tx_hashes.extend(hash_list)
 
     console.log(f"Processing transaction events from {start_block} to {end_block}")
     for tx_hash in tx_hashes:
-        process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter)
-    console.log(
-        f"Scanning and processing of blocks {start_block} to {end_block} complete."
-    )
+        process_transaction(w3, tx_hash, block_gauge, token_flow_counter, fees_counter)
+
+    console.log(f"Blocks {start_block} to {end_block} complete.")
     console.log(
         f"Sleeping for {POLL_INTERVAL} seconds before starting next block chunks"
     )
@@ -213,6 +227,8 @@ def main():
     #     chain, filters, block_gauge, token_flow_counter, fees_counter, POLL_INTERVAL
     # )
 
+    # ---------------------------------------------------------------------------------
+
     # set up scanner and scanner state
     # scan all blocks for Mint/Burn events with `eth_getLog`
     # works with nodes where `eth_newFilter` is not supported
@@ -235,6 +251,7 @@ def main():
         state=state,
         events=[bridge.events.Mint, bridge.events.Burn],
         filters={},
+        num_blocks_rescan_for_forks=CHAIN_REORG_SAFETY_BLOCKS,
         max_chunk_scan_size=10000,
     )
 

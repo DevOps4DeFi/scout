@@ -1,15 +1,19 @@
 #!/usr/local/bin/python3
+import json
 import logging
 import math
 import os
 import warnings
-from datetime import datetime
 
+from brownie.exceptions import EventLookupError
 from brownie.network.state import Chain
+from eth_abi.codec import ABICodec
 from prometheus_client import Counter, Gauge, start_http_server
 from rich.console import Console
 from rich.logging import RichHandler
 from web3 import Web3
+from web3._utils.events import get_event_data
+from web3.exceptions import MismatchedABI
 
 ADDRS = {
     "zero_addr": "0x0000000000000000000000000000000000000000",
@@ -38,14 +42,16 @@ logging.basicConfig(
 logger = logging.getLogger("rich")
 
 
-def process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter):
-    chain = Chain()
-    tx = chain.get_transaction(tx_hash)
+def process_transaction(web3, tx_hash, block_gauge, token_flow_counter, fees_counter):
+    tx = web3.eth.getTransaction(tx_hash)
+    tx_logs = web3.eth.getTransactionReceipt(tx_hash).logs
 
-    block_number = tx.block_number
-    block_timestamp = tx.timestamp
+    block_number = tx.blockNumber
+    block_timestamp = web3.eth.get_block(block_number)["timestamp"]
 
-    tx_transfers = tx.events["Transfer"]
+    erc20_abi = json.load(open("interfaces/ERC20.json", "r"))
+    erc20 = web3.eth.contract(abi=erc20_abi)
+    erc20_transfer_abi = erc20.events.Transfer._get_event_abi()
 
     tokens = {
         transfer: 0
@@ -61,8 +67,13 @@ def process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter):
             "fee_renvm",
         ]
     }
-    for transfer in tx_transfers:
-        tokens = update_tokens(tx_hash, transfer, tokens)
+
+    for log in tx_logs:
+        try:
+            event_data = get_event_data(web3.codec, erc20_transfer_abi, log)
+            tokens = update_tokens(tx_hash, event_data, tokens)
+        except MismatchedABI:  # not ERC20 transfer, so skip
+            continue
 
     balances = calc_balances(tokens)
 
@@ -89,10 +100,16 @@ def process_transaction(tx_hash, block_gauge, token_flow_counter, fees_counter):
 
 
 def update_tokens(tx_hash, tx_transfer, tokens):
-    token_addr = tx_transfer.address
-    transfer_from = Web3.toChecksumAddress(tx_transfer["_from"])
-    transfer_to = Web3.toChecksumAddress(tx_transfer["_to"])
-    transfer_value = tx_transfer["_value"] / DECIMALS
+    token_addr = tx_transfer["address"]
+
+    try:
+        transfer_from = Web3.toChecksumAddress(tx_transfer["args"]["_from"])
+        transfer_to = Web3.toChecksumAddress(tx_transfer["args"]["_to"])
+        transfer_value = tx_transfer["args"]["_value"] / DECIMALS
+    except EventLookupError:
+        transfer_from = Web3.toChecksumAddress["args"](tx_transfer["from"])
+        transfer_to = Web3.toChecksumAddress(tx_transfer["args"]["to"])
+        transfer_value = tx_transfer["args"]["value"] / DECIMALS
 
     if (
         token_addr == ADDRS["renBTC"]
@@ -174,7 +191,7 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         logger.debug(
             f"Transaction partial match, unk_curve_1: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
-        pass
+        return tokens
 
     elif (
         token_addr == ADDRS["WBTC"]
@@ -185,17 +202,17 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         logger.debug(
             f"Transaction partial match, unk_curve_2: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
-        pass
+        return tokens
 
     else:
         logger.debug(
             f"Transaction unmatched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
         )
+        return tokens
 
     logger.debug(
         f"Transaction matched: token {token_addr}, from {transfer_from}, to {transfer_to} value {transfer_value}, hash {tx_hash}\n"
     )
-
     return tokens
 
 

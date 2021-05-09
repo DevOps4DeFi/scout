@@ -1,6 +1,6 @@
-rich==9.10.0
-eth-brownie==1.13.1
-prometheus-client==0.9.0
-requests
+rich>=10.1.0
+eth-brownie==1.14.6
+prometheus-client>=0.10.0
+requests>=2.25.1
 
-web3
+web3==5.18.0
