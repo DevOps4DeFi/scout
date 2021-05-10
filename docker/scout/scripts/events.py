@@ -1,45 +1,21 @@
-#!/usr/local/bin/python3
 import json
-import logging
 import math
-import os
 import warnings
 
 from brownie.exceptions import EventLookupError
-from brownie.network.state import Chain
 from eth_abi.codec import ABICodec
-from prometheus_client import Counter, Gauge, start_http_server
-from rich.console import Console
-from rich.logging import RichHandler
 from web3 import Web3
 from web3._utils.events import get_event_data
 from web3.exceptions import MismatchedABI
 
-ADDRS = {
-    "zero_addr": "0x0000000000000000000000000000000000000000",
-    "badger_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
-    "badger_bridge_team": "0xE95b56685327C9caf83C3e6F0A54b8D9708f32c4",
-    "bridge_v1": "0xcB5c2B0FE765069708f17376981C9aFE56Fed339",
-    "bridge_v2": "0xb6ea1d3fb9100a2Cf166FEBe11f24367b5FCD24A",
-    "WBTC": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-    "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
-    "renvm_darknodes_fee": "0xE33417797d6b8Aec9171d0d6516E88002fbe23E7",
-    "unk_curve_1": "0x2393c368c70b42f055a4932a3fbec2ac9c548011",
-    "unk_curve_2": "0xfae8bd34190615f3388f38191dc332b44c53e10b",
-}
-ADDRS = {label: Web3.toChecksumAddress(addr) for label, addr in ADDRS.items()}
+from scripts.addresses import ADDRESSES_BRIDGE, checksum_address_dict
+from scripts.logconf import log as logger
+
+ADDRESSES = checksum_address_dict(ADDRESSES_BRIDGE)
 
 DECIMALS = 1e8
 
 warnings.simplefilter("ignore")
-console = Console()
-logging.basicConfig(
-    level="INFO",
-    format="%(message)s",
-    datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)],
-)
-logger = logging.getLogger("rich")
 
 
 def process_transaction(web3, tx_hash, block_gauge, token_flow_counter, fees_counter):
@@ -112,80 +88,80 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         transfer_value = tx_transfer["args"]["value"] / DECIMALS
 
     if (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from == ADDRS["zero_addr"]
-        and transfer_to == ADDRS["bridge_v2"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from == ADDRESSES["zero"]
+        and transfer_to == ADDRESSES["bridge_v2"]
     ):
         tokens["ren_minted"] += transfer_value
 
     elif (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from == ADDRS["bridge_v2"]
-        and transfer_to == ADDRS["zero_addr"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from == ADDRESSES["bridge_v2"]
+        and transfer_to == ADDRESSES["zero"]
     ):
         tokens["ren_burned"] += transfer_value
 
     elif (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from != ADDRS["zero_addr"]
-        and transfer_from != ADDRS["unk_curve_1"]
-        and transfer_to == ADDRS["bridge_v2"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from != ADDRESSES["zero"]
+        and transfer_from != ADDRESSES["unk_curve_1"]
+        and transfer_to == ADDRESSES["bridge_v2"]
     ):
         tokens["ren_received"] += transfer_value
 
     elif (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from == ADDRS["unk_curve_1"]
-        and transfer_to == ADDRS["bridge_v2"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from == ADDRESSES["unk_curve_1"]
+        and transfer_to == ADDRESSES["bridge_v2"]
     ):
         tokens["ren_bought"] += transfer_value
 
     elif (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from == ADDRS["bridge_v2"]
-        and transfer_to != ADDRS["badger_multisig"]
-        and transfer_to != ADDRS["badger_bridge_team"]
-        and transfer_to != ADDRS["unk_curve_2"]
-        and transfer_to != ADDRS["zero_addr"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from == ADDRESSES["bridge_v2"]
+        and transfer_to != ADDRESSES["badger_multisig"]
+        and transfer_to != ADDRESSES["badger_bridge_team"]
+        and transfer_to != ADDRESSES["unk_curve_2"]
+        and transfer_to != ADDRESSES["zero"]
     ):
         tokens["ren_sent"] += transfer_value
 
     elif (
-        token_addr == ADDRS["WBTC"]
-        and transfer_from != ADDRS["zero_addr"]
-        and transfer_from != ADDRS["unk_curve_1"]
-        and transfer_to == ADDRS["bridge_v2"]
+        token_addr == ADDRESSES["WBTC"]
+        and transfer_from != ADDRESSES["zero"]
+        and transfer_from != ADDRESSES["unk_curve_1"]
+        and transfer_to == ADDRESSES["bridge_v2"]
     ):
         tokens["wbtc_received"] += transfer_value
 
     elif (
-        token_addr == ADDRS["WBTC"]
-        and transfer_from == ADDRS["bridge_v2"]
-        and transfer_to != ADDRS["badger_multisig"]
-        and transfer_to != ADDRS["unk_curve_2"]
-        and transfer_to != ADDRS["badger_bridge_team"]
-        and transfer_to != ADDRS["zero_addr"]
+        token_addr == ADDRESSES["WBTC"]
+        and transfer_from == ADDRESSES["bridge_v2"]
+        and transfer_to != ADDRESSES["badger_multisig"]
+        and transfer_to != ADDRESSES["unk_curve_2"]
+        and transfer_to != ADDRESSES["badger_bridge_team"]
+        and transfer_to != ADDRESSES["zero"]
     ):
         tokens["wbtc_sent"] += transfer_value
 
     elif (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from == ADDRS["bridge_v2"]
-        and transfer_to == ADDRS["badger_multisig"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from == ADDRESSES["bridge_v2"]
+        and transfer_to == ADDRESSES["badger_multisig"]
     ):
         tokens["fee_badger"] += transfer_value
 
     elif (
-        token_addr == ADDRS["renBTC"]
-        and transfer_from == ADDRS["bridge_v2"]
-        and transfer_to == ADDRS["badger_bridge_team"]
+        token_addr == ADDRESSES["renBTC"]
+        and transfer_from == ADDRESSES["bridge_v2"]
+        and transfer_to == ADDRESSES["badger_bridge_team"]
     ):
         tokens["fee_renvm"] += transfer_value
 
     elif (
-        token_addr == ADDRS["WBTC"]
-        and transfer_from == ADDRS["unk_curve_1"]
-        and transfer_to == ADDRS["bridge_v2"]
+        token_addr == ADDRESSES["WBTC"]
+        and transfer_from == ADDRESSES["unk_curve_1"]
+        and transfer_to == ADDRESSES["bridge_v2"]
     ):
         # WBTC; unk_curve_1 -> bridge -> EOA
         logger.debug(
@@ -194,9 +170,9 @@ def update_tokens(tx_hash, tx_transfer, tokens):
         return tokens
 
     elif (
-        token_addr == ADDRS["WBTC"]
-        and transfer_from == ADDRS["bridge_v2"]
-        and transfer_to == ADDRS["unk_curve_2"]
+        token_addr == ADDRESSES["WBTC"]
+        and transfer_from == ADDRESSES["bridge_v2"]
+        and transfer_to == ADDRESSES["unk_curve_2"]
     ):
         # WBTC; EOA -> bridge -> unk_curve_2 -> unk_curve_1
         logger.debug(

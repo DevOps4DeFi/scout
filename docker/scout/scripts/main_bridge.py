@@ -1,7 +1,5 @@
-#!/usr/local/bin/python3
 import datetime
 import json
-import logging
 import os
 import sys
 import time
@@ -9,38 +7,26 @@ import warnings
 
 from brownie.network.state import Chain
 from prometheus_client import Counter, Gauge, start_http_server
-from rich.console import Console
-from rich.logging import RichHandler
-from tqdm import tqdm
 from web3 import Web3
 from web3.datastructures import AttributeDict
 
+from scripts.addresses import ADDRESSES_BRIDGE, checksum_address_dict
 from scripts.events import process_transaction
+from scripts.logconf import log
 from scripts.scanner import EventScanner, EventScannerState
 
-ETHNODEURL = os.environ["ETHNODEURL"]
 PROMETHEUS_PORT = 8801
+PROMETHEUS_PORT_FORWARDED = 8802
 
-ADDRS = {
-    "zero_addr": "0x0000000000000000000000000000000000000000",
-    "badger_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
-    "badger_bridge_team": "0xE95b56685327C9caf83C3e6F0A54b8D9708f32c4",
-    "bridge_v1": "0xcB5c2B0FE765069708f17376981C9aFE56Fed339",
-    "bridge_v2": "0xb6ea1d3fb9100a2Cf166FEBe11f24367b5FCD24A",
-    "WBTC": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-    "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
-    "renvm_darknodes_fee": "0xE33417797d6b8Aec9171d0d6516E88002fbe23E7",
-    "unk_curve_1": "0x2393c368c70b42f055a4932a3fbec2ac9c548011",
-    "unk_curve_2": "0xfae8bd34190615f3388f38191dc332b44c53e10b",
-}
-ADDRS = {label: Web3.toChecksumAddress(addr) for label, addr in ADDRS.items()}
+ETHNODEURL = os.environ["ETHNODEURL"]
+
+ADDRESSES = checksum_address_dict(ADDRESSES_BRIDGE)
 
 BLOCK_START = 12285143
 CHAIN_REORG_SAFETY_BLOCKS = 20
 POLL_INTERVAL = 60
 
 warnings.simplefilter("ignore")
-console = Console()
 
 provider = Web3.HTTPProvider(ETHNODEURL)
 # remove the default JSON-RPC retry middleware to enable eth_getLogs block range throttling
@@ -70,11 +56,11 @@ class BridgeScannerState(EventScannerState):
         """Restore the last scan state from a file"""
         try:
             self.state = json.load(open(self.fname, "rt"))
-            console.log(
+            log.info(
                 f"Restored previous state up to block {self.state['last_scanned_block']}"
             )
         except (IOError, json.decoder.JSONDecodeError):
-            console.log("State JSON not found; starting from scratch")
+            log.info("State JSON not found; starting from scratch")
             self.reset()
 
     def save(self):
@@ -87,11 +73,11 @@ class BridgeScannerState(EventScannerState):
         """The number of the last block we have stored."""
         return self.state["last_scanned_block"]
 
-    def set_intended_last_block(self, block_number):
-        """Save the intended last block when the scan is started.
+    def set_intended_end_block(self, block_number):
+        """Save the intended end block when the scan is started.
 
         Dynamic chunk size throttling as implemented from the web3py docs has an issue
-        where later chunks can overshoot the intended last block (and actual number of blocks mined).
+        where later chunks can overshoot the intended end block (and actual number of blocks mined).
         This becomes a problem when running a new scan as the new start block can be greater than
         the new calculated end block. Additionally, incorrect start/end blocks may lead to
         transactions being double-counted or missed when processed.
@@ -157,9 +143,9 @@ def run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter):
         state.get_last_scanned_block() - CHAIN_REORG_SAFETY_BLOCKS, BLOCK_START
     )
     end_block = scanner.get_suggested_scan_end_block()
-    state.set_intended_last_block(end_block)
+    state.set_intended_end_block(end_block)
 
-    console.log(
+    log.info(
         f"Scanning for bridge contract transactions from block {start_block} to {end_block}"
     )
 
@@ -177,18 +163,20 @@ def run_scan(scanner, state, block_gauge, token_flow_counter, fees_counter):
         ):
             tx_hashes.extend(hash_list)
 
-    console.log(f"Processing transaction events from {start_block} to {end_block}")
+    log.info(f"Processing transaction events from {start_block} to {end_block}")
     for tx_hash in tx_hashes:
         process_transaction(w3, tx_hash, block_gauge, token_flow_counter, fees_counter)
 
-    console.log(f"Blocks {start_block} to {end_block} complete.")
-    console.log(
-        f"Sleeping for {POLL_INTERVAL} seconds before starting next block chunks"
-    )
+    log.info(f"Blocks {start_block} to {end_block} complete.")
+    log.info(f"Sleeping for {POLL_INTERVAL} seconds before starting next block chunks")
 
 
 def main():
     # set up prometheus
+    log.info(
+        f"Starting Prometheus events server at http://localhost:{PROMETHEUS_PORT_FORWARDED}"
+    )
+
     block_gauge = Gauge(
         name="block_info", documentation="block_info", labelnames=["info"]
     )
@@ -204,16 +192,13 @@ def main():
         labelnames=["entity"],
     )
 
-    console.log(
-        f"Initialized Prometheus metrics server at http://localhost:{PROMETHEUS_PORT}"
-    )
     start_http_server(PROMETHEUS_PORT)
 
     # set up event filters
     # filter bridge contract events
     # bridge_abi = open("interfaces/Bridge.json", "r").read()
-    # bridge = w3.eth.contract(address=ADDRS["bridge_v2"], abi=bridge_abi)
-    # console.log(f"Read Badger BTC Bridge contract at address {ADDRS['bridge_v2']}")
+    # bridge = w3.eth.contract(address=ADDRESSES["bridge_v2"], abi=bridge_abi)
+    # console.log(f"Read Badger BTC Bridge contract at address {ADDRESSES['bridge_v2']}")
     # filters = [
     #     bridge.events.Mint.createFilter(fromBlock=BLOCK_START, toBlock="latest"),
     #     bridge.events.Burn.createFilter(fromBlock=BLOCK_START, toBlock="latest"),
@@ -239,12 +224,12 @@ def main():
 
     # erc20_abi = json.loads("interfaces/ERC20.json")
     # erc20 = web3.eth.contract(abi=abi)
-    # wbtc = w3.eth.contract(address=ADDRS["WBTC"], abi=erc20_abi)
-    # renbtc = w3.eth.contract(address=ADDRS["renBTC"], abi=erc20_abi)
+    # wbtc = w3.eth.contract(address=ADDRESSES["WBTC"], abi=erc20_abi)
+    # renbtc = w3.eth.contract(address=ADDRESSES["renBTC"], abi=erc20_abi)
 
-    console.log(f"Read Badger BTC Bridge contract at address {ADDRS['bridge_v2']}")
+    log.info(f"Reading Badger BTC Bridge contract at address {ADDRESSES['bridge_v2']}")
     bridge_abi = json.load(open("interfaces/Bridge.json", "r"))
-    bridge = w3.eth.contract(address=ADDRS["bridge_v2"], abi=bridge_abi)
+    bridge = w3.eth.contract(address=ADDRESSES["bridge_v2"], abi=bridge_abi)
 
     state = BridgeScannerState()
     state.restore()

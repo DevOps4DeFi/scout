@@ -248,7 +248,7 @@ def update_xchain_bridge_gauge(
         xchain_bridge_gauge.labels("BSC", token_name, custodian_name, "balance").set(
             token_balance / token_scale
         )
-        xchain_bridge_gauge.labels("BSC", token, custodian_name, "usdBalance").set(
+        xchain_bridge_gauge.labels("BSC", token_name, custodian_name, "usdBalance").set(
             (token_balance / token_scale) * usd_prices_by_token_address[token_address]
         )
 

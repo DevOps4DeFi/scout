@@ -8,14 +8,11 @@ where events are added wherever the scanner left off.
 """
 
 import datetime
-import logging
 import time
 from abc import ABC, abstractmethod
 from typing import Callable, Iterable, List, Optional, Tuple
 
 from eth_abi.codec import ABICodec
-from rich.console import Console
-from rich.logging import RichHandler
 from web3 import Web3
 from web3._utils.events import get_event_data
 
@@ -26,14 +23,7 @@ from web3.contract import Contract
 from web3.datastructures import AttributeDict
 from web3.exceptions import BlockNotFound
 
-console = Console()
-logging.basicConfig(
-    level="DEBUG",
-    format="%(message)s",
-    datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)],
-)
-logger = logging.getLogger("rich")
+from scripts.logconf import log as logger
 
 
 class EventScannerState(ABC):
@@ -239,7 +229,7 @@ class EventScanner:
                 # from our in-memory cache
                 block_when = get_block_when(block_number)
 
-                logger.debug(
+                self.logger.debug(
                     f"Processing event {evt['event']}, block:{evt['blockNumber']}"
                 )
                 processed = self.state.process_event(block_when, evt)
@@ -317,7 +307,7 @@ class EventScanner:
 
             # Print some diagnostics to logs to try to fiddle with real world JSON-RPC API performance
             estimated_end_block = current_block + chunk_size
-            logger.debug(
+            self.logger.debug(
                 "Scanning token transfers for blocks: %d - %d, chunk size %d, last chunk scan took %f, last logs found %d",
                 current_block,
                 estimated_end_block,

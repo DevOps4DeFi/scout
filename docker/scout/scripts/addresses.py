@@ -111,6 +111,19 @@ ADDRESSES_BSC = {
     },
 }
 
+ADDRESSES_BRIDGE = {
+    "zero": "0x0000000000000000000000000000000000000000",
+    "badger_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
+    "badger_bridge_team": "0xE95b56685327C9caf83C3e6F0A54b8D9708f32c4",
+    "bridge_v1": "0xcB5c2B0FE765069708f17376981C9aFE56Fed339",
+    "bridge_v2": "0xb6ea1d3fb9100a2Cf166FEBe11f24367b5FCD24A",
+    "WBTC": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+    "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+    "renvm_darknodes_fee": "0xE33417797d6b8Aec9171d0d6516E88002fbe23E7",
+    "unk_curve_1": "0x2393c368c70b42f055a4932a3fbec2ac9c548011",
+    "unk_curve_2": "0xfae8bd34190615f3388f38191dc332b44c53e10b",
+}
+
 
 def checksum_address_dict(addresses):
     checksummed = {}
