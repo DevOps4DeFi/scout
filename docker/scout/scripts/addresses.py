@@ -109,18 +109,6 @@ ADDRESSES_BSC = {
         "bcakebBadgerBtcb": "0x857F91f735f4B03b19D2b5c6E476C73DB8241F55",
         "bcakebDiggBtcb": "0xa861Ba302674b08f7F2F24381b705870521DDfed",
     },
-    "coingecko_tokens": {
-        "0x753fbc5800a8C8e3Fb6DC6415810d627A387Dfc9": "badger-dao",
-        "0x1F7216fdB338247512Ec99715587bb97BBf96eae": "badger-sett-badger",
-        "0x5986D5c77c65e5801a5cAa4fAE80089f870A71dA": "badger-sett-digg",
-        "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c": "binance-bitcoin",
-        "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c": "binancecoin",
-        "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82": "pancakeswap-token",
-    },
-    "oracles": {
-        "oracle": "0x058ec2Bf15011095a25670b618A129c043e2162E",
-        "oracle_provider": "0x72dc16CFa95beB42aeebD2B10F22E55bD17Ce976",
-    },
 }
 
 

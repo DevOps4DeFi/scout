@@ -67,7 +67,11 @@ def update_price_gauge(
 
             for countertoken in countertoken_csv.split(","):
                 coingecko_price_gauge.labels(
-                    "ETH" if token_name == "WETH" else token_name,
+                    "ETH"
+                    if token_name == "WETH"
+                    else "BNB"
+                    if token_name == "WBNB"
+                    else token_name,
                     countertoken,
                     token_address,
                 ).set(price[countertoken])
@@ -113,31 +117,32 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_token, token_interfaces):
 
     log.info(f"Processing lpToken reserves for [bold]{lp_name}: {lp_address} ...")
 
-    info = lp_token.describe()
-    token0_address = Web3.toChecksumAddress(info["token0"])
-    token1_address = Web3.toChecksumAddress(info["token1"])
+    lp_info = lp_token.describe()
+    lp_scale = 10 ** lp_info["decimals"]
+    lp_supply = lp_info["totalSupply"]
+
+    token0_address = Web3.toChecksumAddress(lp_info["token0"])
+    token1_address = Web3.toChecksumAddress(lp_info["token1"])
     token0 = token_interfaces[token0_address]
     token1 = token_interfaces[token1_address]
-    token0_reserve = info["token0_reserve"]
-    token1_reserve = info["token1_reserve"]
+    token0_reserve = lp_info["token0_reserve"]
+    token1_reserve = lp_info["token1_reserve"]
+    token0_scale = 10 ** token0.decimals()
+    token1_scale = 10 ** token1.decimals()
 
     lp_tokens_gauge.labels(lp_name, f"{token0.symbol()}_supply", lp_address).set(
-        token0_reserve / (10 ** token0.decimals())
+        token0_reserve / token0_scale
     )
     lp_tokens_gauge.labels(lp_name, f"{token1.symbol()}_supply", lp_address).set(
-        token1_reserve / (10 ** token1.decimals())
+        token1_reserve / token1_scale
     )
     lp_tokens_gauge.labels(lp_name, "totalLpTokenSupply", lp_address).set(
-        info["totalSupply"] / (10 ** info["decimals"])
+        lp_supply / lp_scale
     )
 
     try:
         price = (
-            (
-                token1_reserve
-                / (10 ** token1.decimals())
-                / (info["totalSupply"] / (10 ** info["decimals"]))
-            )
+            ((token1_reserve / token1_scale) / (lp_supply / lp_scale))
             * usd_prices_by_token_address[token1_address]
             * 2
         )
@@ -233,18 +238,18 @@ def update_xchain_bridge_gauge(
         f"Checking balances on bridge [bold]{custodian_name}: {custodian_address} ..."
     )
 
-    for token in NATIVE_TOKENS:
-        token_address = treasury_tokens[token]
-        token_interface = token_interfaces[token_address]
+    for token_name in NATIVE_TOKENS:
+        token_address = treasury_tokens[token_name]
 
-        xchain_bridge_gauge.labels("BSC", token, custodian_name, "balance").set(
-            token_interface.balanceOf(custodian_address)
-            / (10 ** token_interface.decimals())
+        token_interface = token_interfaces[token_address]
+        token_scale = 10 ** token_interface.decimals()
+        token_balance = token_interface.balanceOf(custodian_address)
+
+        xchain_bridge_gauge.labels("BSC", token_name, custodian_name, "balance").set(
+            token_balance / token_scale
         )
         xchain_bridge_gauge.labels("BSC", token, custodian_name, "usdBalance").set(
-            token_interface.balanceOf(custodian_address)
-            / (10 ** token_interface.decimals())
-            * usd_prices_by_token_address[token_address]
+            (token_balance / token_scale) * usd_prices_by_token_address[token_address]
         )
 
 
@@ -332,7 +337,6 @@ def main():
     )
 
     log.info(f"Loading ERC20 interfaces for treasury tokens ... {str_treasury_tokens}")
-
     token_interfaces = get_token_interfaces(treasury_tokens)
     badger = token_interfaces[treasury_tokens["BADGER"]]
     digg = token_interfaces[treasury_tokens["DIGG"]]
