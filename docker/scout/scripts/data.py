@@ -26,7 +26,6 @@ class lpToken:
                 "totalSupply": self.token.totalSupply(),
                 "decimals": self.token.decimals(),
             }
-
         except ValueError as e:
             info = {}
             log.exception(e)

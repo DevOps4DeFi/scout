@@ -54,7 +54,7 @@ def get_token_prices(treasury_tokens, token_csv, countertoken_csv):
 def update_price_gauge(
     coingecko_price_gauge, token_prices, token_name, token_address, countertoken_csv
 ):
-    lp_prefixes = ("uni", "slp", "crv")
+    lp_prefixes = ("uni", "slp", "crv", "cake")
 
     try:
         if not token_name.startswith(lp_prefixes):
@@ -80,7 +80,7 @@ def update_price_gauge(
             log.info(
                 f"Skipping CoinGecko price for [bold]{token_name}: {token_address} ..."
             )
-    except KeyError as e:
+    except Exception as e:
         log.warning(
             f"Error getting CoinGecko price for [bold]{token_name}: {token_address}"
         )
@@ -120,8 +120,8 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_token, token_interfaces):
     lp_scale = 10 ** lp_info["decimals"]
     lp_supply = lp_info["totalSupply"]
 
-    token0_address = Web3.toChecksumAddress(lp_info["token0"])
-    token1_address = Web3.toChecksumAddress(lp_info["token1"])
+    token0_address = lp_info["token0"]
+    token1_address = lp_info["token1"]
     token0 = token_interfaces[token0_address]
     token1 = token_interfaces[token1_address]
     token0_reserve = lp_info["token0_reserve"]
@@ -172,21 +172,21 @@ def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
 def update_sett_gauge(sett_gauge, sett):
     sett_name = sett.name
     sett_address = sett_vaults[sett_name]
-    sett_token = sett_name[1:]
-    sett_token_address = treasury_tokens[re.sub("harvest", "", sett_token)]
+    sett_token_name = sett_name[1:]
+    sett_token_address = treasury_tokens[re.sub("harvest", "", sett_token_name)]
 
     sett_info = sett.describe()
 
     log.info(f"Processing Sett data for [bold]{sett.name}: {sett_address} ...")
 
     for param, value in sett_info.items():
-        sett_gauge.labels(sett_name, param, sett_address, sett_token).set(value)
+        sett_gauge.labels(sett_name, param, sett_address, sett_token_name).set(value)
 
     try:
         usd_prices_by_token_address[sett_address] = (
             sett_info["pricePerShare"] * usd_prices_by_token_address[sett_token_address]
         )
-        sett_gauge.labels(sett_name, "usdBalance", sett_address, sett_token).set(
+        sett_gauge.labels(sett_name, "usdBalance", sett_address, sett_token_name).set(
             usd_prices_by_token_address[sett_address] * sett_info["balance"]
         )
     except Exception as e:
@@ -199,8 +199,8 @@ def update_wallets_gauge(
 ):
     log.info(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
 
-    token_info = wallet_balances_by_token[token_address]
-    for wallet in token_info.describe():
+    wallet_info = wallet_balances_by_token[token_address]
+    for wallet in wallet_info.describe():
         (
             token_name,
             token_address,
@@ -226,7 +226,9 @@ def update_wallets_gauge(
                 wallet_name, wallet_address, "ETH", "none", "usdBalance"
             ).set(eth_balance * usd_prices_by_token_address[treasury_tokens["WETH"]])
         except Exception as e:
-            log.warning("Error calculating USD balances for wallet [bold]{wallet_name}")
+            log.warning(
+                f"Error calculating USD balances for wallet [bold]{wallet_name}"
+            )
             log.debug(e)
 
 
