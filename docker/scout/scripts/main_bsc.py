@@ -28,6 +28,7 @@ warnings.simplefilter("ignore")
 PROMETHEUS_PORT = 8801
 PROMETHEUS_PORT_FORWARDED = 8803
 
+NETWORK = "BSC"
 ETHNODEURL = os.environ["ETHNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
@@ -41,11 +42,12 @@ badger_wallets = ADDRESSES["badger_wallets"]
 treasury_tokens = ADDRESSES["treasury_tokens"]
 lp_tokens = ADDRESSES["lp_tokens"]
 sett_vaults = ADDRESSES["sett_vaults"]
+coingecko_tokens = ADDRESSES["coingecko_tokens"]
 
 usd_prices_by_token_address = {}
 
 
-def update_bridge_gauge(bridge_gauge, token_name, token_interfaces):
+def update_bridge_gauge(bridge_gauge, token_name, token_interfaces, treasury_tokens):
     token_address = treasury_tokens[token_name]
 
     log.info(
@@ -56,7 +58,7 @@ def update_bridge_gauge(bridge_gauge, token_name, token_interfaces):
     token_supply = token_interface.totalSupply()
     token_scale = 10 ** token_interface.decimals()
 
-    bridge_gauge.labels(token, "multiswap", "totalSupply").set(
+    bridge_gauge.labels(token_name, "multiswap", "totalSupply").set(
         token_supply / token_scale
     )
 
@@ -120,7 +122,7 @@ def main():
     )
 
     # coingecko price query variables
-    token_csv = ",".join(treasury_tokens.values())
+    token_csv = ",".join(coingecko_tokens.keys())
     countertoken_csv = "usd"
 
     # scan new blocks and update gauges
@@ -134,32 +136,43 @@ def main():
         block_gauge.set(block.number)
 
         # process token prices
-        token_prices = get_token_prices(treasury_tokens, token_csv, countertoken_csv)
-        for token_name, token_address in treasury_tokens.items():
+        token_prices = get_token_prices(token_csv, countertoken_csv, NETWORK)
+        for token_name, token_address in coingecko_tokens.items():
             update_price_gauge(
                 coingecko_price_gauge,
+                treasury_tokens,
                 token_prices,
                 token_name,
                 token_address,
                 countertoken_csv,
+                NETWORK,
             )
 
         # process lp data
         for lp_token in lp_data:
-            update_lp_tokens_gauge(lp_tokens_gauge, lp_token, token_interfaces)
+            update_lp_tokens_gauge(
+                lp_tokens_gauge, lp_tokens, lp_token, token_interfaces
+            )
 
         # process sett data
         for sett in sett_data:
-            update_sett_gauge(sett_gauge, sett)
+            update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens)
 
         # process wallet balances for *one* treasury token
         token_name, token_address = list(treasury_tokens.items())[
             step % num_treasury_tokens
         ]
         update_wallets_gauge(
-            wallets_gauge, wallet_balances_by_token, token_name, token_address
+            wallets_gauge,
+            wallet_balances_by_token,
+            token_name,
+            token_address,
+            treasury_tokens,
+            NETWORK,
         )
 
         # process bridged tokens
         for token_name in NATIVE_TOKENS:
-            update_bridge_gauge(bridge_gauge, token_name, token_interfaces)
+            update_bridge_gauge(
+                bridge_gauge, token_name, token_interfaces, treasury_tokens
+            )
