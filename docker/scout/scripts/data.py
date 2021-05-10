@@ -140,17 +140,16 @@ class Badgertree:
         return info
 
 
-def get_tokens_by_address(treasury_tokens):
-    return {
-        token_address: token_name
-        for token_name, token_address in treasury_tokens.items()
-    }
+def get_token_by_address(token_dict, query_address):
+    for token_name, token_address in token_dict.items():
+        if token_address == query_address:
+            return token_name
 
 
-def get_token_interfaces(treasury_tokens):
+def get_token_interfaces(token_dict):
     return {
         token_address: interface.ERC20(token_address)
-        for token_name, token_address in treasury_tokens.items()
+        for token_name, token_address in token_dict.items()
     }
 
 
