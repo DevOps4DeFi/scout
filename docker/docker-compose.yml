@@ -6,7 +6,7 @@ services:
     ports:
       - "8803:8801"
     environment:
-      - ETHNODEURL
+      - ETHNODEURL=https://bsc-dataseed.binance.org/
     container_name: bsc-collector
     entrypoint:
       - "./startBsc.sh"
