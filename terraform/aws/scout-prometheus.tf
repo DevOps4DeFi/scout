@@ -39,7 +39,7 @@ module "prometheus-container-definition" {
   container_name               = "prometheus"
   container_memory_reservation = 250
   essential                    = true
-  links = ["scout-collector", "bsc-collector"]
+  links = ["scout-collector", "bsc-collector", "events"]
   mount_points = [
     {
       containerPath = "/prometheus"
