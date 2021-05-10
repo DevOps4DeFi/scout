@@ -1,11 +1,31 @@
-version: '3'
+version: "3"
 services:
+  bsc_scout:
+    build:
+      context: ./scout
+    ports:
+      - "8803:8801"
+    environment:
+      - ETHNODEURL
+    container_name: bsc-collector
+    entrypoint:
+      - "./startBsc.sh"
+  events:
+    build:
+      context: ./scout
+    ports:
+      - "8802:8801"
+    environment:
+      - ETHNODEURL
+    container_name: events
+    entrypoint:
+      - "./startBridge.sh"
   scout:
     build:
       context: ./scout
     container_name: scout-collector
     ports:
-      - '8801:8801'
+      - "8801:8801"
     environment:
       - ETHNODEURL
   renderer:
@@ -13,13 +33,13 @@ services:
     ports:
       - 8081
     environment:
-      ENABLE_METRICS: 'true'
+      ENABLE_METRICS: "true"
   grafana:
     build:
       context: ./grafana
     container_name: grafana
     ports:
-      - '3000:3000'
+      - "3000:3000"
     volumes:
       - grafana-data:/var/lib/grafana
     environment:
@@ -36,8 +56,8 @@ services:
       context: ./prometheus
     container_name: prometheus
     ports:
-      - '9090:9090'
-      - '9093:9093'
+      - "9090:9090"
+      - "9093:9093"
     volumes:
       - prometheus-data:/prometheus
 # Explicitly define the persistent volume for your data storage

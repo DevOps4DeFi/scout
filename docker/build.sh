@@ -3,11 +3,10 @@
 ### the credentials should have admin access to ecr, or be those of the scout-deploy user provided by terraform
 ### and found in SSM parameter store
 ### ENV VAR ECR_URL must be set to the root hostname of your account/region ecr - see example
-time_tag=`date '+%Y%m%d%H%M%S'`
-for app in grafana prometheus scout
-do
+time_tag=$(date '+%Y%m%d%H%M%S')
+for app in grafana prometheus scout; do
   aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_URL
   docker build -t $ECR_URL/$app:$time_tag -t $ECR_URL/$app:latest ./$app
-  docker push  $ECR_URL/$app:$time_tag
-  docker push  $ECR_URL/$app:latest
+  docker push $ECR_URL/$app:$time_tag
+  docker push $ECR_URL/$app:latest
 done
