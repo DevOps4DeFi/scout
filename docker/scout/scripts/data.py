@@ -5,11 +5,9 @@ from dataclasses import dataclass
 import requests
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
-from rich.console import Console
-from rich.logging import RichHandler
 from web3 import Web3
 
-from scripts.logconf import console, log
+from scripts.logconf import log
 
 
 @dataclass
@@ -29,12 +27,10 @@ class lpToken:
                 "decimals": self.token.decimals(),
             }
 
-            log.debug(
-                f"token0: {self.token.token0()}, token1: {self.token.token1()}, getReserves: {self.token.getReserves()}"
-            )
         except ValueError as e:
             info = {}
             log.exception(e)
+            log.debug(e)
 
         return info
 
@@ -56,6 +52,7 @@ class Sett:
         except ValueError as e:
             info = {}
             log.exception(e)
+            log.debug(e)
 
         return info
 
@@ -82,6 +79,7 @@ class TokenBalance:
         except ValueError as e:
             info = []
             log.exception(e)
+            log.debug(e)
 
         return info
 
@@ -90,16 +88,16 @@ class TokenBalance:
 class Treasury:
     name: str
     token: InterfaceContainer
+    treasury_address: str
 
     def describe(self):
         scale = 10 ** self.token.decimals()
         try:
-            info = {
-                "treasuryBalance": self.token.balanceOf(ADDRESSES["treasury"]) / scale
-            }
+            info = {"treasuryBalance": self.token.balanceOf(treasury_address) / scale}
         except ValueError as e:
             info = {}
             log.exception(e)
+            log.debug(e)
 
         return info
 
@@ -120,6 +118,7 @@ class Digg:
         except ValueError as e:
             info = {}
             log.exception(e)
+            log.debug(e)
 
         return info
 
@@ -137,6 +136,7 @@ class Badgertree:
         except ValueError as e:
             info = {}
             log.exception(e)
+            log.debug(e)
 
         return info
 
@@ -184,9 +184,13 @@ def get_badgertree_data(badgertree):
     )
 
 
-def get_treasury_data(treasury_tokens):
+def get_treasury_data(treasury_address, treasury_tokens):
     return [
-        Treasury(name=token_name, token=interface.ERC20(token_address))
+        Treasury(
+            name=token_name,
+            token=interface.ERC20(token_address),
+            treasury_address=treasury_address,
+        )
         for token_name, token_address in treasury_tokens.items()
     ]
 

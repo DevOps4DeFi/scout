@@ -15,7 +15,6 @@ from scripts.data import (
     get_lp_data,
     get_sett_data,
     get_token_interfaces,
-    get_treasury_data,
     get_wallet_balances_by_token,
 )
 from scripts.logconf import console, log
