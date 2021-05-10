@@ -31,6 +31,7 @@ PROMETHEUS_PORT_FORWARDED = 8803
 ETHNODEURL = os.environ["ETHNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
+
 NATIVE_TOKENS = ["bBADGER", "bDIGG", "BADGER"]
 
 # get all addresses
