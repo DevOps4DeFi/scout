@@ -6,9 +6,9 @@ from rich.logging import RichHandler
 console = Console()
 
 logging.basicConfig(
-    level="ERROR",
+    level="INFO",
     format="%(message)s",
     datefmt="[%X]",
-    handlers=[RichHandler(rich_tracebacks=True)],
+    handlers=[RichHandler(rich_tracebacks=True, markup=True)],
 )
 log = logging.getLogger("rich")

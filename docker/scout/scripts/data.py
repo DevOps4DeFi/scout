@@ -71,13 +71,13 @@ class TokenBalance:
         try:
             info = [
                 {
-                    "balance": self.token.balanceOf(address) / scale,
-                    "tokenName": self.tokenName,
-                    "tokenAddress": self.token,
-                    "walletAddress": address,
-                    "walletName": wallet,
+                    "tokenName": self.name,
+                    "tokenAddress": self.token.address,
+                    "tokenBalance": self.token.balanceOf(wallet_address) / scale,
+                    "walletName": wallet_name,
+                    "walletAddress": wallet_address,
                 }
-                for wallet, address in self.wallets.items()
+                for wallet_name, wallet_address in self.wallets.items()
             ]
         except ValueError as e:
             info = []
@@ -107,17 +107,14 @@ class Treasury:
 @dataclass
 class Digg:
     name: str
-    digg_oracle: InterfaceContainer
+    oracle: InterfaceContainer
+    oracle_provider: str
 
     def describe(self):
         try:
             info = {
-                "lastUpdated": self.digg_oracle.providerReports(
-                    oracles["oracle_provider"], 1
-                )[0],
-                "oracle_price": self.digg_oracle.providerReports(
-                    oracles["oracle_provider"], 1
-                )[1]
+                "lastUpdated": self.oracle.providerReports(self.oracle_provider, 1)[0],
+                "oraclePrice": self.oracle.providerReports(self.oracle_provider, 1)[1]
                 / 1e18,
             }
         except ValueError as e:
@@ -145,55 +142,65 @@ class Badgertree:
 
 
 def get_tokens_by_address(treasury_tokens):
-    return {address: token for token, address in treasury_tokens.items()}
+    return {
+        token_address: token_name
+        for token_name, token_address in treasury_tokens.items()
+    }
 
 
 def get_token_interfaces(treasury_tokens):
     return {
-        address: interface.ERC20(address) for token, address in treasury_tokens.items()
+        token_address: interface.ERC20(token_address)
+        for token_name, token_address in treasury_tokens.items()
     }
 
 
 def get_lp_data(lp_tokens):
     return [
-        lpToken(name=lp_token, token=interface.lpToken(address))
-        for lp_token, address in lp_tokens.items()
+        lpToken(name=lp_name, token=interface.lpToken(lp_address))
+        for lp_name, lp_address in lp_tokens.items()
     ]
 
 
 def get_sett_data(sett_vaults):
     return [
-        Sett(name=sett_vault, sett=interface.Sett(address))
-        for sett_vault, address in sett_vaults.items()
+        Sett(name=sett_name, sett=interface.Sett(sett_address))
+        for sett_name, sett_address in sett_vaults.items()
     ]
 
 
-def get_digg_data(oracle):
-    return Digg(name="Digg Prices", digg_oracle=interface.Oracle(oracle))
+def get_digg_data(oracle, oracle_provider):
+    return Digg(
+        name="Digg Prices",
+        oracle=interface.Oracle(oracle),
+        oracle_provider=oracle_provider,
+    )
 
 
 def get_badgertree_data(badgertree):
     return Badgertree(
         name="Rewards Cycles",
-        badger_tree=interface.Badgertree(badgertree),
+        badger_tree=badgertree,
     )
 
 
 def get_treasury_data(treasury_tokens):
     return [
-        Treasury(name=token, token=interface.ERC20(address))
-        for token, address in treasury_tokens.items()
+        Treasury(name=token_name, token=interface.ERC20(token_address))
+        for token_name, token_address in treasury_tokens.items()
     ]
 
 
-def get_token_balance_data(wallets, token, address):
-    return TokenBalance(wallets=wallets, name=token, token=interface.ERC20(address))
+def get_token_balance_data(wallets, token_name, token_address):
+    return TokenBalance(
+        wallets=wallets, name=token_name, token=interface.ERC20(token_address)
+    )
 
 
-def get_wallet_balances_by_token(wallets):
+def get_wallet_balances_by_token(wallets, tokens):
     return {
-        address: get_token_balance_data(badger_wallets, token, address)
-        for token, address in wallets.items()
+        token_address: get_token_balance_data(wallets, token_name, token_address)
+        for token_name, token_address in tokens.items()
     }
 
 
@@ -202,9 +209,9 @@ def get_json_request(request_type, url, request_data=None):
     json_request = json.dumps(request_data)
 
     if request_type == "get":
-        r = requests.get(url, data=json_request)
+        r = requests.get(f"{url}", data=json_request)
     elif request_type == "post":
-        r = requests.post(url, data=json_request)
+        r = requests.post(f"{url}", data=json_request)
     else:
         return None
 
