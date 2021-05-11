@@ -14,6 +14,7 @@ from scripts.data import (
     get_json_request,
     get_lp_data,
     get_sett_data,
+    get_yvault_data,
     get_token_by_address,
     get_token_interfaces,
     get_wallet_balances_by_token,
@@ -38,8 +39,10 @@ treasury_tokens = ADDRESSES["treasury_tokens"]
 lp_tokens = ADDRESSES["lp_tokens"]
 crv_pools = ADDRESSES["crv_pools"]
 sett_vaults = ADDRESSES["sett_vaults"]
+yearn_vaults = ADDRESSES["yearn_vaults"]
 custodians = ADDRESSES["custodians"]
 oracles = ADDRESSES["oracles"]
+
 
 usd_prices_by_token_address = {}
 
@@ -207,7 +210,7 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
 
     sett_info = sett.describe()
 
-    log.info(f"Processing Sett data for [bold]{sett.name}: {sett_address} ...")
+    log.info(f"Processing Sett data for [bold]{sett_name}: {sett_address} ...")
 
     for param, value in sett_info.items():
         sett_gauge.labels(sett_name, param, sett_address, sett_token_name).set(value)
@@ -221,6 +224,34 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         )
     except Exception as e:
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
+        log.debug(e)
+
+
+def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
+    yvault_name = yvault.name
+    yvault_address = yearn_vaults[yvault_name]
+    yvault_token_name = yvault_name[3:]
+    yvault_token_address = treasury_tokens[yvault_token_name]
+
+    yvault_info = yvault.describe()
+
+    log.info(f"Processing Yearn Sett[bold] {yvault_name}: {yvault_address} ...")
+
+    for param, value in yvault_info.items():
+        sett_gauge.labels(yvault_name, param, yvault_address, yvault_token_name).set(
+            value
+        )
+
+    try:
+        usd_prices_by_token_address[yvault_address] = (
+            yvault_info["pricePerShare"]
+            * usd_prices_by_token_address[yvault_token_address]
+        )
+        sett_gauge.labels(
+            yvault_name, "usdBalance", yvault_address, yvault_token_name
+        ).set(usd_prices_by_token_address[yvault_address] * yvault_info["balance"])
+    except Exception as e:
+        log.warning(f"Error calculating USD price of Yearn Sett [bold]{yvault_name}")
         log.debug(e)
 
 
@@ -392,6 +423,7 @@ def main():
     lp_data = get_lp_data(lp_tokens)
 
     sett_data = get_sett_data(sett_vaults)
+    yvault_data = get_yvault_data(yearn_vaults)
 
     digg_prices = get_digg_data(oracles["oracle"], oracles["oracle_provider"])
 
@@ -444,6 +476,9 @@ def main():
         # process sett data
         for sett in sett_data:
             update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens)
+
+        for yvault in yvault_data:
+            update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens)
 
         # process wallet balances for *one* treasury token
         token_name, token_address = list(treasury_tokens.items())[
