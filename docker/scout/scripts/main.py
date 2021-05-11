@@ -14,6 +14,7 @@ from scripts.data import (
     get_json_request,
     get_lp_data,
     get_sett_data,
+    get_yvault_data,
     get_token_by_address,
     get_token_interfaces,
     get_wallet_balances_by_token,
@@ -38,8 +39,10 @@ treasury_tokens = ADDRESSES["treasury_tokens"]
 lp_tokens = ADDRESSES["lp_tokens"]
 crv_pools = ADDRESSES["crv_pools"]
 sett_vaults = ADDRESSES["sett_vaults"]
+yearn_vaults = ADDRESSES["yearn_vaults"]
 custodians = ADDRESSES["custodians"]
 oracles = ADDRESSES["oracles"]
+
 
 usd_prices_by_token_address = {}
 
@@ -392,7 +395,7 @@ def main():
     lp_data = get_lp_data(lp_tokens)
 
     sett_data = get_sett_data(sett_vaults)
-
+    yvault_data = get_yvault_data(yearn_vaults)
     digg_prices = get_digg_data(oracles["oracle"], oracles["oracle_provider"])
 
     slpWbtcDigg = interface.Pair(lp_tokens["slpWbtcDigg"])
@@ -457,6 +460,17 @@ def main():
             treasury_tokens,
             NETWORK,
         )
+        for vault in yvault_data:
+            info = vault.describe()
+            console.print(f'Processing Yearn Sett [bold]{vault.name}')
+            for param, value in info.items():
+                sett_gauge.labels(vault.name, param, yearn_vaults[vault.name], vault.name[3:]).set(value)
+                try:
+                    usd_prices_by_token_address[yearn_vaults[vault.name]] = info["pricePerShare"] * usd_prices_by_token_address[treasury_tokens[vault.name[3:]]]
+                    sett_gauge.labels(vault.name, "usdBalance", yearn_vaults[vault.name], vault.name[3:]).set(usd_prices_by_token_address[yearn_vaults[vault.name]]*info["balance"])
+                except:
+                    console.print (f"Could not set USD price for Sett {vault.name}")
+                pass
 
         # process bridged tokens
         for custodian_name, custodian_address in custodians.items():

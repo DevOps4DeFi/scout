@@ -102,6 +102,25 @@ class Treasury:
 
 
 @dataclass
+class yearnVault:
+    name: str
+    vault: InterfaceContainer
+
+    def describe(self):
+        scale = 10 ** self.vault.decimals()
+        try:
+            info = {
+                "pricePerShare": self.vault.pricePerShare() / scale,
+                "totalSupply": self.vault.totalSupply() / scale,
+                "balance": (self.vault.pricePerShare() / scale) * (self.vault.totalSupply() / scale)
+            }
+        except ValueError as e:
+            info = {}
+            log.exception(str(e))
+        return info
+
+
+@dataclass
 class Digg:
     name: str
     oracle: InterfaceContainer
@@ -112,7 +131,7 @@ class Digg:
             info = {
                 "lastUpdated": self.oracle.providerReports(self.oracle_provider, 1)[0],
                 "oraclePrice": self.oracle.providerReports(self.oracle_provider, 1)[1]
-                / 1e18,
+                               / 1e18,
             }
         except ValueError as e:
             info = {}
@@ -164,6 +183,13 @@ def get_sett_data(sett_vaults):
     return [
         Sett(name=sett_name, sett=interface.Sett(sett_address))
         for sett_name, sett_address in sett_vaults.items()
+    ]
+
+
+def get_yvault_data(yearn_vaults):
+    return [
+        yearnVault(name=f'{name}', vault=interface.yearnVault(vault))
+        for name, vault in yearn_vaults.items()
     ]
 
 
