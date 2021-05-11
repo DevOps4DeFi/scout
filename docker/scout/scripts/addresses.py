@@ -70,9 +70,7 @@ ADDRESSES_ETH = {
         "bslpWbtcDigg": "0x88128580ACdD9c04Ce47AFcE196875747bF2A9f6",
         "bslpWbtcEth": "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D",
     },
-    "yearn_vaults": {
-        "byvWBTC" : "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"
-    },
+    "yearn_vaults": {"byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"},
     "custodians": {"multiswap": "0x533e3c0e6b48010873B947bddC4721b1bDFF9648"},
     "oracles": {
         "oracle": "0x058ec2Bf15011095a25670b618A129c043e2162E",

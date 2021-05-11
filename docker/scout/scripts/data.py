@@ -112,7 +112,8 @@ class yearnVault:
             info = {
                 "pricePerShare": self.vault.pricePerShare() / scale,
                 "totalSupply": self.vault.totalSupply() / scale,
-                "balance": (self.vault.pricePerShare() / scale) * (self.vault.totalSupply() / scale)
+                "balance": (self.vault.pricePerShare() / scale)
+                * (self.vault.totalSupply() / scale),
             }
         except ValueError as e:
             info = {}
@@ -131,7 +132,7 @@ class Digg:
             info = {
                 "lastUpdated": self.oracle.providerReports(self.oracle_provider, 1)[0],
                 "oraclePrice": self.oracle.providerReports(self.oracle_provider, 1)[1]
-                               / 1e18,
+                / 1e18,
             }
         except ValueError as e:
             info = {}
@@ -188,7 +189,7 @@ def get_sett_data(sett_vaults):
 
 def get_yvault_data(yearn_vaults):
     return [
-        yearnVault(name=f'{name}', vault=interface.yearnVault(vault))
+        yearnVault(name=f"{name}", vault=interface.yearnVault(vault))
         for name, vault in yearn_vaults.items()
     ]
 
