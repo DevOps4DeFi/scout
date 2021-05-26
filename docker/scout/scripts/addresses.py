@@ -43,6 +43,7 @@ ADDRESSES_ETH = {
         "slpWbtcDigg": "0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3",
         "slpEthBBadger": "0x0a54d4b378c8dbfc7bc93be50c85debafdb87439",
         "slpEthBDigg": "0xf9440fedc72a0b8030861dcdac39a75b544e7a3c",
+        "ibBTC": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F",
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
@@ -87,9 +88,7 @@ ADDRESSES_ETH = {
         "badgerPeak": "0x41671BA1abcbA387b9b2B752c205e22e916BE6e3",
         "byvWbtcPeak": "0x825218beD8BE0B30be39475755AceE0250C50627",
     },
-    "interest_bearing_btc": {
-        "token": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F"
-    }
+    "interest_bearing_btc": {"token": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F"},
 }
 
 ADDRESSES_BSC = {

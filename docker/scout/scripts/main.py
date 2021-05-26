@@ -18,11 +18,11 @@ from scripts.data import (
     get_token_by_address,
     get_token_interfaces,
     get_wallet_balances_by_token,
-    # --- ibBTC token related ---
+    #  --- ibBTC token related ---
     get_peak_data,
     get_erc20_data,
-    get_badger_sett_lp_data
-    # --- ibBTC token related ---
+    get_badger_sett_lp_data,
+    #  --- ibBTC token related ---
 )
 from scripts.logconf import console, log
 
@@ -46,7 +46,7 @@ sett_vaults = ADDRESSES["sett_vaults"]
 yearn_vaults = ADDRESSES["yearn_vaults"]
 custodians = ADDRESSES["custodians"]
 oracles = ADDRESSES["oracles"]
-# --- ibBTC token related ---
+#  --- ibBTC token related ---
 peak_contracts = ADDRESSES["peak_contracts"]
 ibBTC_contract = ADDRESSES["interest_bearing_btc"]
 token_sett_lp_per_peak = {
@@ -239,7 +239,8 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
     except Exception as e:
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
         log.debug(e)
-    
+
+
 def update_badger_sett_data_gauge(ibBTC_composition_gauge, badger_sett_lp):
     name_sett_lp = badger_sett_lp.name_sett_lp
     lp_address = badger_sett_lp.lp_address
@@ -248,7 +249,9 @@ def update_badger_sett_data_gauge(ibBTC_composition_gauge, badger_sett_lp):
 
     badger_sett_lp_info = badger_sett_lp.describe()
 
-    log.info("Processing Composition Sett LP of ibBTC")
+    log.info(
+        f"Processing ibBTC composition for Peak [bold]{name_peak}[/], Sett [bold]{name_sett_lp}"
+    )
 
     for param, value in badger_sett_lp_info.items():
         ibBTC_composition_gauge.labels(
@@ -267,8 +270,9 @@ def update_peak_data_gauge(peak_gauge, peak, peak_contracts):
     for param, value in peak_info.items():
         peak_gauge.labels(peak_name, param, peak_address).set(value)
 
+
 def update_ibBTC_data_gauge(ibBTC_gauge, token):
-    
+
     log.info("Processing ibBTC data")
 
     token_info = token.describe()
@@ -448,23 +452,21 @@ def main():
         documentation="Badgertree reward timestamp",
         labelnames=["lastCycleUnixtime"],
     )
-    # --- ibBTC related ---
+    #  --- ibBTC related ---
     peak_gauge = Gauge(
         name="peakcontracts",
         documentation="Peak portfolio value",
-        labelnames=["peakContract", "tokenAddress", "param"]
+        labelnames=["peakContract", "tokenAddress", "param"],
     )
     ibBTC_contract_gauge = Gauge(
-        name="ibBTC",
-        documentation="Interest bearing BTC token",
-        labelnames=["param"]
+        name="ibBTC", documentation="Interest bearing BTC token", labelnames=["param"]
     )
     ibBTC_composition_gauge = Gauge(
         name="ibBTC_composition",
         documentation="ibBTC composition",
         labelnames=["peakContract", "peakName", "tokenName", "tokenAddress", "param"],
     )
-    # --- ibBTC related ---
+    #  --- ibBTC related ---
 
     start_http_server(PROMETHEUS_PORT)
 
@@ -499,13 +501,15 @@ def main():
 
     badgertree = interface.Badgertree(badger_wallets["badgertree"])
     badgertree_cycles = get_badgertree_data(badgertree)
-    
+
     ibBTCInterface = interface.ibBTC(ibBTC_contract["token"])
-    ibBTC_data = get_erc20_data(ibBTCInterface, "ibBTC")
+    ibBTC = get_erc20_data(token_name="ibbtc", erc20_token=ibBTCInterface)
 
     peak_data = get_peak_data(peak_contracts)
 
-    badger_sett_lp_data = get_badger_sett_lp_data(peak_contracts, token_sett_lp_per_peak)
+    badger_sett_lp_data = get_badger_sett_lp_data(
+        peak_contracts, token_sett_lp_per_peak
+    )
 
     # coingecko price query variables
     token_csv = ",".join(treasury_tokens.values())
@@ -554,8 +558,8 @@ def main():
         for yvault in yvault_data:
             update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens)
 
-       # --- ibBTC related ---
-        update_ibBTC_data_gauge(ibBTC_contract_gauge, ibBTC_data)
+        # --- ibBTC related ---
+        update_ibBTC_data_gauge(ibBTC_contract_gauge, ibBTC)
 
         for peak in peak_data:
             update_peak_data_gauge(peak_gauge, peak, peak_contracts)

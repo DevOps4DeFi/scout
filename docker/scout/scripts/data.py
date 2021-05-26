@@ -92,8 +92,7 @@ class Treasury:
     def describe(self):
         scale = 10 ** self.token.decimals()
         try:
-            info = {"treasuryBalance": self.token.balanceOf(
-                treasury_address) / scale}
+            info = {"treasuryBalance": self.token.balanceOf(treasury_address) / scale}
         except ValueError as e:
             info = {}
             log.exception(e)
@@ -160,6 +159,7 @@ class Badgertree:
 
         return info
 
+
 # --- ibBTC related ---
 @dataclass
 class ERC20Data:
@@ -171,7 +171,7 @@ class ERC20Data:
         try:
             info = {
                 "totalSupply": self.token.totalSupply() / scale,
-                "pricePerShare": self.token.pricePerShare() / scale
+                "pricePerShare": self.token.pricePerShare() / scale,
             }
         except ValueError as e:
             info = {}
@@ -179,6 +179,7 @@ class ERC20Data:
             log.debug(e)
 
         return info
+
 
 @dataclass
 class BadgerSettLP:
@@ -192,8 +193,10 @@ class BadgerSettLP:
         scale = 10 ** self.sett_lp_token.decimals()
         try:
             info = {
-                "balanceOf": self.sett_lp_token.balanceOf(self.peak_address) / scale,
-                "getPricePerFullShare": self.sett_lp_token.getPricePerFullShare() / scale
+                "balance": self.sett_lp_token.balanceOf(self.peak_address) / scale,
+                "pricePerShare": self.sett_lp_token.getPricePerFullShare() / scale
+                if "bcrv" in self.name_sett_lp
+                else self.sett_lp_token.pricePerShare() / scale,
             }
         except ValueError as e:
             info = {}
@@ -210,16 +213,17 @@ class Peak:
 
     def describe(self):
         try:
-            info = {
-                "portfolioValue": self.peak.portfolioValue() / 1e18
-            }
+            info = {"portfolioValue": self.peak.portfolioValue() / 1e18}
         except ValueError as e:
             info = {}
             log.exception(e)
             log.debug(e)
 
         return info
+
+
 # --- ibBTC related ---
+
 
 def get_token_by_address(token_dict, query_address):
     for token_name, token_address in token_dict.items():
@@ -247,13 +251,17 @@ def get_sett_data(sett_vaults):
         for sett_name, sett_address in sett_vaults.items()
     ]
 
+
 # --- ibBTC related ---
 def get_peak_data(peak_contracts):
     return [
         Peak(name=peak_name, peak=interface.Peak(peak_address))
         for peak_name, peak_address in peak_contracts.items()
     ]
+
+
 # --- ibBTC related ---
+
 
 def get_yvault_data(yearn_vaults):
     return [
@@ -276,30 +284,44 @@ def get_badgertree_data(badgertree):
         badger_tree=badgertree,
     )
 
+
 # --- ibBTC related ---
 def get_erc20_data(erc20_token, token_name):
-    return ERC20Data(
-        name=token_name,
-        token=erc20_token
-    )
+    return ERC20Data(name=token_name, token=erc20_token)
+
 
 def get_badger_sett_lp_data(peak_contracts, token_sett_lp_per_peak):
     badgerSettLpArr = []
     for name, address in peak_contracts.items():
         for lp_name, lp_address in token_sett_lp_per_peak[name].items():
-            badgerSettLpArr.append(
-                BadgerSettLP(
-                    name_sett_lp=lp_name,
-                    lp_address=lp_address,
-                    name_peak=name,
-                    peak_address=address,
-                    sett_lp_token=interface.Sett(lp_address),
+            if "bcrv" in lp_name:
+                badgerSettLpArr.append(
+                    BadgerSettLP(
+                        name_sett_lp=lp_name,
+                        lp_address=lp_address,
+                        name_peak=name,
+                        peak_address=address,
+                        sett_lp_token=interface.Sett(lp_address),
+                    )
                 )
-            )
+            elif "byv" in lp_name:
+                badgerSettLpArr.append(
+                    BadgerSettLP(
+                        name_sett_lp=lp_name,
+                        lp_address=lp_address,
+                        name_peak=name,
+                        peak_address=address,
+                        sett_lp_token=interface.yearnVault(lp_address),
+                    )
+                )
+            else:
+                log.error("incorrect vault")
 
     return badgerSettLpArr
 
+
 # --- ibBTC related ---
+
 
 def get_treasury_data(treasury_address, treasury_tokens):
     return [
@@ -320,8 +342,7 @@ def get_token_balance_data(wallets, token_name, token_address):
 
 def get_wallet_balances_by_token(wallets, tokens):
     return {
-        token_address: get_token_balance_data(
-            wallets, token_name, token_address)
+        token_address: get_token_balance_data(wallets, token_name, token_address)
         for token_name, token_address in tokens.items()
     }
 
