@@ -251,7 +251,7 @@ def update_badger_sett_data_gauge(ibBTC_composition_gauge, badger_sett_lp):
     log("Processing Composition Sett LP of ibBTC")
 
     for param, value in badger_sett_lp_info.items():
-        ibBTC_composition_gauge(
+        ibBTC_composition_gauge.labels(
             peak_address, name_peak, name_sett_lp, lp_address, param
         ).set(value)
 
@@ -265,7 +265,7 @@ def update_peak_data_gauge(peak_gauge, peak, peak_contracts):
     log.info(f"Processing Peak data for [bold]{peak_name}: {peak_address} ...")
 
     for param, value in peak_info.items():
-        peak_gauge(peak_name, param, peak_address).set(value)
+        peak_gauge.labels(peak_name, param, peak_address).set(value)
 
 def update_ibBTC_data_gauge(ibBTC_gauge, token):
     
@@ -274,7 +274,7 @@ def update_ibBTC_data_gauge(ibBTC_gauge, token):
     token_info = token.describe()
 
     for param, value in token_info.items():
-        ibBTC_gauge(param).set(value)
+        ibBTC_gauge.labels(param).set(value)
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
@@ -558,7 +558,7 @@ def main():
         update_ibBTC_data_gauge(ibBTC_contract_gauge, ibBTC_data)
 
         for peak in peak_data:
-            update_peak_data_gauge(peak_gauge, peak)
+            update_peak_data_gauge(peak_gauge, peak, peak_contracts)
 
         for badger_sett_lp in badger_sett_lp_data:
             update_badger_sett_data_gauge(ibBTC_composition_gauge, badger_sett_lp)
