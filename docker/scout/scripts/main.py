@@ -38,7 +38,6 @@ NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
 
 # get all addresses
 ADDRESSES = checksum_address_dict(ADDRESSES_ETH)
-
 badger_wallets = ADDRESSES["badger_wallets"]
 treasury_tokens = ADDRESSES["treasury_tokens"]
 lp_tokens = ADDRESSES["lp_tokens"]
@@ -502,6 +501,7 @@ def main():
     badgertree_cycles = get_badgertree_data(badgertree)
     
     ibBTCInterface = interface.ibBTC(ibBTC_contract["token"])
+    ibBTC_data = get_erc20_data(ibBTCInterface, "ibBTC")
 
     peak_data = get_peak_data(peak_contracts)
 
@@ -555,7 +555,7 @@ def main():
             update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens)
 
        # --- ibBTC related ---
-        update_ibBTC_data_gauge(ibBTC_contract_gauge, ibBTCInterface)
+        update_ibBTC_data_gauge(ibBTC_contract_gauge, ibBTC_data)
 
         for peak in peak_data:
             update_peak_data_gauge(peak_gauge, peak)
