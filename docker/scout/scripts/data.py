@@ -192,7 +192,7 @@ class BadgerSettLP:
         scale = 10 ** self.sett_lp_token.decimals()
         try:
             info = {
-                "balanceOf": self.sett_lp_token.balanceOf(peak_address) / scale,
+                "balanceOf": self.sett_lp_token.balanceOf(self.peak_address) / scale,
                 "getPricePerFullShare": self.sett_lp_token.getPricePerFullShare() / scale
             }
         except ValueError as e:

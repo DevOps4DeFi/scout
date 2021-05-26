@@ -248,7 +248,7 @@ def update_badger_sett_data_gauge(ibBTC_composition_gauge, badger_sett_lp):
 
     badger_sett_lp_info = badger_sett_lp.describe()
 
-    log("Processing Composition Sett LP of ibBTC")
+    log.info("Processing Composition Sett LP of ibBTC")
 
     for param, value in badger_sett_lp_info.items():
         ibBTC_composition_gauge.labels(
