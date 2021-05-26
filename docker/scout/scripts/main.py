@@ -453,17 +453,17 @@ def main():
     peak_gauge = Gauge(
         name="peakcontracts",
         documentation="Peak portfolio value",
-        labelNames=["peakContract", "tokenAddress", "param"]
+        labelnames=["peakContract", "tokenAddress", "param"]
     )
     ibBTC_contract_gauge = Gauge(
         name="ibBTC",
         documentation="Interest bearing BTC token",
-        labelNames=["param"]
+        labelnames=["param"]
     )
     ibBTC_composition_gauge = Gauge(
         name="ibBTC_composition",
         documentation="ibBTC composition",
-        labelNames=["peakContract", "peakName", "tokenName", "tokenAddress", "param"],
+        labelnames=["peakContract", "peakName", "tokenName", "tokenAddress", "param"],
     )
     # --- ibBTC related ---
 

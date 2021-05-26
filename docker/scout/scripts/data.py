@@ -285,7 +285,7 @@ def get_erc20_data(erc20_token, token_name):
 
 def get_badger_sett_lp_data(peak_contracts, token_sett_lp_per_peak):
     badgerSettLpArr = []
-    for name, address in peak_contracts:
+    for name, address in peak_contracts.items():
         for lp_name, lp_address in token_sett_lp_per_peak[name].items():
             badgerSettLpArr.append(
                 BadgerSettLP(
