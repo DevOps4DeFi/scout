@@ -243,12 +243,12 @@ def main():
     )
 
     token_flow_counter = Counter(
-        name="token_flow",
+        name="ibbtc_token_flow",
         documentation="token,event,direction",
         labelnames=["token", "event", "direction"],
     )
     fees_counter = Counter(
-        name="fees",
+        name="ibbtc_fees",
         documentation="entity",
         labelnames=["entity"],
     )
