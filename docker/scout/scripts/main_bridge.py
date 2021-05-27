@@ -182,12 +182,12 @@ def main():
     )
 
     token_flow_counter = Counter(
-        name="token_flow",
+        name="bridge_token_flow",
         documentation="token,event,direction",
         labelnames=["token", "event", "direction"],
     )
     fees_counter = Counter(
-        name="fees",
+        name="bridge_fees",
         documentation="entity",
         labelnames=["entity"],
     )

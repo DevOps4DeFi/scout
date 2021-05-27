@@ -1,5 +1,15 @@
 version: "3"
 services:
+  ibbtc:
+    build:
+      context: ./scout
+    ports:
+      - "8804:8801"
+    environment:
+      - ETHNODEURL
+    container_name: ibbtc-events
+    entrypoint:
+      - "./startIbbtc.sh"
   bsc_scout:
     build:
       context: ./scout
