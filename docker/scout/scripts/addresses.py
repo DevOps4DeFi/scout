@@ -43,7 +43,6 @@ ADDRESSES_ETH = {
         "slpWbtcDigg": "0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3",
         "slpEthBBadger": "0x0a54d4b378c8dbfc7bc93be50c85debafdb87439",
         "slpEthBDigg": "0xf9440fedc72a0b8030861dcdac39a75b544e7a3c",
-        "ibBTC": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F",
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
@@ -89,6 +88,22 @@ ADDRESSES_ETH = {
         "byvWbtcPeak": "0x825218beD8BE0B30be39475755AceE0250C50627",
     },
     "interest_bearing_btc": {"token": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F"},
+}
+
+ADDRESSES_IBBTC = {
+    "zero": "0x0000000000000000000000000000000000000000",
+    "badger_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
+    "defiDollar_fees": "0x5b5cf8620292249669e1dcc73b753d01543d6ac7",
+    "feesink": "0x3b823864cd0cbad8a1f2b65d4807906775becaa7",
+    "ibBTC": "0xc4e15973e6ff2a35cc804c2cf9d2a1b817a8b40f",
+    "WBTC": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+    "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+    "badgerPeak": "0x41671BA1abcbA387b9b2B752c205e22e916BE6e3",
+    "byvWbtcPeak": "0x825218beD8BE0B30be39475755AceE0250C50627",
+    "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
+    "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
+    "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
+    "byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5",
 }
 
 ADDRESSES_BSC = {

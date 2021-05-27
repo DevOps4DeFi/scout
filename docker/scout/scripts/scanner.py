@@ -21,7 +21,7 @@ from web3._utils.events import get_event_data
 from web3._utils.filters import construct_event_filter_params
 from web3.contract import Contract
 from web3.datastructures import AttributeDict
-from web3.exceptions import BlockNotFound
+from web3.exceptions import BlockNotFound, LogTopicError
 
 from scripts.logconf import log as logger
 
@@ -445,8 +445,15 @@ def _fetch_events_for_all_contracts(
         # Convert raw JSON-RPC log result to human readable event by using ABI data
         # More information how processLog works here
         # https://github.com/ethereum/web3.py/blob/fbaf1ad11b0c7fac09ba34baff2c256cffe0a148/web3/_utils/events.py#L200
-        evt = get_event_data(codec, abi, log)
-        # Note: This was originally yield,
-        # but deferring the timeout exception caused the throttle logic not to work
-        all_events.append(evt)
+        try:
+            evt = get_event_data(codec, abi, log)
+            all_events.append(evt)
+        except LogTopicError:
+            # mismatch between number of expected vs. received log topics
+            # ERC20 Transfer events return 2 or 3 log topics depending on specific implementation?
+            logger.warning(LogTopicError)
+            logger.warning(log["transactionHash"].hex())
+            # pass
+    # Note: This was originally yield,
+    # but deferring the timeout exception caused the throttle logic not to work
     return all_events
