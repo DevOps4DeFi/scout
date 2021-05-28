@@ -52,9 +52,7 @@ ADDRESSES_ETH = {
         "slpWbtcDigg": "0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3",
         "slpEthBBadger": "0x0a54d4b378c8dbfc7bc93be50c85debafdb87439",
         "slpEthBDigg": "0xf9440fedc72a0b8030861dcdac39a75b544e7a3c",
-        # --- ibBTC related ---
-        "slpWbtcIiBTC": "0x18d98D452072Ac2EB7b74ce3DB723374360539f1"
-        # --- ibBTC related ---
+        "slpWbtcIbBTC": "0x18d98D452072Ac2EB7b74ce3DB723374360539f1",
     },
     "crv_pools": {
         "crvRenBTC": "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",
@@ -64,11 +62,9 @@ ADDRESSES_ETH = {
     "sett_vaults": {
         "bBADGER": "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
         "bDIGG": "0x7e7E112A68d8D2E221E11047a72fFC1065c38e1a",
-        # --- ibBTC related ---
         "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
-        # --- ibBTC related ---
         "bharvestcrvRenBTC": "0xAf5A1DECfa95BAF63E0084a35c62592B774A2A87",
         "buniWbtcBadger": "0x235c9e24D3FB2FAFd58a2E49D454Fdcd2DBf7FF1",
         "bslpWbtcBadger": "0x1862A18181346EBd9EdAf800804f89190DeF24a5",
@@ -77,17 +73,15 @@ ADDRESSES_ETH = {
         "bslpWbtcEth": "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D",
     },
     "yearn_vaults": {"byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"},
+    "peaks": {
+        "badgerPeak": "0x41671BA1abcbA387b9b2B752c205e22e916BE6e3",
+        "byvWbtcPeak": "0x825218beD8BE0B30be39475755AceE0250C50627",
+    },
     "custodians": {"multiswap": "0x533e3c0e6b48010873B947bddC4721b1bDFF9648"},
     "oracles": {
         "oracle": "0x058ec2Bf15011095a25670b618A129c043e2162E",
         "oracle_provider": "0x72dc16CFa95beB42aeebD2B10F22E55bD17Ce976",
     },
-    # --- ibBTC related ---
-    "peak_contracts": {
-        "badgerPeak": "0x41671BA1abcbA387b9b2B752c205e22e916BE6e3",
-        "byvWbtcPeak": "0x825218beD8BE0B30be39475755AceE0250C50627",
-    },
-    "interest_bearing_btc": {"token": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F"},
 }
 
 ADDRESSES_IBBTC = {
