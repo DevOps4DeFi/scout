@@ -20,6 +20,7 @@ ADDRESSES_ETH = {
         "ops_root-validator": "0x626f69162ea1556a75dd4443d87d2fe38dd25901",
         "digg_treasury": "0x5A54Ca44e8F5A1A695f8621f15Bfa159a140bB61",
         "uniswap_rewards": "0x0c79406977314847a9545b11783635432d7fe019",
+        "defiDollar_fees": "0x5b5cf8620292249669e1dcc73b753d01543d6ac7",
     },
     "treasury_tokens": {
         "FARM": "0xa0246c9032bC3A600820415aE600c6388619A14D",
@@ -86,18 +87,18 @@ ADDRESSES_ETH = {
 
 ADDRESSES_IBBTC = {
     "zero": "0x0000000000000000000000000000000000000000",
-    "badger_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
+    "badger_multisig": ADDRESSES_ETH["badger_wallets"]["dev_multisig"],
     "defiDollar_fees": "0x5b5cf8620292249669e1dcc73b753d01543d6ac7",
     "feesink": "0x3b823864cd0cbad8a1f2b65d4807906775becaa7",
-    "ibBTC": "0xc4e15973e6ff2a35cc804c2cf9d2a1b817a8b40f",
-    "WBTC": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
+    "ibBTC": ADDRESSES_ETH["treasury_tokens"]["ibBTC"],
+    "WBTC": ADDRESSES_ETH["treasury_tokens"]["WBTC"],
     "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
-    "badgerPeak": "0x41671BA1abcbA387b9b2B752c205e22e916BE6e3",
-    "byvWbtcPeak": "0x825218beD8BE0B30be39475755AceE0250C50627",
-    "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
-    "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
-    "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
-    "byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5",
+    "badgerPeak": ADDRESSES_ETH["peaks"]["badgerPeak"],
+    "byvWbtcPeak": ADDRESSES_ETH["peaks"]["byvWbtcPeak"],
+    "bcrvRenBTC": ADDRESSES_ETH["sett_vaults"]["bcrvRenBTC"],
+    "bcrvSBTC": ADDRESSES_ETH["sett_vaults"]["bcrvSBTC"],
+    "bcrvTBTC": ADDRESSES_ETH["sett_vaults"]["bcrvTBTC"],
+    "byvWBTC": ADDRESSES_ETH["yearn_vaults"]["byvWBTC"],
 }
 
 ADDRESSES_BSC = {
@@ -144,12 +145,12 @@ ADDRESSES_BSC = {
 
 ADDRESSES_BRIDGE = {
     "zero": "0x0000000000000000000000000000000000000000",
-    "badger_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
+    "badger_multisig": ADDRESSES_ETH["badger_wallets"]["dev_multisig"],
     "badger_bridge_team": "0xE95b56685327C9caf83C3e6F0A54b8D9708f32c4",
     "bridge_v1": "0xcB5c2B0FE765069708f17376981C9aFE56Fed339",
     "bridge_v2": "0xb6ea1d3fb9100a2Cf166FEBe11f24367b5FCD24A",
-    "WBTC": "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599",
-    "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+    "WBTC": ADDRESSES_ETH["treasury_tokens"]["WBTC"],
+    "renBTC": ADDRESSES_IBBTC["renBTC"],
     "renvm_darknodes_fee": "0xE33417797d6b8Aec9171d0d6516E88002fbe23E7",
     "unk_curve_1": "0x2393c368c70b42f055a4932a3fbec2ac9c548011",
     "unk_curve_2": "0xfae8bd34190615f3388f38191dc332b44c53e10b",

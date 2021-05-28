@@ -114,8 +114,8 @@ def update_price_gauge(
                     else "BNB"
                     if fetched_name == "WBNB"
                     else fetched_name,
-                    countertoken,
                     token_address,
+                    countertoken,
                 ).set(price[countertoken])
 
             usd_prices_by_token_address[token_address] = price["usd"]
@@ -173,13 +173,13 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
     token0_scale = 10 ** token0.decimals()
     token1_scale = 10 ** token1.decimals()
 
-    lp_tokens_gauge.labels(lp_name, f"{token0.symbol()}_supply", lp_address).set(
+    lp_tokens_gauge.labels(lp_name, lp_address, f"{token0.symbol()}_supply").set(
         token0_reserve / token0_scale
     )
-    lp_tokens_gauge.labels(lp_name, f"{token1.symbol()}_supply", lp_address).set(
+    lp_tokens_gauge.labels(lp_name, lp_address, f"{token1.symbol()}_supply").set(
         token1_reserve / token1_scale
     )
-    lp_tokens_gauge.labels(lp_name, "totalLpTokenSupply", lp_address).set(
+    lp_tokens_gauge.labels(lp_name, lp_address, "totalLpTokenSupply").set(
         lp_supply / lp_scale
     )
 
@@ -207,8 +207,8 @@ def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     virtual_price = interface.CRVswap(pool_address).get_virtual_price() / 1e18
     usd_price = virtual_price * usd_prices_by_token_address[wbtc_address]
 
-    crv_tokens_gauge.labels(pool_name, "pricePerShare", wbtc_address).set(virtual_price)
-    crv_tokens_gauge.labels(pool_name, "usdPricePerShare", wbtc_address).set(usd_price)
+    crv_tokens_gauge.labels(pool_name, wbtc_address, "pricePerShare").set(virtual_price)
+    crv_tokens_gauge.labels(pool_name, wbtc_address, "usdPricePerShare").set(usd_price)
 
     usd_prices_by_token_address[pool_token_address] = usd_price
 
@@ -224,13 +224,13 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
     log.info(f"Processing Sett data for [bold]{sett_name}: {sett_address} ...")
 
     for param, value in sett_info.items():
-        sett_gauge.labels(sett_name, param, sett_address, sett_token_name).set(value)
+        sett_gauge.labels(sett_name, sett_address, sett_token_name, param).set(value)
 
     try:
         usd_prices_by_token_address[sett_address] = (
             sett_info["pricePerShare"] * usd_prices_by_token_address[sett_token_address]
         )
-        sett_gauge.labels(sett_name, "usdBalance", sett_address, sett_token_name).set(
+        sett_gauge.labels(sett_name, sett_address, sett_token_name, "usdBalance").set(
             usd_prices_by_token_address[sett_address] * sett_info["balance"]
         )
     except Exception as e:
@@ -249,7 +249,7 @@ def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
     log.info(f"Processing Yearn Sett[bold] {yvault_name}: {yvault_address} ...")
 
     for param, value in yvault_info.items():
-        sett_gauge.labels(yvault_name, param, yvault_address, yvault_token_name).set(
+        sett_gauge.labels(yvault_name, yvault_address, yvault_token_name, param).set(
             value
         )
 
@@ -259,7 +259,10 @@ def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
             * usd_prices_by_token_address[yvault_token_address]
         )
         sett_gauge.labels(
-            yvault_name, "usdBalance", yvault_address, yvault_token_name
+            yvault_name,
+            yvault_address,
+            yvault_token_name,
+            "usdBalance",
         ).set(usd_prices_by_token_address[yvault_address] * yvault_info["balance"])
     except Exception as e:
         log.warning(f"Error calculating USD price of Yearn Sett [bold]{yvault_name}")
@@ -273,6 +276,20 @@ def update_ibbtc_gauge(ibbtc_gauge, ibbtc):
 
     for param, value in ibbtc_info.items():
         ibbtc_gauge.labels(param).set(value)
+
+
+def update_peak_value_gauge(peak_value_gauge, peak, peaks):
+    peak_name = peak.name
+    peak_address = peaks[peak_name]
+
+    peak_info = peak.describe()
+
+    log.info(
+        f"Processing Peak portfolio value for [bold]{peak_name}: {peak_address} ..."
+    )
+
+    for param, value in peak_info.items():
+        peak_value_gauge.labels(peak_name, param, peak_address).set(value)
 
 
 def update_peak_composition_gauge(peak_composition_gauge, peak_sett_underlying):
@@ -289,22 +306,14 @@ def update_peak_composition_gauge(peak_composition_gauge, peak_sett_underlying):
 
     for param, value in peak_sett_underlying_info.items():
         peak_composition_gauge.labels(
-            peak_address, peak_name, sett_name, sett_address, param
+            peak_name, peak_address, sett_name, sett_address, param
         ).set(value)
 
-
-def update_peak_value_gauge(peak_value_gauge, peak, peaks):
-    peak_name = peak.name
-    peak_address = peaks[peak_name]
-
-    peak_info = peak.describe()
-
-    log.info(
-        f"Processing Peak portfolio value for [bold]{peak_name}: {peak_address} ..."
+    peak_composition_gauge.labels(
+        peak_name, peak_address, sett_name, sett_address, "usdBalance"
+    ).set(
+        usd_prices_by_token_address[sett_address] * peak_sett_underlying_info["balance"]
     )
-
-    for param, value in peak_info.items():
-        peak_value_gauge.labels(peak_name, param, peak_address).set(value)
 
 
 def update_wallets_gauge(
@@ -408,7 +417,7 @@ def main():
     coingecko_price_gauge = Gauge(
         name="coingecko_prices",
         documentation="Token price data from Coingecko",
-        labelnames=["token", "countercurrency", "tokenAddress"],
+        labelnames=["token", "tokenAddress", "countercurrency"],
     )
     digg_gauge = Gauge(
         name="digg_price",
@@ -418,17 +427,17 @@ def main():
     lp_tokens_gauge = Gauge(
         name="lptokens",
         documentation="LP token data",
-        labelnames=["token", "param", "tokenAddress"],
+        labelnames=["token", "tokenAddress", "param"],
     )
     crv_tokens_gauge = Gauge(
         name="crvtokens",
         documentation="CRV token data",
-        labelnames=["token", "param", "tokenAddress"],
+        labelnames=["token", "tokenAddress", "param"],
     )
     sett_gauge = Gauge(
         name="sett",
         documentation="Badger Sett vaults data",
-        labelnames=["sett", "param", "tokenAddress", "token"],
+        labelnames=["sett", "tokenAddress", "token", "param"],
     )
     wallets_gauge = Gauge(
         name="wallets",
@@ -461,7 +470,7 @@ def main():
     peak_composition_gauge = Gauge(
         name="ibBTC_composition",
         documentation="Peak Sett composition",
-        labelnames=["peakContract", "peakName", "settName", "settAddress", "param"],
+        labelnames=["peakAddress", "peakName", "token", "tokenAddress", "param"],
     )
 
     start_http_server(PROMETHEUS_PORT)
