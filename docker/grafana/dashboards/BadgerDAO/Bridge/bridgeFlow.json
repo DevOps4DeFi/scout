@@ -15,7 +15,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 13,
   "links": [],
   "panels": [
     {
@@ -44,7 +43,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unit": "currencyBTC"
         },
         "overrides": [
           {
@@ -65,8 +65,8 @@
         ]
       },
       "gridPos": {
-        "h": 10,
-        "w": 8,
+        "h": 4,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -147,17 +147,17 @@
             "mode": "absolute",
             "steps": []
           },
-          "unit": "short"
+          "unit": "currencyBTC"
         },
         "overrides": []
       },
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 8,
-        "y": 0
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 4
       },
       "hiddenSeries": false,
       "id": 2,
@@ -223,46 +223,18 @@
       "targets": [
         {
           "exemplar": false,
-          "expr": "token_flow_total{event=\"mint\", direction=\"in\", token=\"BTC\"}",
+          "expr": "token_flow_total{direction=\"in\"}",
           "instant": false,
           "interval": "",
-          "legendFormat": "BTC In (Minted)",
+          "legendFormat": "{{token}} {{direction}} ({{event}})",
           "refId": "A"
         },
         {
-          "expr": "-token_flow_total{event=\"burn\", direction=\"out\", token=\"BTC\"}",
+          "expr": "-token_flow_total{direction=\"out\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "BTC Out (Burned)",
-          "refId": "D"
-        },
-        {
-          "expr": "token_flow_total{event=\"burn\", direction=\"in\", token=\"WBTC\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "WBTC In (Burned)",
-          "refId": "E"
-        },
-        {
-          "expr": "-token_flow_total{event=\"mint\", direction=\"out\", token=\"WBTC\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "WBTC Out (Minted)",
+          "legendFormat": "{{token}} {{direction}} ({{event}})",
           "refId": "B"
-        },
-        {
-          "expr": "token_flow_total{event=\"burn\", direction=\"in\", token=\"renBTC\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "renBTC In (Burned)",
-          "refId": "F"
-        },
-        {
-          "expr": "-token_flow_total{event=\"mint\", direction=\"out\", token=\"renBTC\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "renBTC Out (Minted)",
-          "refId": "C"
         }
       ],
       "thresholds": [],
@@ -285,7 +257,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "currencyBTC",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -312,26 +284,132 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "decimals": 4,
-      "description": "Bridge (Inflows - Outflows), per token.",
       "fieldConfig": {
         "defaults": {
           "custom": {}
         },
         "overrides": []
       },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "hiddenSeries": false,
+      "id": 24,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(token_flow_total{direction=\"in\", token=\"BTC\"}) / (sum(token_flow_total{direction=\"in\", token=\"BTC\"}) + sum(token_flow_total{direction=\"out\", token=\"BTC\"}))",
+          "interval": "",
+          "legendFormat": "BTC in",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(token_flow_total{direction=\"out\", token=\"BTC\"}) / (sum(token_flow_total{direction=\"in\", token=\"BTC\"}) + sum(token_flow_total{direction=\"out\", token=\"BTC\"}))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "BTC out",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Bridge - Flow - Inflow vs. Outflow (%)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1187",
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": "1",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1188",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": 4,
+      "description": "Bridge (Inflows - Outflows), per token.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyBTC"
+        },
+        "overrides": []
+      },
       "fill": 0,
       "fillGradient": 0,
       "gridPos": {
-        "h": 10,
-        "w": 8,
-        "x": 16,
-        "y": 0
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 11
       },
       "hiddenSeries": false,
       "id": 14,
       "legend": {
-        "alignAsTable": true,
+        "alignAsTable": false,
         "avg": false,
         "current": true,
         "max": false,
@@ -410,7 +488,133 @@
       },
       "yaxes": [
         {
+          "format": "currencyBTC",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
           "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "decimals": 4,
+      "description": "Bridge (Inflows - Outflows), per token.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyBTC"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "hiddenSeries": false,
+      "id": 21,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "alias": "BTC",
+          "color": "#8F3BB8"
+        },
+        {
+          "alias": "WBTC",
+          "color": "#1F60C4"
+        },
+        {
+          "alias": "renBTC",
+          "color": "#8AB8FF"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum(token_flow_total{direction=\"in\", token=\"BTC\"}) - sum(token_flow_total{direction=\"out\", token=\"BTC\"})) - (sum(token_flow_total{direction=\"in\", token=\"BTC\"} offset 1d) - sum(token_flow_total{direction=\"out\", token=\"BTC\"} offset 1d))",
+          "interval": "",
+          "legendFormat": "BTC",
+          "refId": "A"
+        },
+        {
+          "expr": "(sum(token_flow_total{direction=\"in\", token=\"WBTC\"}) - sum(token_flow_total{direction=\"out\", token=\"WBTC\"})) - (sum(token_flow_total{direction=\"in\", token=\"WBTC\"} offset 1d) - sum(token_flow_total{direction=\"out\", token=\"WBTC\"} offset 1d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "WBTC",
+          "refId": "B"
+        },
+        {
+          "expr": "(sum(token_flow_total{direction=\"in\", token=\"renBTC\"}) - sum(token_flow_total{direction=\"out\", token=\"renBTC\"})) - (sum(token_flow_total{direction=\"in\", token=\"renBTC\"} offset 1d) - sum(token_flow_total{direction=\"out\", token=\"renBTC\"} offset 1d))",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "renBTC",
+          "refId": "C"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Bridge - Flow - Totals - 24H Delta",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyBTC",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -457,7 +661,8 @@
                 "value": null
               }
             ]
-          }
+          },
+          "unit": "currencyBTC"
         },
         "overrides": [
           {
@@ -508,10 +713,10 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 7,
+        "w": 6,
         "x": 0,
-        "y": 10
+        "y": 18
       },
       "id": 15,
       "options": {
@@ -530,27 +735,122 @@
       "pluginVersion": "7.4.0",
       "targets": [
         {
-          "expr": "fees_total{entity=\"Badger DAO\"}",
+          "expr": "fees_total{}",
           "interval": "",
-          "legendFormat": "Badger DAO",
+          "legendFormat": "{{entity}}",
           "refId": "A"
-        },
-        {
-          "expr": "fees_total{entity=\"Badger Bridge Team\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "Badger Bridge Team",
-          "refId": "C"
-        },
-        {
-          "expr": "fees_total{entity=\"RenVM Darknodes\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "RenVM Darknodes",
-          "refId": "B"
         }
       ],
-      "title": "Bridge - Fees - Summary",
+      "title": "Bridge - Fees - Total",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "Fees collected by Badger DAO and Bridge team, RenVM Darknodes for Bridge transactions.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "",
+              "to": "",
+              "type": 1
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyBTC"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Badger DAO"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Badger Bridge Team"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RenVM Darknodes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 6,
+        "y": 18
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "fees_total{} - (fees_total{} offset 1d)",
+          "interval": "",
+          "legendFormat": "{{entity}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Bridge - Fees - Last Week",
       "type": "stat"
     },
     {
@@ -570,10 +870,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 10
+        "h": 7,
+        "w": 11,
+        "x": 13,
+        "y": 18
       },
       "hiddenSeries": false,
       "id": 3,
@@ -672,7 +972,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 19
+        "y": 25
       },
       "id": 17,
       "panels": [
@@ -1363,12 +1663,12 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Badger Bitcoin Bridge Flow",
   "uid": "OYah_vjGk",
-  "version": 14
+  "version": 1
 }

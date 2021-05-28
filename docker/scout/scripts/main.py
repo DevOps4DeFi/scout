@@ -289,7 +289,7 @@ def update_peak_value_gauge(peak_value_gauge, peak, peaks):
     )
 
     for param, value in peak_info.items():
-        peak_value_gauge.labels(peak_name, param, peak_address).set(value)
+        peak_value_gauge.labels(peak_name, peak_address, param).set(value)
 
 
 def update_peak_composition_gauge(peak_composition_gauge, peak_sett_underlying):
@@ -459,18 +459,18 @@ def main():
         documentation="Badgertree reward timestamp",
         labelnames=["lastCycleUnixtime"],
     )
-    peak_value_gauge = Gauge(
-        name="peakcontracts",
-        documentation="Peak portfolio value",
-        labelnames=["peakName", "peakAddress", "param"],
-    )
     ibbtc_gauge = Gauge(
         name="ibBTC", documentation="Interest-bearing BTC", labelnames=["param"]
     )
+    peak_value_gauge = Gauge(
+        name="peak_value",
+        documentation="Peak portfolio value",
+        labelnames=["peakName", "peakAddress", "param"],
+    )
     peak_composition_gauge = Gauge(
-        name="ibBTC_composition",
+        name="peak_composition",
         documentation="Peak Sett composition",
-        labelnames=["peakAddress", "peakName", "token", "tokenAddress", "param"],
+        labelnames=["peakName", "peakAddress", "token", "tokenAddress", "param"],
     )
 
     start_http_server(PROMETHEUS_PORT)
