@@ -28,7 +28,7 @@ ADDRESSES = checksum_address_dict(ADDRESSES_IBBTC)
 
 BLOCK_START = 12388784
 CHAIN_REORG_SAFETY_BLOCKS = 20
-POLL_INTERVAL = 60
+POLL_INTERVAL = 150
 
 warnings.simplefilter("ignore")
 

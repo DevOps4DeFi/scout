@@ -15,7 +15,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 14,
   "links": [],
   "panels": [
     {
@@ -66,7 +65,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "semi-dark-red",
+                  "fixedColor": "green",
                   "mode": "fixed"
                 }
               }
@@ -81,7 +80,7 @@
               {
                 "id": "color",
                 "value": {
-                  "fixedColor": "semi-dark-green",
+                  "fixedColor": "red",
                   "mode": "fixed"
                 }
               }
@@ -91,7 +90,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 6,
         "x": 0,
         "y": 0
       },
@@ -159,18 +158,61 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "A"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "B"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byFrameRefID",
+              "options": "C"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
+        "w": 6,
+        "x": 6,
         "y": 0
       },
       "id": 2,
       "options": {
         "colorMode": "value",
-        "graphMode": "none",
+        "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
@@ -206,7 +248,216 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "ibBTC - Fees ",
+      "title": "ibBTC Fees",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(255, 255, 255)",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byType",
+              "options": "number"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byType",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "color"
+              },
+              {
+                "id": "color"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "ibBTC{param=\"pricePerShare\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "ibBTC",
+          "refId": "B"
+        },
+        {
+          "expr": "peak_composition{param=\"pricePerShare\"}",
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Price Per Share",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "byvWBTC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "bcrvTBTC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "bcrvRenBTC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "bcrvSBTC"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": "peak_composition{param=\"balance\"}",
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Peak Composition - Total",
       "type": "stat"
     },
     {
@@ -238,7 +489,7 @@
         "current": true,
         "max": true,
         "min": true,
-        "show": true,
+        "show": false,
         "total": false,
         "values": true
       },
@@ -253,7 +504,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:785",
+          "alias": "ibBTC Total Supply",
+          "color": "#B877D9"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -328,14 +585,146 @@
         "y": 8
       },
       "hiddenSeries": false,
-      "id": 8,
+      "id": 10,
       "legend": {
         "alignAsTable": true,
         "avg": true,
-        "current": false,
+        "current": true,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": true
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:708",
+          "alias": "byvWBTC",
+          "color": "#5794F2"
+        },
+        {
+          "$$hashKey": "object:716",
+          "alias": "bcrvTBTC",
+          "color": "#FF9830"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(peak_composition{param=\"balance\", token=\"bcrvRenBTC\"}) / sum(peak_composition{param=\"balance\"})",
+          "interval": "",
+          "legendFormat": "bcrvRenBTC",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(peak_composition{param=\"balance\", token=\"bcrvSBTC\"}) / sum(peak_composition{param=\"balance\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "bcrvSBTC",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(peak_composition{param=\"balance\", token=\"bcrvTBTC\"}) / sum(peak_composition{param=\"balance\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "bcrvTBTC",
+          "refId": "C"
+        },
+        {
+          "expr": "sum(peak_composition{param=\"balance\", token=\"byvWBTC\"}) / sum(peak_composition{param=\"balance\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "byvWBTC",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Peak Composition - Percent",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:253",
+          "format": "percentunit",
+          "label": null,
+          "logBase": 1,
+          "max": "1",
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:254",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 11,
+      "legend": {
+        "alignAsTable": true,
+        "avg": false,
+        "current": true,
         "max": true,
         "min": true,
-        "show": true,
+        "show": false,
         "total": false,
         "values": true
       },
@@ -356,36 +745,18 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "ibBTC_composition{param=\"balance\", tokenName=\"bcrvRenBTC\"}",
-          "interval": "",
-          "legendFormat": "bcrvRenBTC",
-          "refId": "A"
-        },
-        {
-          "expr": "ibBTC_composition{param=\"balance\", tokenName=\"bcrvSBTC\"}",
+          "expr": "sum(peak_composition{param=\"usdBalance\"})",
           "hide": false,
           "interval": "",
-          "legendFormat": "bcrvSBTC",
+          "legendFormat": "ibBTC TVL",
           "refId": "B"
-        },
-        {
-          "expr": "ibBTC_composition{param=\"balance\", tokenName=\"bcrvTBTC\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "bcrvTBTC",
-          "refId": "C"
-        },
-        {
-          "expr": "ibBTC_composition{param=\"balance\", tokenName=\"byvWBTC\"}",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "byvWBTC",
-          "refId": "D"
         }
       ],
       "thresholds": [],
+      "timeFrom": null,
       "timeRegions": [],
-      "title": "Peak Composition",
+      "timeShift": null,
+      "title": "ibBTC TVL (USD)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -401,7 +772,110 @@
       },
       "yaxes": [
         {
+          "format": "currencyUSD",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
           "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "hiddenSeries": false,
+      "id": 15,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.4.0",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "coingecko_prices{token=\"ibBTC\"}",
+          "interval": "",
+          "legendFormat": "ibBTC",
+          "refId": "A"
+        },
+        {
+          "expr": "coingecko_prices{token=\"WBTC\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "BTC",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Coingecko - Spot Price",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "currencyUSD",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -431,8 +905,8 @@
     "list": []
   },
   "time": {
-    "from": "2021-05-27T03:42:38.563Z",
-    "to": "2021-05-27T03:49:21.752Z"
+    "from": "now-1h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
