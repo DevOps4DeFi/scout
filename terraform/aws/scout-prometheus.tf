@@ -109,7 +109,28 @@ module "scout-bridge-definition" {
       valueFrom = var.ethnode_url_ssm_parameter_name
     }]
 }
-
+module "scout-ibbtc-definition" {
+  source                       = "cloudposse/ecs-container-definition/aws"
+  version                      = "0.47.0"
+  container_image              = local.scout_docker_image ## TODO make optional
+  container_name               = "ibbtc"
+  essential                    = false ## TODO change to true when stable
+  container_memory_reservation = 250
+  entrypoint = ["./startIbbtc.sh"]
+  log_configuration = {
+    logDriver = "awslogs"
+    options = {
+      awslogs-group         = aws_cloudwatch_log_group.scout.id
+      awslogs-region        = var.region
+      awslogs-stream-prefix = "scout-events"
+    }
+  }
+  secrets = [
+    {
+      name      = "ETHNODEURL"
+      valueFrom = var.ethnode_url_ssm_parameter_name
+    }]
+}
 module "scout-container-definition" {
   source                       = "cloudposse/ecs-container-definition/aws"
   version                      = "0.47.0"
