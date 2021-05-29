@@ -21,7 +21,8 @@ resource "aws_ecs_task_definition" "prometheus" {
     jsondecode(module.prometheus-container-definition.json_map_encoded_list),
   jsondecode(module.scout-container-definition.json_map_encoded_list),
   jsondecode(module.bsc-scout-container-definition.json_map_encoded_list),
-  jsondecode(module.scout-bridge-definition.json_map_encoded_list)))
+  jsondecode(module.scout-bridge-definition.json_map_encoded_list),
+  jsondecode(module.scout-ibbtc-definition.json_map_encoded_list)))
   family                   = "${var.app_name}-prometheus"
   requires_compatibilities = ["EC2"]
   execution_role_arn       = aws_iam_role.ecs_exec.arn
