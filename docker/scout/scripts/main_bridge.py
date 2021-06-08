@@ -146,12 +146,12 @@ def main():
     )
 
     token_flow_gauge = Gauge(
-        name="bridge_token_flow",
+        name="token_flow_total",
         documentation="token,event,direction",
         labelnames=["token", "event", "direction"],
     )
     fees_gauge = Gauge(
-        name="bridge_fees",
+        name="fees_total",
         documentation="entity",
         labelnames=["entity"],
     )
