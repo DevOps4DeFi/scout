@@ -2,6 +2,7 @@ import json
 import math
 import warnings
 
+from brownie.network.state import Chain
 from brownie.exceptions import EventLookupError
 from eth_abi.codec import ABICodec
 from web3 import Web3
@@ -18,16 +19,13 @@ DECIMALS = 1e8
 warnings.simplefilter("ignore")
 
 
-def process_transaction(web3, tx_hash, block_gauge, token_flow_counter, fees_counter):
-    tx = web3.eth.getTransaction(tx_hash)
-    tx_logs = web3.eth.getTransactionReceipt(tx_hash).logs
+def process_event(chain, event, block_gauge, token_flow_counter, fees_counter):
+    block_number = event["blockNumber"]
+    block_timestamp = chain[block_number]["timestamp"]
 
-    block_number = tx.blockNumber
-    block_timestamp = web3.eth.get_block(block_number)["timestamp"]
-
-    erc20_abi = json.load(open("interfaces/ERC20.json", "r"))
-    erc20 = web3.eth.contract(abi=erc20_abi)
-    erc20_transfer_abi = erc20.events.Transfer._get_event_abi()
+    tx_hash = event["transactionHash"].hex()
+    tx = chain.get_transaction(tx_hash)
+    tx_transfers = tx.events["Transfer"]
 
     tokens = {
         transfer: 0
@@ -44,12 +42,8 @@ def process_transaction(web3, tx_hash, block_gauge, token_flow_counter, fees_cou
         ]
     }
 
-    for log in tx_logs:
-        try:
-            event_data = get_event_data(web3.codec, erc20_transfer_abi, log)
-            tokens = update_tokens(tx_hash, event_data, tokens)
-        except MismatchedABI:  # not ERC20 transfer, so skip
-            continue
+    for transfer in tx_transfers:
+        tokens = update_tokens(tx_hash, transfer, tokens)
 
     balances = calc_balances(tokens)
 
@@ -69,23 +63,23 @@ def process_transaction(web3, tx_hash, block_gauge, token_flow_counter, fees_cou
     fees_counter.labels("RenVM Darknodes").inc(balances["fee_darknodes"])
 
     logger.info(
-        f"Processed event: block timestamp {block_timestamp} block number {block_number}, hash {tx_hash}"
+        f"Processed event: block timestamp {block_timestamp}, block number {block_number}, hash {tx_hash}"
     )
 
     return tokens, balances
 
 
 def update_tokens(tx_hash, tx_transfer, tokens):
-    token_addr = tx_transfer["address"]
+    token_addr = tx_transfer.address
 
     try:
-        transfer_from = Web3.toChecksumAddress(tx_transfer["args"]["_from"])
-        transfer_to = Web3.toChecksumAddress(tx_transfer["args"]["_to"])
-        transfer_value = tx_transfer["args"]["_value"] / DECIMALS
+        transfer_from = Web3.toChecksumAddress(tx_transfer["_from"])
+        transfer_to = Web3.toChecksumAddress(tx_transfer["_to"])
+        transfer_value = tx_transfer["_value"] / DECIMALS
     except EventLookupError:
-        transfer_from = Web3.toChecksumAddress["args"](tx_transfer["from"])
-        transfer_to = Web3.toChecksumAddress(tx_transfer["args"]["to"])
-        transfer_value = tx_transfer["args"]["value"] / DECIMALS
+        transfer_from = Web3.toChecksumAddress(tx_transfer["from"])
+        transfer_to = Web3.toChecksumAddress(tx_transfer["to"])
+        transfer_value = tx_transfer["value"] / DECIMALS
 
     if (
         token_addr == ADDRESSES["renBTC"]
