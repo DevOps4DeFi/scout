@@ -20,17 +20,29 @@ warnings.simplefilter("ignore")
 
 
 def process_event(
-    chain, event, block_gauge, token_flow_gauge, fees_gauge, tokens, balances
+    web3,
+    event,
+    block_gauge,
+    token_flow_gauge,
+    fees_gauge,
+    tokens,
+    balances,
+    erc20_transfer_abi,
 ):
-    block_number = event["blockNumber"]
-    block_timestamp = chain[block_number]["timestamp"]
-
     tx_hash = event["transactionHash"].hex()
-    tx = chain.get_transaction(tx_hash)
-    tx_transfers = tx.events["Transfer"]
 
-    for transfer in tx_transfers:
-        tokens = update_tokens(tx_hash, transfer, tokens, balances)
+    tx = web3.eth.getTransaction(tx_hash)
+    tx_logs = web3.eth.getTransactionReceipt(tx_hash).logs
+
+    block_number = tx.blockNumber
+    block_timestamp = web3.eth.get_block(block_number)["timestamp"]
+
+    for log in tx_logs:
+        try:
+            event_data = get_event_data(web3.codec, erc20_transfer_abi, log)
+            tokens = update_tokens(tx_hash, event_data, tokens, balances)
+        except MismatchedABI:  # not ERC20 transfer, so skip
+            continue
 
     balances = calc_balances(tokens, balances)
 
@@ -63,13 +75,13 @@ def update_tokens(tx_hash, tx_transfer, tokens, balances):
     token_addr = tx_transfer.address
 
     try:
-        transfer_from = Web3.toChecksumAddress(tx_transfer["_from"])
-        transfer_to = Web3.toChecksumAddress(tx_transfer["_to"])
-        transfer_value = tx_transfer["_value"] / DECIMALS
+        transfer_from = Web3.toChecksumAddress(tx_transfer["args"]["_from"])
+        transfer_to = Web3.toChecksumAddress(tx_transfer["args"]["_to"])
+        transfer_value = tx_transfer["args"]["_value"] / DECIMALS
     except EventLookupError:
-        transfer_from = Web3.toChecksumAddress(tx_transfer["from"])
-        transfer_to = Web3.toChecksumAddress(tx_transfer["to"])
-        transfer_value = tx_transfer["value"] / DECIMALS
+        transfer_from = Web3.toChecksumAddress(tx_transfer["args"]["from"])
+        transfer_to = Web3.toChecksumAddress(tx_transfer["args"]["to"])
+        transfer_value = tx_transfer["args"]["value"] / DECIMALS
 
     if (
         token_addr == ADDRESSES["renBTC"]

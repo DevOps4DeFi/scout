@@ -44,7 +44,14 @@ balances = defaultdict(int)
 
 
 def process_prior_events(
-    chain, bridge, block_gauge, token_flow_gauge, fees_gauge, tokens, balances
+    chain,
+    bridge,
+    block_gauge,
+    token_flow_gauge,
+    fees_gauge,
+    tokens,
+    balances,
+    erc20_transfer_abi,
 ):
     """Process all prior Mint/Burn calls, from contract creation block to current block."""
     log.info(
@@ -65,6 +72,7 @@ def process_prior_events(
                 fees_gauge,
                 tokens,
                 balances,
+                erc20_transfer_abi,
             )
     update_metrics(
         block_gauge,
@@ -84,6 +92,7 @@ def listen_new_events(
     fees_gauge,
     tokens,
     balances,
+    erc20_transfer_abi,
     poll_interval,
 ):
     """Listen for and process new Mint/Burn txs on latest blocks.
@@ -94,7 +103,12 @@ def listen_new_events(
         while True:
             for event in f.get_new_entries():
                 tokens, balances, block_number, block_timestamp = process_event(
-                    chain, event, block_gauge, token_flow_gauge, fees_gauge
+                    chain,
+                    event,
+                    block_gauge,
+                    token_flow_gauge,
+                    fees_gauge,
+                    erc20_transfer_abi,
                 )
                 update_metrics(
                     block_gauge,
@@ -108,8 +122,8 @@ def listen_new_events(
     log.info("Listening for new events in latest blocks...")
 
     filters = [
-        bridge.events.Burn.createFilter(fromBlock="latest"),
-        bridge.events.Mint.createFilter(fromBlock="latest"),
+        bridge.events.Burn.createFilter("latest"),
+        bridge.events.Mint.createFilter("latest"),
     ]
 
     loop = asyncio.get_event_loop()
@@ -144,25 +158,35 @@ def main():
 
     start_http_server(PROMETHEUS_PORT)
 
-    # set up event filters
-    # filter bridge contract events
+    # read contracts
     log.info(f"Reading Badger BTC Bridge contract at address {ADDRESSES['bridge_v2']}")
-    bridge_abi = json.load(open("interfaces/Bridge.json", "r"))
-    bridge = w3.eth.contract(address=ADDRESSES["bridge_v2"], abi=bridge_abi)
+    bridge = w3.eth.contract(
+        address=ADDRESSES["bridge_v2"], abi=json.load(open("interfaces/Bridge.json"))
+    )
+    erc20_transfer_abi = w3.eth.contract(
+        abi=json.load(open("interfaces/ERC20.json"))
+    ).events.Transfer._get_event_abi()
 
     # watch events
-    chain = Chain()
     process_prior_events(
-        chain, bridge, block_gauge, token_flow_gauge, fees_gauge, tokens, balances
-    )
-
-    listen_new_events(
-        chain,
+        w3,
         bridge,
         block_gauge,
         token_flow_gauge,
         fees_gauge,
         tokens,
         balances,
+        erc20_transfer_abi,
+    )
+
+    listen_new_events(
+        w3,
+        bridge,
+        block_gauge,
+        token_flow_gauge,
+        fees_gauge,
+        tokens,
+        balances,
+        erc20_transfer_abi,
         POLL_INTERVAL,
     )
