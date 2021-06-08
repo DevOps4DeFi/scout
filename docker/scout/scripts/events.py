@@ -19,7 +19,9 @@ DECIMALS = 1e8
 warnings.simplefilter("ignore")
 
 
-def process_event(chain, event, block_gauge, token_flow_counter, fees_counter):
+def process_event(
+    chain, event, block_gauge, token_flow_gauge, fees_gauge, tokens, balances
+):
     block_number = event["blockNumber"]
     block_timestamp = chain[block_number]["timestamp"]
 
@@ -27,49 +29,37 @@ def process_event(chain, event, block_gauge, token_flow_counter, fees_counter):
     tx = chain.get_transaction(tx_hash)
     tx_transfers = tx.events["Transfer"]
 
-    tokens = {
-        transfer: 0
-        for transfer in [
-            "ren_minted",
-            "ren_received",
-            "ren_bought",
-            "ren_burned",
-            "ren_sent",
-            "wbtc_received",
-            "wbtc_sent",
-            "fee_badger",
-            "fee_renvm",
-        ]
-    }
-
     for transfer in tx_transfers:
-        tokens = update_tokens(tx_hash, transfer, tokens)
+        tokens = update_tokens(tx_hash, transfer, tokens, balances)
 
-    balances = calc_balances(tokens)
-
-    # update counters
-    block_gauge.labels("block_number").set(block_number)
-    block_gauge.labels("block_timestamp").set(block_timestamp)
-
-    token_flow_counter.labels("BTC", "mint", "in").inc(balances["btc_in"])
-    token_flow_counter.labels("BTC", "burn", "out").inc(balances["btc_out"])
-    token_flow_counter.labels("WBTC", "burn", "in").inc(balances["wbtc_received"])
-    token_flow_counter.labels("WBTC", "mint", "out").inc(balances["wbtc_sent"])
-    token_flow_counter.labels("renBTC", "burn", "in").inc(balances["ren_received"])
-    token_flow_counter.labels("renBTC", "mint", "out").inc(balances["ren_sent"])
-
-    fees_counter.labels("Badger DAO").inc(balances["fee_badger_dao"])
-    fees_counter.labels("Badger Bridge Team").inc(balances["fee_badger_bridge"])
-    fees_counter.labels("RenVM Darknodes").inc(balances["fee_darknodes"])
+    balances = calc_balances(tokens, balances)
 
     logger.info(
         f"Processed event: block timestamp {block_timestamp}, block number {block_number}, hash {tx_hash}"
     )
 
-    return tokens, balances
+    return tokens, balances, block_number, block_timestamp
 
 
-def update_tokens(tx_hash, tx_transfer, tokens):
+def update_metrics(
+    block_gauge, token_flow_gauge, fees_gauge, balances, block_number, block_timestamp
+):
+    block_gauge.labels("block_number").set(block_number)
+    block_gauge.labels("block_timestamp").set(block_timestamp)
+
+    token_flow_gauge.labels("BTC", "mint", "in").set(balances["btc_in"])
+    token_flow_gauge.labels("BTC", "burn", "out").set(balances["btc_out"])
+    token_flow_gauge.labels("WBTC", "burn", "in").set(balances["wbtc_received"])
+    token_flow_gauge.labels("WBTC", "mint", "out").set(balances["wbtc_sent"])
+    token_flow_gauge.labels("renBTC", "burn", "in").set(balances["ren_received"])
+    token_flow_gauge.labels("renBTC", "mint", "out").set(balances["ren_sent"])
+
+    fees_gauge.labels("Badger DAO").set(balances["fee_badger_dao"])
+    fees_gauge.labels("Badger Bridge Team").set(balances["fee_badger_bridge"])
+    fees_gauge.labels("RenVM Darknodes").set(balances["fee_darknodes"])
+
+
+def update_tokens(tx_hash, tx_transfer, tokens, balances):
     token_addr = tx_transfer.address
 
     try:
@@ -186,26 +176,7 @@ def update_tokens(tx_hash, tx_transfer, tokens):
     return tokens
 
 
-def calc_balances(tokens):
-    balances = {
-        balance: 0
-        for balance in [
-            "btc_in",
-            "btc_out",
-            "wbtc_received",
-            "wbtc_sent",
-            "wbtc_total",
-            "ren_minted",
-            "ren_received",
-            "ren_sent",
-            "ren_total",
-            "fee_badger_dao",
-            "fee_badger_bridge",
-            "fee_darknodes",
-            "fee_miners",
-        ]
-    }
-
+def calc_balances(tokens, balances):
     balances["wbtc_received"] = tokens["wbtc_received"]
     balances["wbtc_sent"] = tokens["wbtc_sent"]  # -
     balances["ren_minted"] = tokens["ren_minted"]
