@@ -122,8 +122,8 @@ def listen_new_events(
     log.info("Listening for new events in latest blocks...")
 
     filters = [
-        bridge.events.Burn.createFilter("latest"),
-        bridge.events.Mint.createFilter("latest"),
+        bridge.events.Burn.createFilter(fromBlock="latest"),
+        bridge.events.Mint.createFilter(fromBlock="latest"),
     ]
 
     loop = asyncio.get_event_loop()
