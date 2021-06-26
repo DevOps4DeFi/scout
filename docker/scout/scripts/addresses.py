@@ -44,6 +44,12 @@ ADDRESSES_ETH = {
         "slpWbtcDigg": "0x9a13867048e01c663ce8ce2fe0cdae69ff9f35e3",
         "slpEthBBadger": "0x0a54d4b378c8dbfc7bc93be50c85debafdb87439",
         "slpEthBDigg": "0xf9440fedc72a0b8030861dcdac39a75b544e7a3c",
+        "crvHBTC": "0xb19059ebb43466C323583928285a49f558E572Fd",
+        "crvBBTC": "0x410e3E86ef427e30B9235497143881f717d93c2A",
+        "crvOBTC": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
+        "crvPBTC": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
+        "CVX": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B",
+        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7"
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
@@ -59,6 +65,10 @@ ADDRESSES_ETH = {
         "crvRenBTC": "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",
         "crvSBTC": "0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714",
         "crvTBTC": "0xc25099792e9349c7dd09759744ea681c7de2cb66",
+        "crvHBTC": "0x4CA9b3063Ec5866A4B82E437059D2C43d1be596F",
+        "crvBBTC": "0x071c661B4DeefB59E2a3DdB20Db036821eeE8F4b",
+        "crvOBTC": "0xd81dA8D904b52208541Bade1bD6595D8a251F8dd",
+        "crvPBTC": "0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF",
     },
     "sett_vaults": {
         "bBADGER": "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
@@ -72,13 +82,13 @@ ADDRESSES_ETH = {
         "buniWbtcDigg": "0xC17078FDd324CC473F8175Dc5290fae5f2E84714",
         "bslpWbtcDigg": "0x88128580ACdD9c04Ce47AFcE196875747bF2A9f6",
         "bslpWbtcEth": "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D",
-        "bcrvHbtc": "0x8c76970747afd5398e958bdfada4cf0b9fca16c4",
-        "bcrvPbtc": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
-        "bcrvObtcCrv": "0xf349c0faa80fc1870306ac093f75934078e28991",
-        "bcrvBbtc": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
-        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
-        "bcvxCrv": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
-        "bcvx": "0x53c8e199eb2cb7c01543c137078a038937a68e40"
+        "bcrvHBTC": "0x8c76970747afd5398e958bdfada4cf0b9fca16c4",
+        "bcrvPBTC": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
+        "bcrvOBTC": "0xf349c0faa80fc1870306ac093f75934078e28991",
+        "bcrvBBTC": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
+#        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
+        "bCVX": "0x53c8e199eb2cb7c01543c137078a038937a68e40"
     },
     "yearn_vaults": {"byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"},
     "peaks": {

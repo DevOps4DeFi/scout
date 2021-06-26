@@ -59,9 +59,10 @@ usd_prices_by_token_address = {}
 
 
 def get_token_prices(token_csv, countertoken_csv, network):
-    log.debug("Fetching token prices from CoinGecko ...")
+    log.info("Fetching token prices from CoinGecko ...")
 
     if network == "ETH":
+        # fetch prices by token_address on ETH
         # fetch prices by token_address on ETH
         url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
     elif network == "BSC":
@@ -92,7 +93,7 @@ def update_price_gauge(
 
     try:
         if not fetched_name.startswith(lp_prefixes):
-            log.debug(
+            log.info(
                 f"Processing CoinGecko price for [bold]{fetched_name}: {token_address} ..."
             )
 
@@ -120,7 +121,7 @@ def update_price_gauge(
 
             usd_prices_by_token_address[token_address] = price["usd"]
         else:
-            log.debug(
+            log.info(
                 f"Skipping CoinGecko price for [bold]{fetched_name}: {token_address} ..."
             )
     except Exception as e:
@@ -135,7 +136,7 @@ def update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg):
     # process digg oracle price
     digg_oracle_price = digg_prices.describe()
     for param, value in digg_oracle_price.items():
-        log.debug(
+        log.info(
             f"Processing Oracle param [bold]{param}[/] for [bold]DIGG: {digg_prices.oracle.address} ..."
         )
         digg_gauge.labels(param).set(value)
@@ -147,7 +148,7 @@ def update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg):
     )
     digg_gauge.labels("uniswap").set(digg_uni_price)
 
-    log.debug(f"Processing Uniswap price for [bold]DIGG: {slpWbtcDigg.address} ...")
+    log.info(f"Processing Uniswap price for [bold]DIGG: {slpWbtcDigg.address} ...")
     digg_sushi_price = (slpWbtcDigg.getReserves()[0] / 1e8) / (
         slpWbtcDigg.getReserves()[1] / 1e9
     )
@@ -158,7 +159,7 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
     lp_name = lp_token.name
     lp_address = lp_tokens[lp_name]
 
-    log.debug(f"Processing lpToken reserves for [bold]{lp_name}: {lp_address} ...")
+    log.info(f"Processing lpToken reserves for [bold]{lp_name}: {lp_address} ...")
 
     lp_info = lp_token.describe()
     lp_scale = 10 ** lp_info["decimals"]
@@ -197,7 +198,7 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
 
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
-    log.debug(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
+    log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
 
     pool_token_name = pool_name
     pool_token_address = treasury_tokens[pool_token_name]
@@ -221,7 +222,7 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
 
     sett_info = sett.describe()
 
-    log.debug(f"Processing Sett data for [bold]{sett_name}: {sett_address} ...")
+    log.info(f"Processing Sett data for [bold]{sett_name}: {sett_address} ...")
 
     for param, value in sett_info.items():
         sett_gauge.labels(sett_name, sett_address, sett_token_name, param).set(value)
@@ -246,7 +247,7 @@ def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
 
     yvault_info = yvault.describe()
 
-    log.debug(f"Processing Yearn Sett[bold] {yvault_name}: {yvault_address} ...")
+    log.info(f"Processing Yearn Sett[bold] {yvault_name}: {yvault_address} ...")
 
     for param, value in yvault_info.items():
         sett_gauge.labels(yvault_name, yvault_address, yvault_token_name, param).set(
@@ -266,11 +267,11 @@ def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
         ).set(usd_prices_by_token_address[yvault_address] * yvault_info["balance"])
     except Exception as e:
         log.warning(f"Error calculating USD price of Yearn Sett [bold]{yvault_name}")
-        log.debug(e)
+        log.info(e)
 
 
 def update_ibbtc_gauge(ibbtc_gauge, ibbtc):
-    log.debug("Processing ibBTC data")
+    log.info("Processing ibBTC data")
 
     ibbtc_info = ibbtc.describe()
 
@@ -284,7 +285,7 @@ def update_peak_value_gauge(peak_value_gauge, peak, peaks):
 
     peak_info = peak.describe()
 
-    log.debug(
+    log.info(
         f"Processing Peak portfolio value for [bold]{peak_name}: {peak_address} ..."
     )
 
@@ -300,7 +301,7 @@ def update_peak_composition_gauge(peak_composition_gauge, peak_sett_underlying):
 
     peak_sett_underlying_info = peak_sett_underlying.describe()
 
-    log.debug(
+    log.info(
         f"Processing composition for Peak [bold]{peak_name}[/], Sett [bold]{sett_name}"
     )
 
@@ -324,7 +325,7 @@ def update_wallets_gauge(
     treasury_tokens,
     network,
 ):
-    log.debug(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
+    log.info(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
 
     wallet_info = wallet_balances_by_token[token_address]
     for wallet in wallet_info.describe():
@@ -358,7 +359,7 @@ def update_wallets_gauge(
             log.warning(
                 f"Error calculating USD balances for wallet [bold]{wallet_name}"
             )
-            log.debug(e)
+            log.info(e)
             log.warning(eth_name, eth_address)
 
 
@@ -369,7 +370,7 @@ def update_xchain_bridge_gauge(
     token_interfaces,
     treasury_tokens,
 ):
-    log.debug(
+    log.info(
         f"Checking balances on bridge [bold]{custodian_name}: {custodian_address} ..."
     )
 
@@ -389,7 +390,7 @@ def update_xchain_bridge_gauge(
 
 
 def update_rewards_gauge(rewards_gauge, badgertree, badger, digg, treasury_tokens):
-    log.debug(f"Calculating Badgertree reward holdings ...")
+    log.info(f"Calculating Badgertree reward holdings ...")
 
     badger_rewards = badger.balanceOf(badgertree.address) / 1e18
     digg_rewards = digg.balanceOf(badgertree.address) / 1e9
@@ -400,7 +401,7 @@ def update_rewards_gauge(rewards_gauge, badgertree, badger, digg, treasury_token
 
 def update_cycle_gauge(cycle_gauge, last_cycle_unixtime):
     for param, value in last_cycle_unixtime.items():
-        log.debug(f"Processing Badgertree [bold]{param} ...")
+        log.info(f"Processing Badgertree [bold]{param} ...")
         cycle_gauge.labels(param).set(value)
 
 
