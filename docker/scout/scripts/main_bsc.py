@@ -50,7 +50,7 @@ usd_prices_by_token_address = {}
 def update_bridge_gauge(bridge_gauge, token_name, token_interfaces, treasury_tokens):
     token_address = treasury_tokens[token_name]
 
-    log.info(
+    log.debug(
         f"Checking supply of bridged native token [bold]{token_name}: {token_address}"
     )
 

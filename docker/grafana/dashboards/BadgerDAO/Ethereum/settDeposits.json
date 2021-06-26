@@ -15,7 +15,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
   "links": [],
   "panels": [
     {
@@ -835,15 +834,15 @@
       "hiddenSeries": false,
       "id": 7,
       "legend": {
-        "alignAsTable": false,
+        "alignAsTable": true,
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "rightSide": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "rightSide": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -868,6 +867,13 @@
       "steppedLine": true,
       "targets": [
         {
+          "expr": "sum(sett{param=\"balance\", sett=~\".*crv.*\"}) + sum(sett{param=\"balance\", sett=\"byvWBTC\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total",
+          "refId": "Total"
+        },
+        {
           "expr": "sett{param=\"balance\", sett=~\".*crv.*\"}",
           "hide": false,
           "interval": "",
@@ -876,11 +882,11 @@
           "refId": "crv token balances"
         },
         {
-          "expr": "sum(sett{param=\"balance\", sett=~\".*crv.*\"})",
+          "expr": "sett{param=\"balance\", sett=\"byvWBTC\"}",
           "hide": false,
           "interval": "",
-          "legendFormat": "Total",
-          "refId": "Total"
+          "legendFormat": "{{sett}}",
+          "refId": "A"
         }
       ],
       "thresholds": [],
@@ -1167,5 +1173,5 @@
   "timezone": "",
   "title": "Sett Deposits/AUM Overview",
   "uid": "94F7baUGk",
-  "version": 13
+  "version": 1
 }

@@ -63,6 +63,7 @@ def get_token_prices(token_csv, countertoken_csv, network):
 
     if network == "ETH":
         # fetch prices by token_address on ETH
+        # fetch prices by token_address on ETH
         url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
     elif network == "BSC":
         # fetch prices by coingecko_name on BSC
@@ -127,8 +128,8 @@ def update_price_gauge(
         log.warning(
             f"Error getting CoinGecko price for [bold]{fetched_name}: {token_address}"
         )
-        log.debug(e)
-        log.debug(token_prices, token_name, fetched_name, token_address)
+        log.warning(e)
+        log.warning(token_prices, token_name, fetched_name, token_address)
 
 
 def update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg):
@@ -193,7 +194,7 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
         lp_tokens_gauge.labels(lp_name, "usdPricePerShare", lp_address).set(price)
     except Exception as e:
         log.warning(f"Error calculating USD price for lpToken [bold]{lp_name}")
-        log.debug(e)
+        log.warning(e)
 
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
@@ -235,7 +236,7 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         )
     except Exception as e:
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
-        log.debug(e)
+        log.warning(e)
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
@@ -266,7 +267,7 @@ def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
         ).set(usd_prices_by_token_address[yvault_address] * yvault_info["balance"])
     except Exception as e:
         log.warning(f"Error calculating USD price of Yearn Sett [bold]{yvault_name}")
-        log.debug(e)
+        log.info(e)
 
 
 def update_ibbtc_gauge(ibbtc_gauge, ibbtc):
@@ -358,7 +359,7 @@ def update_wallets_gauge(
             log.warning(
                 f"Error calculating USD balances for wallet [bold]{wallet_name}"
             )
-            log.debug(e)
+            log.info(e)
             log.warning(eth_name, eth_address)
 
 
