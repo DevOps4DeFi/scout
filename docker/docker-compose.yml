@@ -6,7 +6,7 @@ services:
     ports:
       - "8804:8801"
     environment:
-      - ETHNODEURL
+      - ETHNODEURL=https://turbogeth.badger.guru
     container_name: ibbtc-events
     entrypoint:
       - "./startIbbtc.sh"
@@ -26,8 +26,8 @@ services:
     ports:
       - "8802:8801"
     environment:
-      - ETHNODEURL
-      - ALCHEMYURL
+      - ETHNODEURL=https://turbogeth.badger.guru
+      - ALCHEMYURL=https://turbogeth.badger.guru
     container_name: events
     entrypoint:
       - "./startBridge.sh"
@@ -38,7 +38,7 @@ services:
     ports:
       - "8801:8801"
     environment:
-      - ETHNODEURL
+      - ETHNODEURL=https://turbogeth.badger.guru
   renderer:
     image: grafana/grafana-image-renderer:latest
     ports:

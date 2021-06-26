@@ -59,7 +59,7 @@ usd_prices_by_token_address = {}
 
 
 def get_token_prices(token_csv, countertoken_csv, network):
-    log.info("Fetching token prices from CoinGecko ...")
+    log.debug("Fetching token prices from CoinGecko ...")
 
     if network == "ETH":
         # fetch prices by token_address on ETH
@@ -127,8 +127,8 @@ def update_price_gauge(
         log.warning(
             f"Error getting CoinGecko price for [bold]{fetched_name}: {token_address}"
         )
-        log.debug(e)
-        log.debug(token_prices, token_name, fetched_name, token_address)
+        log.warning(e)
+        log.warning(token_prices, token_name, fetched_name, token_address)
 
 
 def update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg):
@@ -193,7 +193,7 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
         lp_tokens_gauge.labels(lp_name, "usdPricePerShare", lp_address).set(price)
     except Exception as e:
         log.warning(f"Error calculating USD price for lpToken [bold]{lp_name}")
-        log.debug(e)
+        log.warning(e)
 
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
@@ -235,7 +235,7 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         )
     except Exception as e:
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
-        log.debug(e)
+        log.warning(e)
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):

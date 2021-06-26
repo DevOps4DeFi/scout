@@ -72,7 +72,6 @@ ADDRESSES_ETH = {
         "buniWbtcDigg": "0xC17078FDd324CC473F8175Dc5290fae5f2E84714",
         "bslpWbtcDigg": "0x88128580ACdD9c04Ce47AFcE196875747bF2A9f6",
         "bslpWbtcEth": "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D",
-        "bstabledigg": "0x608b6D82eb121F3e5C0baeeD32d81007B916E83C",
         "bcrvHbtc": "0x8c76970747afd5398e958bdfada4cf0b9fca16c4",
         "bcrvPbtc": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
         "bcrvObtcCrv": "0xf349c0faa80fc1870306ac093f75934078e28991",
