@@ -15,6 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "id": 4,
   "links": [],
   "panels": [
     {
@@ -259,6 +260,7 @@
             "mode": "thresholds"
           },
           "custom": {},
+          "decimals": 3,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",

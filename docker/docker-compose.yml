@@ -27,6 +27,7 @@ services:
       - "8802:8801"
     environment:
       - ETHNODEURL
+      - ALCHEMYURL
     container_name: events
     entrypoint:
       - "./startBridge.sh"
