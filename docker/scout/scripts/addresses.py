@@ -72,6 +72,14 @@ ADDRESSES_ETH = {
         "buniWbtcDigg": "0xC17078FDd324CC473F8175Dc5290fae5f2E84714",
         "bslpWbtcDigg": "0x88128580ACdD9c04Ce47AFcE196875747bF2A9f6",
         "bslpWbtcEth": "0x758A43EE2BFf8230eeb784879CdcFF4828F2544D",
+        "bstabledigg": "0x608b6D82eb121F3e5C0baeeD32d81007B916E83C",
+        "bcrvHbtc": "0x8c76970747afd5398e958bdfada4cf0b9fca16c4",
+        "bcrvPbtc": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
+        "bcrvObtcCrv": "0xf349c0faa80fc1870306ac093f75934078e28991",
+        "bcrvBbtc": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
+        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        "bcvxCrv": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
+        "bcvx": "0x53c8e199eb2cb7c01543c137078a038937a68e40"
     },
     "yearn_vaults": {"byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"},
     "peaks": {
