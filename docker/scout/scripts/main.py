@@ -74,7 +74,15 @@ def get_token_prices(token_csv, countertoken_csv, network):
         )
 
     token_prices = get_json_request(request_type="get", url=url)
+
+
     return token_prices
+
+def get_api_tokeinfo(token):
+    url = f"https://api.badger.finance/v2/setts/{token}"
+    apiInfo = get_json_request(request_type="get", url=url)
+    return apiInfo
+
 
 
 def update_price_gauge(
@@ -208,6 +216,20 @@ def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     virtual_price = interface.CRVswap(pool_address).get_virtual_price() / 1e18
     usd_price = virtual_price * usd_prices_by_token_address[wbtc_address]
 
+    if pool_name == "crvTricrypto":
+        get_api_tokeinfo(sett_vaults["bcrvTricrypto"])
+        crv_tokens_gauge.labels(pool_name, wbtc_address, "virtualPrice").set(virtual_price)
+        Name = {}
+        Balance = {}
+        Address = {}
+        for i in range(0, 3):
+            Address[i] = interface.CRVswap.coins(i)
+            tokenif = token_interfaces[token_address]
+            Balance[i] = interface.CRVswap.balances(i) / tokenif.decimals ** 18
+
+
+
+        usdtPerShare = interface.CRVswap(pool_address).coins
     crv_tokens_gauge.labels(pool_name, wbtc_address, "pricePerShare").set(virtual_price)
     crv_tokens_gauge.labels(pool_name, wbtc_address, "usdPricePerShare").set(usd_price)
 

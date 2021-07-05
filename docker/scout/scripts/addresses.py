@@ -20,7 +20,6 @@ ADDRESSES_ETH = {
         "ops_root-validator": "0x626f69162ea1556a75dd4443d87d2fe38dd25901",
         "digg_treasury": "0x5A54Ca44e8F5A1A695f8621f15Bfa159a140bB61",
         "uniswap_rewards": "0x0c79406977314847a9545b11783635432d7fe019",
-        "defiDollar_fees": "0x5b5cf8620292249669e1dcc73b753d01543d6ac7",
     },
     "treasury_tokens": {
         "FARM": "0xa0246c9032bC3A600820415aE600c6388619A14D",
@@ -49,7 +48,8 @@ ADDRESSES_ETH = {
         "crvOBTC": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
         "crvPBTC": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
         "CVX": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B",
-        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7"
+        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7",
+        "USDT": "0xdac17f958d2ee523a2206206994597c13d831ec7"
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
@@ -69,6 +69,7 @@ ADDRESSES_ETH = {
         "crvBBTC": "0x071c661B4DeefB59E2a3DdB20Db036821eeE8F4b",
         "crvOBTC": "0xd81dA8D904b52208541Bade1bD6595D8a251F8dd",
         "crvPBTC": "0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF",
+        "crvTricrypto"
     },
     "sett_vaults": {
         "bBADGER": "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
@@ -86,7 +87,7 @@ ADDRESSES_ETH = {
         "bcrvPBTC": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
         "bcrvOBTC": "0xf349c0faa80fc1870306ac093f75934078e28991",
         "bcrvBBTC": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
-#        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
         "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
         "bCVX": "0x53c8e199eb2cb7c01543c137078a038937a68e40"
     },
