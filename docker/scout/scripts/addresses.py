@@ -18,6 +18,11 @@ ADDRESSES_ETH = {
         "ops_guardian": "0x29F7F8896Fb913CF7f9949C623F896a154727919",
         "ops_keeper": "0x872213E29C85d7e30F1C8202FC47eD1Ec124BB1D",
         "ops_root-validator": "0x626f69162ea1556a75dd4443d87d2fe38dd25901",
+        "ops_cycle_bot": "0x68de9E2b015904530593426d934CE608e117Fa7A",
+        "ops_botsquad": "0xF8dbb94608E72A3C4cEeAB4ad495ac51210a341e",
+        "ops_earner": "0x46099Ffa86aAeC689D11F5D5130044Ff7082C2AD",
+        "ops_harvester": "0x73433896620E71f7b1C72405b8D2898e951Ca4d5",
+        "ops_external_harvester": "0x64E2286148Fbeba8BEb4613Ede74bAc7646B2A2B",
         "digg_treasury": "0x5A54Ca44e8F5A1A695f8621f15Bfa159a140bB61",
         "uniswap_rewards": "0x0c79406977314847a9545b11783635432d7fe019",
         "defiDollar_fees": "0x5b5cf8620292249669e1dcc73b753d01543d6ac7",
@@ -49,7 +54,10 @@ ADDRESSES_ETH = {
         "crvOBTC": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
         "crvPBTC": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
         "CVX": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B",
-        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7"
+        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7",
+        "cUSDC:": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
+        "aUSDC": "0xbcca60bb61934080951369a648fb03df4f96263c",
+        "YQI": "0x3d3d5cce38afb7a379b2c3175ee56e2dc72cd7c8"
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
