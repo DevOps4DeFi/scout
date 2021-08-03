@@ -57,7 +57,6 @@ ADDRESSES_ETH = {
         "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7",
         "cUSDC:": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
         "aUSDC": "0xbcca60bb61934080951369a648fb03df4f96263c",
-        "YQI": "0x3d3d5cce38afb7a379b2c3175ee56e2dc72cd7c8"
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
