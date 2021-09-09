@@ -1,0 +1,110 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 30,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 18,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.4.0",
+      "targets": [
+        {
+          "expr": " sum(wallets{token=~\".*BTC.*\", param=\"balance\"}) + sum((sum by (token) (wallets{token=~\".*btc.*\", param=\"balance\", walletName!~\"uniswap_rewards\"}) \n/ on (token) lptokens{token=~\".*btc.*\", param=\"totalLpTokenSupply\"})\n* on (token) lptokens{token=~\".*btc.*\", param=\"WBTC_supply\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total",
+          "refId": "C"
+        },
+        {
+          "expr": " sum by (token) (wallets{token=~\".*BTC.*\", param=\"balance\"})",
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "A"
+        },
+        {
+          "expr": "(sum by (token) (wallets{token=~\".*btc.*\", param=\"balance\", walletName!~\"uniswap_rewards\"}) \n/ on (token) lptokens{token=~\".*btc.*\", param=\"totalLpTokenSupply\"})\n* on (token) lptokens{token=~\".*btc.*\", param=\"WBTC_supply\"} > 0",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{token}}",
+          "refId": "B"
+        }
+      ],
+      "title": "BadgerDAO's Bitcoin Stash (treasury)",
+      "type": "stat"
+    }
+  ],
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Badger Treasury Bitcoin",
+  "uid": "6YC2ZYk7k",
+  "version": 3
+}
