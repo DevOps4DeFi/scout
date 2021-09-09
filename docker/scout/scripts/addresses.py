@@ -1,6 +1,6 @@
 from web3 import Web3
+from rich.console import Console
 
-from scripts.logconf import log
 
 ADDRESSES_ETH = {
     "zero": "0x0000000000000000000000000000000000000000",
@@ -9,12 +9,18 @@ ADDRESSES_ETH = {
         "fees": "0x8dE82C4C968663a0284b01069DDE6EF231D0Ef9B",
         "team": "0xe4aa1d8aaf8a50422bc5c7310deb1262d1f6f657",
         "badgertree": "0x660802fc641b154aba66a62137e71f331b6d787a",
+        "native_autocompounder": "0x5B60952481Eb42B66bdfFC3E049025AC5b91c127",
         "badgerhunt": "0x394dcfbcf25c5400fcc147ebd9970ed34a474543",
         "DAO_treasury": "0x4441776e6a5d61fa024a5117bfc26b953ad1f425",
         "rewards_escrow": "0x19d099670a21bc0a8211a89b84cedf59abb4377f",
         "dev_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
+        "devtest_multisig": "0x33909cb2633d4B298a72042Da5686B45E9385ed0",
+        "test_multisig": "0x33909cb2633d4B298a72042Da5686B45E9385ed0",
+        "techops_multisig": "0x86cbD0ce0c087b482782c181dA8d191De18C8275",
         "ops_multisig": "0xD4868d98849a58F743787c77738D808376210292",
         "ops_deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
+        "ops_deployer2": "0xeE8b29AA52dD5fF2559da2C50b1887ADee257556",
+        "ops_deployer3": "0x283C857BA940A61828d9F4c09e3fceE2e7aEF3f7",
         "ops_guardian": "0x29F7F8896Fb913CF7f9949C623F896a154727919",
         "ops_keeper": "0x872213E29C85d7e30F1C8202FC47eD1Ec124BB1D",
         "ops_root-validator": "0x626f69162ea1556a75dd4443d87d2fe38dd25901",
@@ -39,6 +45,7 @@ ADDRESSES_ETH = {
         "bDIGG": "0x7e7E112A68d8D2E221E11047a72fFC1065c38e1a",
         "bBADGER": "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
         "xSUSHI": "0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272",
+        "MEOWSHI": "0x650F44eD6F1FE0E1417cb4b3115d52494B4D9b6D",
         "crvRenBTC": "0x49849C98ae39Fff122806C06791Fa73784FB3675",
         "crvSBTC": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
         "crvTBTC": "0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd",
@@ -54,9 +61,32 @@ ADDRESSES_ETH = {
         "crvOBTC": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
         "crvPBTC": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
         "CVX": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B",
-        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7",
-        "cUSDC:": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
-        "aUSDC": "0xbcca60bb61934080951369a648fb03df4f96263c",
+        "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7"
+    },
+     "strategies": {
+        "native.badger": "0x75b8E21BD623012Efb3b69E1B562465A68944eE6",
+        "native.renCrv": "0x6582a5b139fc1c6360846efdc4440d51aad4df7b",
+        "native.sbtcCrv": "0xf1ded284e891943b3e9c657d7fc376b86164ffc2",
+        "native.tbtcCrv": "0x522bb024c339a12be1a47229546f288c40b62d29",
+        "native.uniBadgerWbtc": "0x95826C65EB1f2d2F0EDBb7EcB176563B61C60bBf",
+        "harvest.renCrv": "0xaaE82E3c89e15E6F26F60724f115d5012363e030",
+        "native.sushiWbtcEth": "0x7A56d65254705B4Def63c68488C0182968C452ce",
+        "native.sushiBadgerWbtc": "0x3a494D79AA78118795daad8AeFF5825C6c8dF7F1",
+        "native.digg": "0x4a8651F2edD68850B944AD93f2c67af817F39F62",
+        "native.uniDiggWbtc": "0xadc8d7322f2E284c1d9254170dbe311E9D3356cf",
+        "native.sushiDiggWbtc": "0xaa8dddfe7DFA3C3269f1910d89E4413dD006D08a",
+        "experimental.sushiIBbtcWbtc": "0xf4146A176b09C664978e03d28d07Db4431525dAd",
+        "experimental.digg": "0xA6af1B913E205B8E9B95D3B30768c0989e942316",
+        "native.hbtcCrv": "0xff26f400e57bf726822eacbb64fa1c52f1f27988",
+        "native.pbtcCrv": "0x1C1fD689103bbFD701b3B7D41A3807F12814033D",
+        "native.obtcCrv": "0x2bb864cdb4856ab2d148c5ca52dd7ccec126d138",
+        "native.bbtcCrv": "0x4f3e7a4566320b2709fd1986f2e9f84053d3e2a0",
+        "native.tricrypto": "0x05ec4356e1acd89cc2d16adc7415c8c95e736ac1",
+        "native.tricrypto2": "0x2eB6479c2f033360C0F4575A88e3b8909Cbc6a03",
+        "native.cvxCrv": "0x826048381d65a65DAa51342C51d464428d301896",
+        "native.cvx": "0xBCee2c6CfA7A4e29892c3665f464Be5536F16D95",
+        "native.mstableImBtc": "0xd409C506742b7f76f164909025Ab29A47e06d30A",
+        "native.mstableFpMbtcHbtc": "0x54D06A0E1cE55a7a60Ee175AbCeaC7e363f603f3",
     },
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
@@ -93,9 +123,35 @@ ADDRESSES_ETH = {
         "bcrvPBTC": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
         "bcrvOBTC": "0xf349c0faa80fc1870306ac093f75934078e28991",
         "bcrvBBTC": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
-#        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        "bcrvTricrypto2": "0x27E98fC7d05f54E544d16F58C194C2D7ba71e3B5",
         "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
         "bCVX": "0x53c8e199eb2cb7c01543c137078a038937a68e40"
+    },
+    "strategies": {
+        "native.badger": "0x75b8E21BD623012Efb3b69E1B562465A68944eE6",
+        "native.renCrv": "0x6582a5b139fc1c6360846efdc4440d51aad4df7b",
+        "native.sbtcCrv": "0xf1ded284e891943b3e9c657d7fc376b86164ffc2",
+        "native.tbtcCrv": "0x522bb024c339a12be1a47229546f288c40b62d29",
+        "native.uniBadgerWbtc": "0x95826C65EB1f2d2F0EDBb7EcB176563B61C60bBf",
+        "harvest.renCrv": "0xaaE82E3c89e15E6F26F60724f115d5012363e030",
+        "native.sushiWbtcEth": "0x7A56d65254705B4Def63c68488C0182968C452ce",
+        "native.sushiBadgerWbtc": "0x3a494D79AA78118795daad8AeFF5825C6c8dF7F1",
+        "native.digg": "0x4a8651F2edD68850B944AD93f2c67af817F39F62",
+        "native.uniDiggWbtc": "0xadc8d7322f2E284c1d9254170dbe311E9D3356cf",
+        "native.sushiDiggWbtc": "0xaa8dddfe7DFA3C3269f1910d89E4413dD006D08a",
+        "experimental.sushiIBbtcWbtc": "0xf4146A176b09C664978e03d28d07Db4431525dAd",
+        "experimental.digg": "0xA6af1B913E205B8E9B95D3B30768c0989e942316",
+        "native.hbtcCrv": "0xff26f400e57bf726822eacbb64fa1c52f1f27988",
+        "native.pbtcCrv": "0x1C1fD689103bbFD701b3B7D41A3807F12814033D",
+        "native.obtcCrv": "0x2bb864cdb4856ab2d148c5ca52dd7ccec126d138",
+        "native.bbtcCrv": "0x4f3e7a4566320b2709fd1986f2e9f84053d3e2a0",
+        "native.tricrypto": "0x05ec4356e1acd89cc2d16adc7415c8c95e736ac1",
+        "native.tricrypto2": "0x2eB6479c2f033360C0F4575A88e3b8909Cbc6a03",
+        "native.cvxCrv": "0x826048381d65a65DAa51342C51d464428d301896",
+        "native.cvx": "0xBCee2c6CfA7A4e29892c3665f464Be5536F16D95",
+        "native.mstableImBtc": "0xd409C506742b7f76f164909025Ab29A47e06d30A",
+        "native.mstableFpMbtcHbtc": "0x54D06A0E1cE55a7a60Ee175AbCeaC7e363f603f3",
     },
     "yearn_vaults": {"byvWBTC": "0x4b92d19c11435614CD49Af1b589001b7c08cD4D5"},
     "peaks": {
@@ -130,8 +186,10 @@ ADDRESSES_BSC = {
     "badger_wallets": {
         "badgertree": "0x660802Fc641b154aBA66a62137e71f331B6d787A",
         "dev_proxy_admin": "0x6354e79f21b56c11f48bcd7c451be456d7102a36",
+        "dev_multisig_deprecated": "0x6DA4c138Dd178F6179091C260de643529A2dAcfe",
         "dev_multisig": "0x6DA4c138Dd178F6179091C260de643529A2dAcfe",
-        "ops_multisig": "0x7c7054bd87431378C837B2679f223f6d6aa602C1",
+        "dev_multisig_new": "0x329543f0F4BB134A3f7a826DC32532398B38a3fA",
+        "ops_multisig": "0x777061674751834993bfBa2269A1F4de5B4a6E7c",
         "ops_deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
         "ops_guardian": "0x29F7F8896Fb913CF7f9949C623F896a154727919",
         "ops_keeper": "0x872213E29C85d7e30F1C8202FC47eD1Ec124BB1D",
@@ -146,11 +204,15 @@ ADDRESSES_BSC = {
         "cakebBadgerBtcb": "0x10F461CEAC7A17F59e249954Db0784d42EfF5DB5",
         "cakebDiggBtcb": "0xE1E33459505bB3763843a426F7Fd9933418184ae",
         "cakeBnbBtcb": "0x7561EEe90e24F3b348E1087A005F78B4c8453524",
+        "cakeBdiggBtcbV2": "0x81d776C90c89B8d51E9497D58338933127e2fA80",
+        "cakeBbadgerBtcbV2": "0x5A58609dA96469E9dEf3fE344bC39B00d18eb9A5",
     },
     "lp_tokens": {
         "cakebBadgerBtcb": "0x10F461CEAC7A17F59e249954Db0784d42EfF5DB5",
         "cakebDiggBtcb": "0xE1E33459505bB3763843a426F7Fd9933418184ae",
         "cakeBnbBtcb": "0x7561eee90e24f3b348e1087a005f78b4c8453524",
+        "cakeBdiggBtcbV2": "0x81d776C90c89B8d51E9497D58338933127e2fA80",
+        "cakeBbadgerBtcbV2": "0x5A58609dA96469E9dEf3fE344bC39B00d18eb9A5",
     },
     "sett_vaults": {
         "bcakeBnbBtcb": "0xaf4B9C4b545D5324904bAa15e29796D2E2f90813",
@@ -165,6 +227,37 @@ ADDRESSES_BSC = {
         "binancecoin": "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
         "pancakeswap-token": "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82",
     },
+}
+
+ADDRESSES_POLYGON = {
+    "zero": "0x0000000000000000000000000000000000000000",
+    "badger_wallets": {
+        "badgertree": "0x2C798FaFd37C7DCdcAc2498e19432898Bc51376b",
+        "rewardLogger": "0xd0EE2A5108b8800D688AbC834445fd03b3b2738e",
+        "ops_multisig": "0xeb7341c89ba46CC7945f75Bd5dD7a04f8FA16327",
+        "dev_multisig": "0x4977110Ed3CD5eC5598e88c8965951a47dd4e738",
+    },
+    "treasury_tokens": {
+        "BADGER": "0x1FcbE5937B0cc2adf69772D228fA4205aCF4D9b2",
+    },
+    "sett_vaults": {
+        "bslpibBTCWbtc": '0xEa8567d84E3e54B32176418B4e0C736b56378961',
+        "bqlpUsdcWbtc": '0x6B2d4c4bb50274c5D4986Ff678cC971c0260E967',
+        "bcrvRenBTC": '0x7B6bfB88904e4B3A6d239d5Ed8adF557B22C10FC',
+        "bcrvTricrypto": "0x85E1cACAe9a63429394d68Db59E14af74143c61c"
+    },
+    "sett_strategies": {
+        "bslpibBTCWbtc": '0xDed61Bd8a8c90596D8A6Cf0e678dA04036146963',
+        "bqlpUsdcWbtc": '0x809990849D53a5109e0cb9C446137793B9f6f1Eb',
+        "bcrvRenBTC": '0xF8F02D0d41C79a1973f65A440C98acAc7eAA8Dc1',
+        "bcrvTricrypto": "0xDb0C3118ef1acA6125200139BEaCc5D675F37c9C",
+    },
+    "guestLists": {
+        "bslpibBTCWbtc": '0x35a1E68d6fe09020C58edf30feE827c9050dB3F5',
+        "bqlpUsdcWbtc": '0x6Fba2E04D16Ca67E9E918Ecc9A114d822532159F',
+        "bcrvRenBTC": '0xde1E5A892b540334E5434aB7880BDb64c4970579'
+    },
+    "registry": "0xFda7eB6f8b7a9e9fCFd348042ae675d1d652454f",
 }
 
 ADDRESSES_BRIDGE = {
@@ -191,6 +284,6 @@ def checksum_address_dict(addresses):
                 name: Web3.toChecksumAddress(address) for name, address in v.items()
             }
         else:
-            log.error("Addresses formatted incorrectly")
+            Console.print("Addresses formatted incorrectly")
 
     return checksummed
