@@ -3,11 +3,11 @@ import os
 import re
 import warnings
 
-from brownie import chain, interface
+from brownie import chain, interface, Contract
 from prometheus_client import Gauge, start_http_server
 from web3 import Web3
 
-from scripts.addresses import ADDRESSES_ETH, checksum_address_dict
+from scripts.addresses import ADDRESSES_ARBITRUM, checksum_address_dict
 from scripts.data import (
     get_badgertree_data,
     get_digg_data,
@@ -28,8 +28,8 @@ warnings.simplefilter("ignore")
 
 PROMETHEUS_PORT = 8801
 
-NETWORK = "ETH"
-ETHNODEURL = os.environ["ETHNODEURL"]
+NETWORK = "ARBITRUM"
+ETHNODEURL = os.environ["ARBNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
 NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
@@ -38,25 +38,14 @@ NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
 ADDRESSES = checksum_address_dict(ADDRESSES_ARBITRUM)
 badger_wallets = ADDRESSES["badger_wallets"]
 treasury_tokens = ADDRESSES["treasury_tokens"]
-lp_tokens = ADDRESSES["lp_tokens"]we n
+lp_tokens = ADDRESSES["lp_tokens"]
 crv_pools = ADDRESSES["crv_pools"]
+crv_3_pools = ADDRESSES["crv_3_pools"]
 sett_vaults = ADDRESSES["sett_vaults"]
-yearn_vaults = ADDRESSES["yearn_vaults"]
-custodians = ADDRESSES["custodians"]
-oracles = ADDRESSES["oracles"]
-peaks = ADDRESSES["peaks"]
+coingecko_tokens = ADDRESSES["coingecko_tokens"]
 
-peak_sett_composition = {
-    "badgerPeak": {
-        "bcrvRenBTC": sett_vaults["bcrvRenBTC"],
-        "bcrvSBTC": sett_vaults["bcrvSBTC"],
-        "bcrvTBTC": sett_vaults["bcrvTBTC"],
-    },
-    "byvWbtcPeak": {"byvWBTC": yearn_vaults["byvWBTC"]},
-}
 
 usd_prices_by_token_address = {}
-
 
 def get_token_prices(token_csv, countertoken_csv, network):
     log.info("Fetching token prices from CoinGecko ...")
@@ -65,13 +54,10 @@ def get_token_prices(token_csv, countertoken_csv, network):
         # fetch prices by token_address on ETH
         # fetch prices by token_address on ETH
         url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
-    elif network == "BSC":
+    else:
         # fetch prices by coingecko_name on BSC
         url = f"https://api.coingecko.com/api/v3/simple/price?ids={token_csv}&vs_currencies={countertoken_csv}"
-    else:
-        log.error(
-            "Specify network in order to fetch prices using appropriate CoinGecko API endpoint"
-        )
+
 
     token_prices = get_json_request(request_type="get", url=url)
     return token_prices
@@ -96,24 +82,17 @@ def update_price_gauge(
             log.info(
                 f"Processing CoinGecko price for [bold]{fetched_name}: {token_address} ..."
             )
-
             if network == "ETH":
                 price_key = token_address.lower()
-            elif network == "BSC":
-                price_key = token_name
             else:
-                log.error(
-                    "Specify network in order to appropriately process CoinGecko prices"
-                )
+                price_key = token_name
+
 
             price = token_prices[price_key]
 
             for countertoken in countertoken_csv.split(","):
                 coingecko_price_gauge.labels(
-                    "ETH"
-                    if fetched_name == "WETH"
-                    else "BNB"
-                    if fetched_name == "WBNB"
+                    "ETH" if fetched_name == "WETH"
                     else fetched_name,
                     token_address,
                     countertoken,
@@ -130,30 +109,6 @@ def update_price_gauge(
         )
         log.warning(e)
         log.warning(token_prices, token_name, fetched_name, token_address)
-
-
-def update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg):
-    # process digg oracle price
-    digg_oracle_price = digg_prices.describe()
-    for param, value in digg_oracle_price.items():
-        log.info(
-            f"Processing Oracle param [bold]{param}[/] for [bold]DIGG: {digg_prices.oracle.address} ..."
-        )
-        digg_gauge.labels(param).set(value)
-
-    # process digg AMM prices
-    log.info(f"Processing SushiSwap price for [bold]DIGG: {uniWbtcDigg.address} ...")
-    digg_uni_price = (uniWbtcDigg.getReserves()[0] / 1e8) / (
-        uniWbtcDigg.getReserves()[1] / 1e9
-    )
-    digg_gauge.labels("uniswap").set(digg_uni_price)
-
-    log.info(f"Processing Uniswap price for [bold]DIGG: {slpWbtcDigg.address} ...")
-    digg_sushi_price = (slpWbtcDigg.getReserves()[0] / 1e8) / (
-        slpWbtcDigg.getReserves()[1] / 1e9
-    )
-    digg_gauge.labels("sushiswap").set(digg_sushi_price)
-
 
 def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interfaces):
     lp_name = lp_token.name
@@ -196,6 +151,24 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
         log.warning(f"Error calculating USD price for lpToken [bold]{lp_name}")
         log.warning(e)
 
+def update_crv_3_tokens_guage(guage, pool_name, pool_address):
+    log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
+    pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
+    pool = interface.tricryptoPool(pool_address)
+    tokenlist = []
+    usd_balance = 0
+    for i in range(3):
+        tokenlist.append(interface.ERC20(pool.coins(i)))
+    for tokenInterface in tokenlist:
+        guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_balance").set(tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals())
+        usd_balance += (tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
+
+    pool_decimals = pool_token_interface.decimals()
+    pool_supply = pool_token_interface.totalSupply() / 10 ** pool_decimals
+    usd_price = (usd_balance / pool_supply)
+    guage.labels(pool_name, pool_token_interface.address, "usdPricePerShare").set(usd_price)
+
+    usd_prices_by_token_address[pool_token_interface.address] = usd_price
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
@@ -238,85 +211,6 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
         log.warning(e)
 
-
-def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
-    yvault_name = yvault.name
-    yvault_address = yearn_vaults[yvault_name]
-    yvault_token_name = yvault_name[3:]
-    yvault_token_address = treasury_tokens[yvault_token_name]
-
-    yvault_info = yvault.describe()
-
-    log.info(f"Processing Yearn Sett[bold] {yvault_name}: {yvault_address} ...")
-
-    for param, value in yvault_info.items():
-        sett_gauge.labels(yvault_name, yvault_address, yvault_token_name, param).set(
-            value
-        )
-
-    try:
-        usd_prices_by_token_address[yvault_address] = (
-            yvault_info["pricePerShare"]
-            * usd_prices_by_token_address[yvault_token_address]
-        )
-        sett_gauge.labels(
-            yvault_name,
-            yvault_address,
-            yvault_token_name,
-            "usdBalance",
-        ).set(usd_prices_by_token_address[yvault_address] * yvault_info["balance"])
-    except Exception as e:
-        log.warning(f"Error calculating USD price of Yearn Sett [bold]{yvault_name}")
-        log.info(e)
-
-
-def update_ibbtc_gauge(ibbtc_gauge, ibbtc):
-    log.info("Processing ibBTC data")
-
-    ibbtc_info = ibbtc.describe()
-
-    for param, value in ibbtc_info.items():
-        ibbtc_gauge.labels(param).set(value)
-
-
-def update_peak_value_gauge(peak_value_gauge, peak, peaks):
-    peak_name = peak.name
-    peak_address = peaks[peak_name]
-
-    peak_info = peak.describe()
-
-    log.info(
-        f"Processing Peak portfolio value for [bold]{peak_name}: {peak_address} ..."
-    )
-
-    for param, value in peak_info.items():
-        peak_value_gauge.labels(peak_name, peak_address, param).set(value)
-
-
-def update_peak_composition_gauge(peak_composition_gauge, peak_sett_underlying):
-    sett_name = peak_sett_underlying.sett_name
-    sett_address = peak_sett_underlying.sett_address
-    peak_name = peak_sett_underlying.peak_name
-    peak_address = peak_sett_underlying.peak_address
-
-    peak_sett_underlying_info = peak_sett_underlying.describe()
-
-    log.info(
-        f"Processing composition for Peak [bold]{peak_name}[/], Sett [bold]{sett_name}"
-    )
-
-    for param, value in peak_sett_underlying_info.items():
-        peak_composition_gauge.labels(
-            peak_name, peak_address, sett_name, sett_address, param
-        ).set(value)
-
-    peak_composition_gauge.labels(
-        peak_name, peak_address, sett_name, sett_address, "usdBalance"
-    ).set(
-        usd_prices_by_token_address[sett_address] * peak_sett_underlying_info["balance"]
-    )
-
-
 def update_wallets_gauge(
     wallets_gauge,
     wallet_balances_by_token,
@@ -337,7 +231,7 @@ def update_wallets_gauge(
             wallet_address,
         ) = wallet.values()
 
-        eth_name = "ETH" if network == "ETH" else "BNB"
+        eth_name = "ETH"
         eth_address = treasury_tokens[f"W{eth_name}"]
         eth_balance = float(w3.fromWei(w3.eth.getBalance(wallet_address), "ether"))
 
@@ -363,40 +257,12 @@ def update_wallets_gauge(
             log.warning(eth_name, eth_address)
 
 
-def update_xchain_bridge_gauge(
-    xchain_bridge_gauge,
-    custodian_name,
-    custodian_address,
-    token_interfaces,
-    treasury_tokens,
-):
-    log.info(
-        f"Checking balances on bridge [bold]{custodian_name}: {custodian_address} ..."
-    )
-
-    for token_name in NATIVE_TOKENS:
-        token_address = treasury_tokens[token_name]
-
-        token_interface = token_interfaces[token_address]
-        token_scale = 10 ** token_interface.decimals()
-        token_balance = token_interface.balanceOf(custodian_address)
-
-        xchain_bridge_gauge.labels("BSC", token_name, custodian_name, "balance").set(
-            token_balance / token_scale
-        )
-        xchain_bridge_gauge.labels("BSC", token_name, custodian_name, "usdBalance").set(
-            (token_balance / token_scale) * usd_prices_by_token_address[token_address]
-        )
-
-
-def update_rewards_gauge(rewards_gauge, badgertree, badger, digg, treasury_tokens):
+def update_rewards_gauge(rewards_gauge, badgertree, badger, treasury_tokens):
     log.info(f"Calculating Badgertree reward holdings ...")
 
     badger_rewards = badger.balanceOf(badgertree.address) / 1e18
-    digg_rewards = digg.balanceOf(badgertree.address) / 1e9
 
     rewards_gauge.labels("BADGER", treasury_tokens["BADGER"]).set(badger_rewards)
-    rewards_gauge.labels("DIGG", treasury_tokens["DIGG"]).set(digg_rewards)
 
 
 def update_cycle_gauge(cycle_gauge, last_cycle_unixtime):
@@ -420,11 +286,6 @@ def main():
         documentation="Token price data from Coingecko",
         labelnames=["token", "tokenAddress", "countercurrency"],
     )
-    digg_gauge = Gauge(
-        name="digg_price",
-        documentation="Digg price data from oracle and AMMs",
-        labelnames=["value"],
-    )
     lp_tokens_gauge = Gauge(
         name="lptokens",
         documentation="LP token data",
@@ -433,6 +294,11 @@ def main():
     crv_tokens_gauge = Gauge(
         name="crvtokens",
         documentation="CRV token data",
+        labelnames=["token", "tokenAddress", "param"],
+    )
+    crv_nonbtc_tokens_gauge = Gauge(
+        name="nonbtcCrvTokens",
+        documentation="CRV Tricrypto data",
         labelnames=["token", "tokenAddress", "param"],
     )
     sett_gauge = Gauge(
@@ -445,11 +311,6 @@ def main():
         documentation="Watched wallet balances",
         labelnames=["walletName", "walletAddress", "token", "tokenAddress", "param"],
     )
-    xchain_bridge_gauge = Gauge(
-        name="xchainBridge",
-        documentation="Info about tokens in custody",
-        labelnames=["chain", "token", "bridge", "param"],
-    )
     rewards_gauge = Gauge(
         name="rewards",
         documentation="Badgertree reward holdings",
@@ -459,19 +320,6 @@ def main():
         name="badgertree",
         documentation="Badgertree reward timestamp",
         labelnames=["lastCycleUnixtime"],
-    )
-    ibbtc_gauge = Gauge(
-        name="ibBTC", documentation="Interest-bearing BTC", labelnames=["param"]
-    )
-    peak_value_gauge = Gauge(
-        name="peak_value",
-        documentation="Peak portfolio value",
-        labelnames=["peakName", "peakAddress", "param"],
-    )
-    peak_composition_gauge = Gauge(
-        name="peak_composition",
-        documentation="Peak Sett composition",
-        labelnames=["peakName", "peakAddress", "token", "tokenAddress", "param"],
     )
 
     start_http_server(PROMETHEUS_PORT)
@@ -488,7 +336,6 @@ def main():
     log.info(f"Loading ERC20 interfaces for treasury tokens ... {str_treasury_tokens}")
     token_interfaces = get_token_interfaces(treasury_tokens)
     badger = token_interfaces[treasury_tokens["BADGER"]]
-    digg = token_interfaces[treasury_tokens["DIGG"]]
 
     wallet_balances_by_token = get_wallet_balances_by_token(
         badger_wallets, treasury_tokens
@@ -497,22 +344,12 @@ def main():
     lp_data = get_lp_data(lp_tokens)
 
     sett_data = get_sett_data(sett_vaults)
-    yvault_data = get_yvault_data(yearn_vaults)
-
-    digg_prices = get_digg_data(oracles["oracle"], oracles["oracle_provider"])
-
-    slpWbtcDigg = interface.Pair(lp_tokens["slpWbtcDigg"])
-    uniWbtcDigg = interface.Pair(lp_tokens["uniWbtcDigg"])
 
     badgertree = interface.Badgertree(badger_wallets["badgertree"])
     badgertree_cycles = get_badgertree_data(badgertree)
 
-    ibbtc_data = get_ibbtc_data(interface.ibBTC(treasury_tokens["ibBTC"]))
-    peak_value_data = get_peak_value_data(peaks)
-    peak_sett_underlyings = get_peak_composition_data(peaks, peak_sett_composition)
-
     # coingecko price query variables
-    token_csv = ",".join(treasury_tokens.values())
+    token_csv = ",".join(coingecko_tokens.keys())
     countertoken_csv = "usd"
 
     # scan new blocks and update gauges
@@ -527,7 +364,7 @@ def main():
 
         # process token prices
         token_prices = get_token_prices(token_csv, countertoken_csv, NETWORK)
-        for token_name, token_address in treasury_tokens.items():
+        for token_name, token_address in coingecko_tokens.items():
             update_price_gauge(
                 coingecko_price_gauge,
                 treasury_tokens,
@@ -537,9 +374,6 @@ def main():
                 countertoken_csv,
                 NETWORK,
             )
-
-        # process digg oracle prices
-        update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg)
 
         # process lp data
         for lp_token in lp_data:
@@ -551,23 +385,13 @@ def main():
         for pool_name, pool_address in crv_pools.items():
             update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address)
 
+        # process 3crv data data
+        for pool_name, pool_address in crv_3_pools.items():
+            update_crv_3_tokens_guage(crv_nonbtc_tokens_gauge, pool_name, pool_address)
+
         # process sett data
         for sett in sett_data:
             update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens)
-
-        for yvault in yvault_data:
-            update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens)
-
-        # process ibBTC share price
-        update_ibbtc_gauge(ibbtc_gauge, ibbtc_data)
-
-        # process peak portfolio value
-        for peak in peak_value_data:
-            update_peak_value_gauge(peak_value_gauge, peak, peaks)
-
-        # process peak sett underlying balance, share price
-        for underlying in peak_sett_underlyings:
-            update_peak_composition_gauge(peak_composition_gauge, underlying)
 
         # process wallet balances for *one* treasury token
         token_name, token_address = list(treasury_tokens.items())[
@@ -582,18 +406,8 @@ def main():
             NETWORK,
         )
 
-        # process bridged tokens
-        for custodian_name, custodian_address in custodians.items():
-            update_xchain_bridge_gauge(
-                xchain_bridge_gauge,
-                custodian_name,
-                custodian_address,
-                token_interfaces,
-                treasury_tokens,
-            )
-
         # process rewards balances
-        update_rewards_gauge(rewards_gauge, badgertree, badger, digg, treasury_tokens)
+        update_rewards_gauge(rewards_gauge, badgertree, badger, treasury_tokens)
 
         # process badgertree cycles
         last_cycle_unixtime = badgertree_cycles.describe()

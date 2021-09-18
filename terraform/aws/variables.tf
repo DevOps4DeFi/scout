@@ -47,7 +47,7 @@ variable "ethnode_url_ssm_parameter_name" {
   description = "The URL of an eth node for scout-collector to pull blocks from"
 }
 
-variable "bsc_url_ssm_parameter_name" { ## TODO: make optional
+variable "arbnode_url_ssm_parameter_name" { ## TODO: make optional
   type        = string
   description = "The URL of an eth node for scout-collector to pull blocks from"
 }

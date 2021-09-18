@@ -200,15 +200,18 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
 def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
     pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
-    pool = interface.crvTriSwap(pool_address)
+    pool = interface.tricryptoPool(pool_address)
     tokenlist = []
     usd_balance = 0
     for i in range(3):
         tokenlist.append(interface.ERC20(pool.coins(i)))
     for tokenInterface in tokenlist:
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_balance").set(tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals())
-        usd_balance += (tokenInterface.balanceOf(pool_address) /  10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
-    usd_price  = usd_balance / (pool_token_interface.totalSupply()/ 10 ** tokenInterface.decimals())
+        usd_balance += (tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
+
+    pool_decimals = pool_token_interface.decimals()
+    pool_supply = pool_token_interface.totalSupply() / 10 ** pool_decimals
+    usd_price = (usd_balance / pool_supply)
     guage.labels(pool_name, pool_token_interface.address, "usdPricePerShare").set(usd_price)
 
     usd_prices_by_token_address[pool_token_interface.address] = usd_price
@@ -245,9 +248,7 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         sett_gauge.labels(sett_name, sett_address, sett_token_name, param).set(value)
 
     try:
-        usd_prices_by_token_address[sett_address] = (
-            sett_info["pricePerShare"] * usd_prices_by_token_address[sett_token_address]
-        )
+        usd_prices_by_token_address[sett_address] = sett_info["pricePerShare"] * usd_prices_by_token_address[sett_token_address]
         sett_gauge.labels(sett_name, sett_address, sett_token_name, "usdBalance").set(
             usd_prices_by_token_address[sett_address] * sett_info["balance"]
         )

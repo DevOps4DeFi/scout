@@ -76,7 +76,7 @@ def main():
     coingecko_price_gauge = Gauge(
         name="bsc_coingecko",
         documentation="Token price data from Coingecko",
-        labelnames=["token", "countercurrency", "tokenAddress"],
+        lablnames=["token", "countercurrency", "tokenAddress"],
     )
     lp_tokens_gauge = Gauge(
         name="bsc_lp",

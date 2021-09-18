@@ -294,7 +294,7 @@ ADDRESSES_ARBITRUM = {
     "sett_vaults": {
         "bslpWbtcWeth": "0xFc13209cAfE8fb3bb5fbD929eC9F11a39e8Ac041",
         "bslpSushiWeth": "0xe774D1FB3133b037AA17D39165b8F45f444f632d",
-        "bcrvRenBTC": "0xBA418CDdd91111F5c1D1Ac2777Fa8CEa28D71843",
+        "bcrvRenWBTC": "0xBA418CDdd91111F5c1D1Ac2777Fa8CEa28D71843",
         "bcrvTricrypto": "0x4591890225394BF66044347653e112621AF7DDeb"
     },
     "strategies": {
@@ -308,15 +308,22 @@ ADDRESSES_ARBITRUM = {
       "WBTC": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
       "CRV": "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
       "SUSHI": "0xd4d42f0b6def4ce0383636770ef773390d85c61a",
-      "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
-      "slpWbtcEth": "",
+      "renBTC": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
+      "WETH": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+      "slpWbtcWeth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
+      "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
+      "crvRenWBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
+      "crvTricrypto": "0x8e0B8c8BB9db49a46697F3a5Bb8A308e744821D2"
+
+
     },
     "lp_tokens": {
         "slpWbtcWeth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
         "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
     },
     "crv_pools": {
-        "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
+        "crvRenWBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
     },
     "crv_3_pools": {
         "crvTricrypto": "0x960ea3e3C7FB317332d990873d354E18d7645590"
@@ -327,7 +334,9 @@ ADDRESSES_ARBITRUM = {
         "wrapped-bitcoin": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
         "curve-dao-token": "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
         "sushi": "0xd4d42f0b6def4ce0383636770ef773390d85c61a",
-        "renbtc": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+        "renbtc": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
+        "weth": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+        "usdx": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
     },
     "controller": "0x3811448236d4274705b81C6ab99d617bfab617Cd",
     "rewardsLogger": "0x85E1cACAe9a63429394d68Db59E14af74143c61c"

@@ -20,6 +20,17 @@ services:
     container_name: events
     entrypoint:
       - "./startBridge.sh"
+  arb-scout:
+    build:
+      context: ./scout
+    container_name: arb-collector
+    ports:
+      - "8801:8081"
+    environment:
+      - ARBNODEURL
+    entrypoint:
+     - "./startArb.sh"
+
   scout:
     build:
       context: ./scout
