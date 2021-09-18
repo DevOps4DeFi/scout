@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "prometheus" {
   container_definitions = jsonencode(concat(
     jsondecode(module.prometheus-container-definition.json_map_encoded_list),
   jsondecode(module.scout-container-definition.json_map_encoded_list),
-  jsondecode(module.bsc-scout-container-definition.json_map_encoded_list),
+  jsondecode(module.arb-scout-container-definition.json_map_encoded_list),
   jsondecode(module.scout-bridge-definition.json_map_encoded_list),
   jsondecode(module.scout-ibbtc-definition.json_map_encoded_list)))
   family                   = "${var.app_name}-prometheus"
@@ -40,7 +40,7 @@ module "prometheus-container-definition" {
   container_name               = "prometheus"
   container_memory_reservation = 250
   essential                    = true
-  links = ["scout-collector", "bsc-collector", "events"]
+  links = ["scout-collector", "arb-collector", "events"]
   mount_points = [
     {
       containerPath = "/prometheus"
@@ -64,27 +64,27 @@ module "prometheus-container-definition" {
     }
   ]
 }
-module "bsc-scout-container-definition" {
+module "arb-scout-container-definition" {
   source                       = "cloudposse/ecs-container-definition/aws"
   version                      = "0.47.0"
   container_image              = local.scout_docker_image ## TODO make optional
-  container_name               = "bsc-collector"
+  container_name               = "arb-collector"
   essential                    = false ## TODO change to true when stable
   container_memory_reservation = 250
-  entrypoint = ["./startBsc.sh"]
+  entrypoint = ["./startArb.sh"]
   log_configuration = {
     logDriver = "awslogs"
     options = {
       awslogs-group         = aws_cloudwatch_log_group.scout.id
       awslogs-region        = var.region
-      awslogs-stream-prefix = "bsc-scout"
+      awslogs-stream-prefix = "arb-scout"
     }
   }
 
   secrets = [
     {
-      name      = "ETHNODEURL"
-      valueFrom = var.bsc_url_ssm_parameter_name
+      name      = "ARBNODEURL"
+      valueFrom = var.arbnode_url_ssm_parameter_name
     }]
 }
 module "scout-bridge-definition" {

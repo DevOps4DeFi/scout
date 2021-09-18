@@ -6,31 +6,31 @@ services:
     ports:
       - "8804:8801"
     environment:
-      - ETHNODEURL=https://turbogeth.badger.guru
+      - ETHNODEURL
     container_name: ibbtc-events
     entrypoint:
       - "./startIbbtc.sh"
-  bsc_scout:
-    build:
-      context: ./scout
-    ports:
-      - "8803:8801"
-    environment:
-      - ETHNODEURL=https://bsc-dataseed.binance.org/
-    container_name: bsc-collector
-    entrypoint:
-      - "./startBsc.sh"
   events:
     build:
       context: ./scout
     ports:
       - "8802:8801"
     environment:
-      - ETHNODEURL=https://turbogeth.badger.guru
-      - ALCHEMYURL=https://turbogeth.badger.guru
+      - ETHNODEURL
     container_name: events
     entrypoint:
       - "./startBridge.sh"
+  arb-scout:
+    build:
+      context: ./scout
+    container_name: arb-collector
+    ports:
+      - "8801:8081"
+    environment:
+      - ARBNODEURL
+    entrypoint:
+     - "./startArb.sh"
+
   scout:
     build:
       context: ./scout
@@ -38,7 +38,7 @@ services:
     ports:
       - "8801:8801"
     environment:
-      - ETHNODEURL=https://turbogeth.badger.guru
+      - ETHNODEURL
   renderer:
     image: grafana/grafana-image-renderer:latest
     ports:
