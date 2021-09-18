@@ -3,7 +3,7 @@ import os
 import re
 import warnings
 
-from brownie import chain, interface, Contract
+from brownie import chain, interface
 from prometheus_client import Gauge, start_http_server
 from web3 import Web3
 
@@ -35,12 +35,11 @@ w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
 
 # get all addresses
-ADDRESSES = checksum_address_dict(ADDRESSES_ETH)
+ADDRESSES = checksum_address_dict(ADDRESSES_ARBITRUM)
 badger_wallets = ADDRESSES["badger_wallets"]
 treasury_tokens = ADDRESSES["treasury_tokens"]
-lp_tokens = ADDRESSES["lp_tokens"]
+lp_tokens = ADDRESSES["lp_tokens"]we n
 crv_pools = ADDRESSES["crv_pools"]
-crv_3_pools = ADDRESSES["crv_3_pools"]
 sett_vaults = ADDRESSES["sett_vaults"]
 yearn_vaults = ADDRESSES["yearn_vaults"]
 custodians = ADDRESSES["custodians"]
@@ -196,22 +195,6 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
     except Exception as e:
         log.warning(f"Error calculating USD price for lpToken [bold]{lp_name}")
         log.warning(e)
-
-def update_crv_3_tokens_guage(guage, pool_name, pool_address):
-    log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
-    pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
-    pool = interface.crvTriSwap(pool_address)
-    tokenlist = []
-    usd_balance = 0
-    for i in range(3):
-        tokenlist.append(interface.ERC20(pool.coins(i)))
-    for tokenInterface in tokenlist:
-        guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_balance").set(tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals())
-        usd_balance += (tokenInterface.balanceOf(pool_address) /  10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
-    usd_price  = usd_balance / (pool_token_interface.totalSupply()/ 10 ** tokenInterface.decimals())
-    guage.labels(pool_name, pool_token_interface.address, "usdPricePerShare").set(usd_price)
-
-    usd_prices_by_token_address[pool_token_interface.address] = usd_price
 
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
@@ -452,11 +435,6 @@ def main():
         documentation="CRV token data",
         labelnames=["token", "tokenAddress", "param"],
     )
-    crv_nonbtc_tokens_gauge = Gauge(
-        name="nonbtcCrvTokens",
-        documentation="CRV Tricrypto data",
-        labelnames=["token", "tokenAddress", "param"],
-    )
     sett_gauge = Gauge(
         name="sett",
         documentation="Badger Sett vaults data",
@@ -573,10 +551,7 @@ def main():
         for pool_name, pool_address in crv_pools.items():
             update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address)
 
-        # process 3crv data data
-        for pool_name, pool_address in crv_3_pools.items():
-            update_crv_3_tokens_guage(crv_nonbtc_tokens_gauge, pool_name, pool_address)
-
+        # process sett data
         for sett in sett_data:
             update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens)
 
