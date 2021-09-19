@@ -20,9 +20,7 @@ resource "aws_ecs_task_definition" "prometheus" {
   container_definitions = jsonencode(concat(
     jsondecode(module.prometheus-container-definition.json_map_encoded_list),
   jsondecode(module.scout-container-definition.json_map_encoded_list),
-  jsondecode(module.arb-scout-container-definition.json_map_encoded_list),
-  jsondecode(module.scout-bridge-definition.json_map_encoded_list),
-  jsondecode(module.scout-ibbtc-definition.json_map_encoded_list)))
+  jsondecode(module.arb-scout-container-definition.json_map_encoded_list)))
   family                   = "${var.app_name}-prometheus"
   requires_compatibilities = ["EC2"]
   execution_role_arn       = aws_iam_role.ecs_exec.arn
@@ -40,7 +38,7 @@ module "prometheus-container-definition" {
   container_name               = "prometheus"
   container_memory_reservation = 250
   essential                    = true
-  links = ["scout-collector", "arb-collector", "events"]
+  links = ["scout-collector", "arb-collector"]
   mount_points = [
     {
       containerPath = "/prometheus"
