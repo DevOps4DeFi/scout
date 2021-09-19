@@ -152,7 +152,7 @@ ADDRESSES_ETH = {
         "bcrvPBTC": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
         "bcrvOBTC": "0xf349c0faa80fc1870306ac093f75934078e28991",
         "bcrvBBTC": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
-#        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        #        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
         "bcrvTricrypto2": "0x27E98fC7d05f54E544d16F58C194C2D7ba71e3B5",
         "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
         "bCVX": "0x53c8e199eb2cb7c01543c137078a038937a68e40",
@@ -297,7 +297,7 @@ ADDRESSES_ARBITRUM = {
         "dev_multisig": "0x468A0FF843BC5D185D7B07e4619119259b03619f"
     },
     "sett_vaults": {
-        "bslpWbtcWeth": "0xFc13209cAfE8fb3bb5fbD929eC9F11a39e8Ac041",
+        "bslpWbtcEth": "0xFc13209cAfE8fb3bb5fbD929eC9F11a39e8Ac041",
         "bslpSushiWeth": "0xe774D1FB3133b037AA17D39165b8F45f444f632d",
         "bcrvRenBTC": "0xBA418CDdd91111F5c1D1Ac2777Fa8CEa28D71843",
         "bcrvTricrypto": "0x4591890225394BF66044347653e112621AF7DDeb"
@@ -305,26 +305,26 @@ ADDRESSES_ARBITRUM = {
     "strategies": {
         "native.renCrv": "0x4C5d19Da5EaeC298B79879a5f7481bEDE055F4F8",
         "native.tricrypto": "0xE83A790fC3B7132fb8d7f8d438Bc5139995BF5f4",
-        "native.sushiWbtcWeth": "0xA6827f0f14D0B83dB925B616d820434697328c22",
+        "native.sushiWbtcEth": "0xA6827f0f14D0B83dB925B616d820434697328c22",
         "native.sushiSushiWEth": "0x86f772C82914f5bFD168f99e208d0FC2C371e9C2",
     },
     "treasury_tokens": {
-      "BADGER" : "0xbfa641051ba0a0ad1b0acf549a89536a0d76472e",
-      "WBTC": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
-      "CRV": "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
-      "SUSHI": "0xd4d42f0b6def4ce0383636770ef773390d85c61a",
-      "renBTC": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
-      "WETH": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-      "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-      "slpWbtcWeth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
-      "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
-      "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
-      "crvTricrypto": "0x8e0B8c8BB9db49a46697F3a5Bb8A308e744821D2"
+        "BADGER" : "0xbfa641051ba0a0ad1b0acf549a89536a0d76472e",
+        "WBTC": "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f",
+        "CRV": "0x11cdb42b0eb46d95f990bedd4695a6e3fa034978",
+        "SUSHI": "0xd4d42f0b6def4ce0383636770ef773390d85c61a",
+        "renBTC": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
+        "WETH": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+        "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        "slpWbtcEth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
+        "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
+        "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
+        "crvTricrypto": "0x8e0B8c8BB9db49a46697F3a5Bb8A308e744821D2"
 
 
     },
     "lp_tokens": {
-        "slpWbtcWeth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
+        "slpWbtcEth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
         "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
     },
     "crv_pools": {

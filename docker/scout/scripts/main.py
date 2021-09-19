@@ -87,7 +87,7 @@ def update_price_gauge(
     countertoken_csv,
     network,
 ):
-    lp_prefixes = ("uni", "slp", "crv", "cake")
+    lp_prefixes = ("uni", "slp", "b", "crv", "cake")
 
     # BSC token_names are coingecko_names, so lookup token symbol from treasury_tokens
     fetched_name = get_token_by_address(treasury_tokens, token_address)
@@ -201,6 +201,11 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
     pool = interface.tricryptoPool(pool_address)
+    pool_divisor = 10 **pool_token_interface.decimals()
+    totalSupply = pool_token_interface.totalSupply() / pool_divisor
+    balance = pool_token_interface.balance() / pool_divisor
+
+
     tokenlist = []
     usd_balance = 0
     for i in range(3):
@@ -208,14 +213,13 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     for tokenInterface in tokenlist:
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_balance").set(tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals())
         usd_balance += (tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
-
-    pool_decimals = pool_token_interface.decimals()
-    pool_supply = pool_token_interface.totalSupply() / 10 ** pool_decimals
-    usd_price = (usd_balance / pool_supply)
+    usd_price = (usd_balance / totalSupply)
     guage.labels(pool_name, pool_token_interface.address, "usdPricePerShare").set(usd_price)
-
+    guage.labels(pool_name, pool_token_interface.address, "totalSupply").set(totalSupply)
+    guage.labels(pool_name, pool_token_interface.address, "balance").set(balance)
     usd_prices_by_token_address[pool_token_interface.address] = usd_price
-
+    for tokenInterface in tokenlist:
+        guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")

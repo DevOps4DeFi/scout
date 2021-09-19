@@ -110,9 +110,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "continuous-BlPu"
           },
-          "decimals": 8,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
