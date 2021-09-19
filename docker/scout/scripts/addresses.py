@@ -71,8 +71,12 @@ ADDRESSES_ETH = {
         "CVX": "0x4e3FBD56CD56c3e72c1403e103b45Db9da5B9D2B",
         "cvxCRV": "0x62B9c7356A2Dc64a1969e19C23e4f579F9810Aa7",
         "crvTricrypto2" : "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
-        "crvTricrypto": "0xcA3d75aC011BF5aD07a98d02f18225F9bD9A6BDF"
-
+        "crvTricrypto": "0xcA3d75aC011BF5aD07a98d02f18225F9bD9A6BDF",
+        "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
+        "bCVX": "0x53c8e199eb2cb7c01543c137078a038937a68e40",
+        "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
+        "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
+        "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
     },
     ### I do not think these are used by scout
     "strategies": {
@@ -128,7 +132,8 @@ ADDRESSES_ETH = {
     },
     # Pool addresses for curve pools that handle non-stable coins like tricypto
     "crv_3_pools": {
-        "crvTricrypto2": "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46"
+        "crvTricrypto2": "0xD51a44d3FaE010294C616388b506AcdA1bfAAE46",
+        "crvTricrypto": "0x80466c64868E1ab14a1Ddf27A676C3fcBE638Fe5"
     },
 
     "sett_vaults": {
@@ -294,7 +299,7 @@ ADDRESSES_ARBITRUM = {
     "sett_vaults": {
         "bslpWbtcWeth": "0xFc13209cAfE8fb3bb5fbD929eC9F11a39e8Ac041",
         "bslpSushiWeth": "0xe774D1FB3133b037AA17D39165b8F45f444f632d",
-        "bcrvRenWBTC": "0xBA418CDdd91111F5c1D1Ac2777Fa8CEa28D71843",
+        "bcrvRenBTC": "0xBA418CDdd91111F5c1D1Ac2777Fa8CEa28D71843",
         "bcrvTricrypto": "0x4591890225394BF66044347653e112621AF7DDeb"
     },
     "strategies": {
@@ -313,7 +318,7 @@ ADDRESSES_ARBITRUM = {
       "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
       "slpWbtcWeth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
       "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
-      "crvRenWBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
+      "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
       "crvTricrypto": "0x8e0B8c8BB9db49a46697F3a5Bb8A308e744821D2"
 
 
@@ -323,7 +328,7 @@ ADDRESSES_ARBITRUM = {
         "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
     },
     "crv_pools": {
-        "crvRenWBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
+        "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
     },
     "crv_3_pools": {
         "crvTricrypto": "0x960ea3e3C7FB317332d990873d354E18d7645590"

@@ -24,12 +24,10 @@ scrape_configs:
     # scheme defaults to 'http'.
     static_configs:
       - targets: ["scout-collector:8801"]
+        labels:
+          chain: "ETH"
   - job_name: "arb-scout"
     static_configs:
       - targets: ["arb-collector:8801"]
-  - job_name: "events"
-    static_configs:
-      - targets: ["events:8801"]
-  - job_name: "ibbtc-events"
-    static_configs:
-      - targets: ["ibbtc-events:8801"]
+        labels:
+          chain: "ARB"
