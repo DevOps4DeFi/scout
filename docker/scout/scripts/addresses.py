@@ -85,7 +85,7 @@ ADDRESSES_ETH = {
         "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
-        "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",
+        #"yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E", ##TODO NO COINGECKO PRICE
     },
     ### I do not think these are used by scout
     "strategies": {
