@@ -38,22 +38,30 @@ ADDRESSES_ETH = {
         "delegate": "0x14f83ff95d4ec5e8812ddf42da1232b0ba1015e6"
     },
     #Scout stores prices for all tokens here, either from coingecko or interpolation
-    # Any token here that does not have a coingeco price must be included in sett_vaults
+    # Any token here that does not have a coingeco price must be included in sett_vaults, lp_tokens or crvpools
     # or one of the crv_ lists in order to have it's price calculated and not break scout.
     "treasury_tokens": {
         "FARM": "0xa0246c9032bC3A600820415aE600c6388619A14D",
         "BADGER": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
         "ibBTC": "0xc4E15973E6fF2A35cC804c2CF9D2a1b817a8b40F",
         "DIGG": "0x798D1bE841a82a273720CE31c822C61a67a601C3",
+        "USDT": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
         "USDC": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-        "USDT":  "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "aUSDC": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
+        "cUSDC": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
+        "DUSD": "0x5BC25f649fc4e26069dDF4cF4010F9f706c23831",
+        "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+        "DFD": "0x20c36f062a31865bED8a5B1e512D9a1A20AA333A",
+        "CRV": "0xD533a949740bb3306d119CC777fa900bA034cd52",
         "WBTC": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
+        "renBTC": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
         "WETH": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
         "SUSHI": "0x6b3595068778dd592e39a122f4f5a5cf09c90fe2",
+        "GTC": "0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F",
         "bDIGG": "0x7e7E112A68d8D2E221E11047a72fFC1065c38e1a",
         "bBADGER": "0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28",
         "xSUSHI": "0x8798249c2E607446EfB7Ad49eC89dD1865Ff4272",
-        "MEOWSHI": "0x650F44eD6F1FE0E1417cb4b3115d52494B4D9b6D", ##TODO There is overhead to scan every token for every wallet, is this something we want to watch.manage in our treasury
+        #"MEOWSHI": "0x650F44eD6F1FE0E1417cb4b3115d52494B4D9b6D", ##TODO There is overhead to scan every token for every wallet, is this something we want to watch.manage in our treasury
         "crvRenBTC": "0x49849C98ae39Fff122806C06791Fa73784FB3675",
         "crvSBTC": "0x075b1bb99792c9E1041bA13afEf80C91a1e70fB3",
         "crvTBTC": "0x64eda51d3Ad40D56b9dFc5554E06F94e1Dd786Fd",
@@ -77,6 +85,7 @@ ADDRESSES_ETH = {
         "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
+        "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",
     },
     ### I do not think these are used by scout
     "strategies": {
@@ -152,7 +161,7 @@ ADDRESSES_ETH = {
         "bcrvPBTC": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
         "bcrvOBTC": "0xf349c0faa80fc1870306ac093f75934078e28991",
         "bcrvBBTC": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
-        #        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
+        "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
         "bcrvTricrypto2": "0x27E98fC7d05f54E544d16F58C194C2D7ba71e3B5",
         "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
         "bCVX": "0x53c8e199eb2cb7c01543c137078a038937a68e40",
@@ -202,7 +211,7 @@ ADDRESSES_IBBTC = {
     "feesink": "0x3b823864cd0cbad8a1f2b65d4807906775becaa7",
     "ibBTC": ADDRESSES_ETH["treasury_tokens"]["ibBTC"],
     "WBTC": ADDRESSES_ETH["treasury_tokens"]["WBTC"],
-    "renBTC": "0xeb4c2781e4eba804ce9a9803c67d0893436bb27d",
+    "renBTC": ADDRESSES_ETH["treasury_tokens"]["renBTC"],
     "badgerPeak": ADDRESSES_ETH["peaks"]["badgerPeak"],
     "byvWbtcPeak": ADDRESSES_ETH["peaks"]["byvWbtcPeak"],
     "bcrvRenBTC": ADDRESSES_ETH["sett_vaults"]["bcrvRenBTC"],
@@ -217,6 +226,7 @@ ADDRESSES_BSC = {
         "badgertree": "0x660802Fc641b154aBA66a62137e71f331B6d787A",
         "dev_proxy_admin": "0x6354e79f21b56c11f48bcd7c451be456d7102a36",
         "dev_multisig_deprecated": "0x6DA4c138Dd178F6179091C260de643529A2dAcfe",
+        "dev_multisig": "0x329543f0F4BB134A3f7a826DC32532398B38a3fA",
         "dev_multisig_new": "0x329543f0F4BB134A3f7a826DC32532398B38a3fA",
         "ops_multisig": "0x777061674751834993bfBa2269A1F4de5B4a6E7c",
         "ops_deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
@@ -354,7 +364,7 @@ ADDRESSES_BRIDGE = {
     "bridge_v1": "0xcB5c2B0FE765069708f17376981C9aFE56Fed339",
     "bridge_v2": "0xb6ea1d3fb9100a2Cf166FEBe11f24367b5FCD24A",
     "WBTC": ADDRESSES_ETH["treasury_tokens"]["WBTC"],
-    "renBTC": ADDRESSES_IBBTC["renBTC"],
+    "renBTC": ADDRESSES_ETH["treasury_tokens"]["renBTC"],
     "renvm_darknodes_fee": "0xE33417797d6b8Aec9171d0d6516E88002fbe23E7",
     "unk_curve_1": "0x2393c368c70b42f055a4932a3fbec2ac9c548011",
     "unk_curve_2": "0xfae8bd34190615f3388f38191dc332b44c53e10b",
