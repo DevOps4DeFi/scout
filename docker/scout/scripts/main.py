@@ -87,7 +87,7 @@ def update_price_gauge(
     countertoken_csv,
     network,
 ):
-    lp_prefixes = ("uni", "slp", "crv", "cake")
+    lp_prefixes = ("uni", "slp", "b", "crv", "cake")
 
     # BSC token_names are coingecko_names, so lookup token symbol from treasury_tokens
     fetched_name = get_token_by_address(treasury_tokens, token_address)
@@ -160,7 +160,7 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
     lp_name = lp_token.name
     lp_address = lp_tokens[lp_name]
 
-    log.info(f"Processing lpToken reserves for [bold]{lp_name}: {lp_address} ...")
+    log.info(f"Processing lpToken reserves for [bold]{lp_name}...")
 
     lp_info = lp_token.describe()
     lp_scale = 10 ** lp_info["decimals"]
@@ -198,9 +198,14 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
         log.warning(e)
 
 def update_crv_3_tokens_guage(guage, pool_name, pool_address):
-    log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
+    log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
     pool = interface.tricryptoPool(pool_address)
+    pool_divisor = 10 **pool_token_interface.decimals()
+    totalSupply = pool_token_interface.totalSupply() / pool_divisor
+    balance = pool_token_interface.balance() / pool_divisor
+
+
     tokenlist = []
     usd_balance = 0
     for i in range(3):
@@ -208,17 +213,16 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     for tokenInterface in tokenlist:
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_balance").set(tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals())
         usd_balance += (tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
-
-    pool_decimals = pool_token_interface.decimals()
-    pool_supply = pool_token_interface.totalSupply() / 10 ** pool_decimals
-    usd_price = (usd_balance / pool_supply)
+    usd_price = (usd_balance / totalSupply)
     guage.labels(pool_name, pool_token_interface.address, "usdPricePerShare").set(usd_price)
-
+    guage.labels(pool_name, pool_token_interface.address, "totalSupply").set(totalSupply)
+    guage.labels(pool_name, pool_token_interface.address, "balance").set(balance)
     usd_prices_by_token_address[pool_token_interface.address] = usd_price
-
+    for tokenInterface in tokenlist:
+        guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
-    log.info(f"Processing crvToken data for [bold]{pool_name}: {pool_address} ...")
+    log.info(f"Processing crvToken data for [bold]{pool_name}...")
 
     pool_token_name = pool_name
     pool_token_address = treasury_tokens[pool_token_name]
@@ -242,7 +246,7 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
 
     sett_info = sett.describe()
 
-    log.info(f"Processing Sett data for [bold]{sett_name}: {sett_address} ...")
+    log.info(f"Processing Sett data for [bold]{sett_name}")
 
     for param, value in sett_info.items():
         sett_gauge.labels(sett_name, sett_address, sett_token_name, param).set(value)
@@ -265,7 +269,7 @@ def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
 
     yvault_info = yvault.describe()
 
-    log.info(f"Processing Yearn Sett[bold] {yvault_name}: {yvault_address} ...")
+    log.info(f"Processing Yearn Sett[bold] {yvault_name}...")
 
     for param, value in yvault_info.items():
         sett_gauge.labels(yvault_name, yvault_address, yvault_token_name, param).set(
@@ -304,7 +308,7 @@ def update_peak_value_gauge(peak_value_gauge, peak, peaks):
     peak_info = peak.describe()
 
     log.info(
-        f"Processing Peak portfolio value for [bold]{peak_name}: {peak_address} ..."
+        f"Processing Peak portfolio value for [bold]{peak_name} ..."
     )
 
     for param, value in peak_info.items():
@@ -595,18 +599,30 @@ def main():
         for underlying in peak_sett_underlyings:
             update_peak_composition_gauge(peak_composition_gauge, underlying)
 
+        if step == 0:
+            ### Get basic balances for all wallets on first run
+            for token_name, token_address in treasury_tokens.items():
+                update_wallets_gauge(
+                    wallets_gauge,
+                    wallet_balances_by_token,
+                    token_name,
+                    token_address,
+                    treasury_tokens,
+                    NETWORK,
+            )
+        else:
         # process wallet balances for *one* treasury token
-        token_name, token_address = list(treasury_tokens.items())[
-            step % num_treasury_tokens
-        ]
-        update_wallets_gauge(
-            wallets_gauge,
-            wallet_balances_by_token,
-            token_name,
-            token_address,
-            treasury_tokens,
-            NETWORK,
-        )
+            token_name, token_address = list(treasury_tokens.items())[
+                step % num_treasury_tokens
+            ]
+            update_wallets_gauge(
+                wallets_gauge,
+                wallet_balances_by_token,
+                token_name,
+                token_address,
+                treasury_tokens,
+                NETWORK,
+            )
 
         # process bridged tokens
         for custodian_name, custodian_address in custodians.items():
