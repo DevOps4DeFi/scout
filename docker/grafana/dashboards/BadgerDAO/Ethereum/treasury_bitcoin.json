@@ -15,7 +15,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 30,
   "links": [],
   "panels": [
     {
@@ -25,18 +24,33 @@
           "color": {
             "mode": "thresholds"
           },
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
               },
               {
-                "color": "red",
+                "color": "blue",
+                "value": 20
+              },
+              {
+                "color": "light-purple",
+                "value": 50
+              },
+              {
+                "color": "super-light-purple",
+                "value": 60
+              },
+              {
+                "color": "purple",
                 "value": 80
+              },
+              {
+                "color": "green",
+                "value": 250
               }
             ]
           }
@@ -65,23 +79,27 @@
         "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.4.0",
+      "pluginVersion": "8.0.6",
       "targets": [
         {
-          "expr": " sum(wallets{token=~\".*BTC.*\", param=\"balance\"}) + sum((sum by (token) (wallets{token=~\".*btc.*\", param=\"balance\", walletName!~\"uniswap_rewards\"}) \n/ on (token) lptokens{token=~\".*btc.*\", param=\"totalLpTokenSupply\"})\n* on (token) lptokens{token=~\".*btc.*\", param=\"WBTC_supply\"})",
+          "exemplar": true,
+          "expr": " sum(wallets{token=~\".*BTC.*\", param=\"balance\"}) +\n sum((sum by (token) (wallets{token=~\".*btc.*\", param=\"balance\", chain=\"ETH\", walletName!~\"uniswap_rewards\"}) \n/ on (token) lptokens{token=~\".*btc.*\", chain=\"ETH\", param=\"totalLpTokenSupply\"})\n* on (token) lptokens{token=~\".*btc.*\", chain=\"ETH\", param=\"WBTC_supply\"} > 0)",
           "hide": false,
           "interval": "",
           "legendFormat": "Total",
           "refId": "C"
         },
         {
+          "exemplar": true,
           "expr": " sum by (token) (wallets{token=~\".*BTC.*\", param=\"balance\"})",
+          "hide": false,
           "interval": "",
           "legendFormat": "{{token}}",
           "refId": "A"
         },
         {
-          "expr": "(sum by (token) (wallets{token=~\".*btc.*\", param=\"balance\", walletName!~\"uniswap_rewards\"}) \n/ on (token) lptokens{token=~\".*btc.*\", param=\"totalLpTokenSupply\"})\n* on (token) lptokens{token=~\".*btc.*\", param=\"WBTC_supply\"} > 0",
+          "exemplar": true,
+          "expr": "(sum by (token) (wallets{token=~\".*btc.*\", param=\"balance\", chain=\"ETH\", walletName!~\"uniswap_rewards\"}) \n/ on (token) lptokens{token=~\".*btc.*\", chain=\"ETH\", param=\"totalLpTokenSupply\"})\n* on (token) lptokens{token=~\".*btc.*\", chain=\"ETH\", param=\"WBTC_supply\"} > 0",
           "hide": false,
           "interval": "",
           "legendFormat": "{{token}}",
@@ -92,7 +110,7 @@
       "type": "stat"
     }
   ],
-  "schemaVersion": 27,
+  "schemaVersion": 30,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -106,5 +124,5 @@
   "timezone": "",
   "title": "Badger Treasury Bitcoin",
   "uid": "6YC2ZYk7k",
-  "version": 3
+  "version": 1
 }
