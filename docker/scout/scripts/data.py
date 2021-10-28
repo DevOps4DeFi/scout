@@ -349,22 +349,22 @@ def get_sett_roi_data(network: Optional[str] = "eth") -> Optional[List[Dict]]:
     for sett in response:
         # Filter out deprecated setts
         if not sett['deprecated']:
-            setts_data.append({
-                "sett_name": sett['name'],
-                "sett_roi": sett['apr'],
-            })
+            setts_data.append({"sett_name": sett['name'], "sett_roi": sett['apr']})
     return setts_data
 
 
 def get_json_request(request_type, url, request_data=None):
     """Takes a request object and request type, then returns the response in JSON format"""
     json_request = json.dumps(request_data) if request_data else None
-
     if request_type == "get":
         r = requests.get(f"{url}", data=json_request)
     elif request_type == "post":
         r = requests.post(f"{url}", data=json_request)
     else:
         return None
-
+    try:
+        r.raise_for_status()
+    except requests.exceptions.HTTPError:
+        log.error(f"Got error from {url}")
+        return
     return r.json()

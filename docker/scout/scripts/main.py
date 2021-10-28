@@ -1,6 +1,7 @@
 import datetime
 import os
 import re
+import time
 import warnings
 from typing import Dict
 from typing import List
@@ -39,6 +40,9 @@ ETHNODEURL = os.environ["ETHNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
 NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
+
+# Excluding BSC since all Setts there are marked as deprecated
+SUPPORTED_CHAINS = ["eth", "arbitrum", "matic"]
 
 # get all addresses
 ADDRESSES = checksum_address_dict(ADDRESSES_ETH)
@@ -203,6 +207,7 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
         log.warning(f"Error calculating USD price for lpToken [bold]{lp_name}")
         log.warning(e)
 
+
 def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
@@ -226,6 +231,7 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     usd_prices_by_token_address[pool_token_interface.address] = usd_price
     for tokenInterface in tokenlist:
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
+
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
@@ -267,9 +273,11 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         log.warning(e)
 
 
-def update_setts_roi_gauge(sett_roi_gauge: Gauge, sett_roi_data: List[Dict]):
+def update_setts_roi_gauge(
+        sett_roi_gauge: Gauge, sett_roi_data: List[Dict], network: str
+) -> None:
     for sett_roi in sett_roi_data:
-        sett_roi_gauge.labels(sett_roi['sett_name']).set(sett_roi['sett_roi'])
+        sett_roi_gauge.labels(sett_roi['sett_name'], network, "ROI").set(sett_roi['sett_roi'])
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
@@ -481,7 +489,7 @@ def main():
     badger_sett_roi_gauge = Gauge(
         name="settRoi",
         documentation="Badger Sett ROI data",
-        labelnames=["sett"],
+        labelnames=["sett", "targetChain", "param"],
     )
     wallets_gauge = Gauge(
         name="wallets",
@@ -580,8 +588,9 @@ def main():
                 countertoken_csv,
                 NETWORK,
             )
-        setts_roi = get_sett_roi_data()
-        update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi)
+        for network in SUPPORTED_CHAINS:
+            setts_roi = get_sett_roi_data(network)
+            update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi, network)
         # process digg oracle prices
         update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg)
 
