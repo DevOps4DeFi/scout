@@ -337,7 +337,7 @@ def get_wallet_balances_by_token(wallets, tokens):
 
 def get_json_request(request_type, url, request_data=None):
     """Takes a request object and request type, then returns the response in JSON format"""
-    json_request = json.dumps(request_data)
+    json_request = json.dumps(request_data) if request_data else None
 
     if request_type == "get":
         r = requests.get(f"{url}", data=json_request)

@@ -2,6 +2,9 @@ import datetime
 import os
 import re
 import warnings
+from typing import Dict
+from typing import List
+from typing import Optional
 
 from brownie import chain, interface, Contract
 from prometheus_client import Gauge, start_http_server
@@ -57,6 +60,26 @@ peak_sett_composition = {
 }
 
 usd_prices_by_token_address = {}
+
+
+def get_sett_roi_data(network: Optional[str] = NETWORK) -> Optional[List[Dict]]:
+    log.info("Fetching ROI from Badger API")
+    response = get_json_request(
+        request_type="get", url=f"https://api.badger.finance/v2/setts?chain={network.lower()}"
+    )
+    if response.status != 200:
+        log.warning("Cannot fetch Sett ROI data from Badger API")
+        return
+
+    setts_data = []
+    for sett in response:
+        # Filter out deprecated setts
+        if not sett['deprecated']:
+            setts_data.append({
+                "sett_name": sett['name'],
+                "sett_roi": sett['apr'],
+            })
+    return setts_data
 
 
 def get_token_prices(token_csv, countertoken_csv, network):
@@ -259,6 +282,11 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
     except Exception as e:
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
         log.warning(e)
+
+
+def update_setts_roi_gauge(sett_roi_gauge: Gauge, sett_roi_data: List[Dict]):
+    for sett_roi in sett_roi_data:
+        sett_roi_gauge.labels(sett_roi['sett_name']).set(sett_roi['sett_roi'])
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
@@ -467,6 +495,11 @@ def main():
         documentation="Badger Sett vaults data",
         labelnames=["sett", "tokenAddress", "token", "param"],
     )
+    badger_sett_roi_gauge = Gauge(
+        name="settRoi",
+        documentation="Badger Sett ROI data",
+        labelnames=["sett"],
+    )
     wallets_gauge = Gauge(
         name="wallets",
         documentation="Watched wallet balances",
@@ -564,7 +597,8 @@ def main():
                 countertoken_csv,
                 NETWORK,
             )
-
+        setts_roi = get_sett_roi_data()
+        update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi)
         # process digg oracle prices
         update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg)
 
