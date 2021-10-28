@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
+  "id": 9,
   "links": [],
   "panels": [
     {
@@ -80,6 +80,7 @@
       "pluginVersion": "8.0.6",
       "targets": [
         {
+          "exemplar": true,
           "expr": "sum by (token) (coingecko_prices{token=~\".*BADGER\",countercurrency=\"usd\"})",
           "interval": "",
           "legendFormat": "{{token}}",
@@ -117,12 +118,8 @@
             "mode": "percentage",
             "steps": [
               {
-                "color": "green",
+                "color": "blue",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           },
@@ -159,7 +156,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "settRoi",
+          "expr": "sum by (sett) (settRoi{})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -241,7 +238,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "settRoi",
+          "expr": "sum by (sett) (settRoi{})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -1046,5 +1043,5 @@
   "timezone": "utc",
   "title": "Homepage",
   "uid": "IVTgOlwGz",
-  "version": 2
+  "version": 8
 }
