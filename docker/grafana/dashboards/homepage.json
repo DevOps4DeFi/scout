@@ -159,7 +159,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"eth\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"eth\", source=\"none\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -218,7 +218,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"arbitrum\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"arbitrum\", source=\"none\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -277,7 +277,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"matic\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"matic\", source=\"none\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -362,7 +362,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"eth\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"eth\", source=\"none\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -447,7 +447,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"matic\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"matic\", source=\"none\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -532,7 +532,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"arbitrum\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"arbitrum\", source=\"none\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -1330,7 +1330,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
