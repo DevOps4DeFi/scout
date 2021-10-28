@@ -1,11 +1,12 @@
 import json
-import logging
 from dataclasses import dataclass
+from typing import Dict
+from typing import List
+from typing import Optional
 
 import requests
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
-from web3 import Web3
 
 from scripts.logconf import log
 
@@ -333,6 +334,26 @@ def get_wallet_balances_by_token(wallets, tokens):
         token_address: get_token_balance_data(wallets, token_name, token_address)
         for token_name, token_address in tokens.items()
     }
+
+
+def get_sett_roi_data(network: Optional[str] = "eth") -> Optional[List[Dict]]:
+    log.info("Fetching ROI from Badger API")
+    response = get_json_request(
+        request_type="get", url=f"https://api.badger.finance/v2/setts?chain={network.lower()}"
+    )
+    if not response:
+        log.warning("Cannot fetch Sett ROI data from Badger API")
+        return
+
+    setts_data = []
+    for sett in response:
+        # Filter out deprecated setts
+        if not sett['deprecated']:
+            setts_data.append({
+                "sett_name": sett['name'],
+                "sett_roi": sett['apr'],
+            })
+    return setts_data
 
 
 def get_json_request(request_type, url, request_data=None):

@@ -4,28 +4,31 @@ import re
 import warnings
 from typing import Dict
 from typing import List
-from typing import Optional
 
-from brownie import chain, interface, Contract
-from prometheus_client import Gauge, start_http_server
+from brownie import chain
+from brownie import interface
+from brownie import Contract
+from prometheus_client import Gauge
+from prometheus_client import start_http_server
 from web3 import Web3
 
-from scripts.addresses import ADDRESSES_ETH, checksum_address_dict
-from scripts.data import (
-    get_badgertree_data,
-    get_digg_data,
-    get_ibbtc_data,
-    get_json_request,
-    get_lp_data,
-    get_peak_composition_data,
-    get_peak_value_data,
-    get_sett_data,
-    get_token_by_address,
-    get_token_interfaces,
-    get_wallet_balances_by_token,
-    get_yvault_data,
-)
-from scripts.logconf import console, log
+from scripts.addresses import ADDRESSES_ETH
+from scripts.addresses import checksum_address_dict
+from scripts.data import get_badgertree_data
+from scripts.data import get_digg_data
+from scripts.data import get_ibbtc_data
+from scripts.data import get_json_request
+from scripts.data import get_lp_data
+from scripts.data import get_peak_composition_data
+from scripts.data import get_peak_value_data
+from scripts.data import get_sett_data
+from scripts.data import get_sett_roi_data
+from scripts.data import get_token_by_address
+from scripts.data import get_token_interfaces
+from scripts.data import get_wallet_balances_by_token
+from scripts.data import get_yvault_data
+from scripts.logconf import console
+from scripts.logconf import log
 
 warnings.simplefilter("ignore")
 
@@ -60,26 +63,6 @@ peak_sett_composition = {
 }
 
 usd_prices_by_token_address = {}
-
-
-def get_sett_roi_data(network: Optional[str] = NETWORK) -> Optional[List[Dict]]:
-    log.info("Fetching ROI from Badger API")
-    response = get_json_request(
-        request_type="get", url=f"https://api.badger.finance/v2/setts?chain={network.lower()}"
-    )
-    if response.status != 200:
-        log.warning("Cannot fetch Sett ROI data from Badger API")
-        return
-
-    setts_data = []
-    for sett in response:
-        # Filter out deprecated setts
-        if not sett['deprecated']:
-            setts_data.append({
-                "sett_name": sett['name'],
-                "sett_roi": sett['apr'],
-            })
-    return setts_data
 
 
 def get_token_prices(token_csv, countertoken_csv, network):
