@@ -349,7 +349,7 @@ def get_sett_roi_data(network: Optional[str] = "eth") -> Optional[List[Dict]]:
     for sett in response:
         # Filter out deprecated setts
         if not sett['deprecated']:
-            setts_data.append({"sett_name": sett['name'], "sett_roi": sett['apr']})
+            setts_data.append(sett)
     return setts_data
 
 

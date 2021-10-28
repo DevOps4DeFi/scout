@@ -274,10 +274,19 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
 
 
 def update_setts_roi_gauge(
-        sett_roi_gauge: Gauge, sett_roi_data: List[Dict], network: str
+        sett_roi_gauge: Gauge, sett_data: List[Dict], network: str
 ) -> None:
-    for sett_roi in sett_roi_data:
-        sett_roi_gauge.labels(sett_roi['sett_name'], network, "ROI").set(sett_roi['sett_roi'])
+    for sett in sett_data:
+        sett_roi_gauge.labels(sett['name'], "none", network, "ROI").set(sett['apr'])
+        # Gather data for each Sett source separately now
+        for source in sett['sources']:
+            sett_roi_gauge.labels(sett['name'], source['name'], network, "apr").set(source['apr'])
+            sett_roi_gauge.labels(
+                sett['name'], source['name'], network, "minApr"
+            ).set(source['minApr'])
+            sett_roi_gauge.labels(
+                sett['name'], source['name'], network, "maxApr"
+            ).set(source['maxApr'])
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
@@ -489,7 +498,7 @@ def main():
     badger_sett_roi_gauge = Gauge(
         name="settRoi",
         documentation="Badger Sett ROI data",
-        labelnames=["sett", "targetChain", "param"],
+        labelnames=["sett", "source", "targetChain", "param"],
     )
     wallets_gauge = Gauge(
         name="wallets",
