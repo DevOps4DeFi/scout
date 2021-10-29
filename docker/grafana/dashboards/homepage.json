@@ -190,7 +190,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 8,
         "x": 11,
         "y": 8
@@ -249,10 +249,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 3,
         "w": 8,
         "x": 11,
-        "y": 12
+        "y": 13
       },
       "id": 33,
       "options": {
@@ -1330,7 +1330,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},

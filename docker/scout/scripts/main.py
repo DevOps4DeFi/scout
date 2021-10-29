@@ -14,6 +14,8 @@ from prometheus_client import start_http_server
 from web3 import Web3
 
 from scripts.addresses import ADDRESSES_ETH
+from scripts.addresses import SUPPORTED_CHAINS
+from scripts.addresses import reverse_addresses
 from scripts.addresses import checksum_address_dict
 from scripts.data import get_badgertree_data
 from scripts.data import get_digg_data
@@ -40,9 +42,6 @@ ETHNODEURL = os.environ["ETHNODEURL"]
 w3 = Web3(Web3.HTTPProvider(ETHNODEURL))
 
 NATIVE_TOKENS = ["BADGER", "DIGG", "bBADGER", "bDIGG"]
-
-# Excluding BSC since all Setts there are marked as deprecated
-SUPPORTED_CHAINS = ["eth", "arbitrum", "matic"]
 
 # get all addresses
 ADDRESSES = checksum_address_dict(ADDRESSES_ETH)
@@ -140,7 +139,7 @@ def update_price_gauge(
             f"Error getting CoinGecko price for [bold]{fetched_name}: {token_address}"
         )
         log.warning(e)
-        log.warning(token_prices, token_name, fetched_name, token_address)
+        # log.warning(token_prices, token_name, fetched_name, token_address)
 
 
 def update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg):
@@ -254,7 +253,10 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
     sett_name = sett.name
     sett_address = sett_vaults[sett_name]
     sett_token_name = sett_name[1:]
-    sett_token_address = treasury_tokens[re.sub("harvest", "", sett_token_name)]
+    try:
+        sett_token_address = treasury_tokens[re.sub("harvest", "", sett_token_name)]
+    except KeyError:
+        log.warning(f"Cannot find {sett_token_name} in treasury tokens. Skipping")
 
     sett_info = sett.describe()
 
@@ -276,8 +278,9 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
 def update_setts_roi_gauge(
         sett_roi_gauge: Gauge, sett_data: List[Dict], network: str
 ) -> None:
+    reversed_addresses = reverse_addresses()[network]
     for sett in sett_data:
-        sett_name = sett.get('vaultAsset') or sett.get('settAsset') or sett['name']
+        sett_name = reversed_addresses[sett['settToken']]
         sett_roi_gauge.labels(sett_name, "none", network, "ROI").set(sett['apr'])
         # Gather data for each Sett source separately now
         for source in sett['sources']:
@@ -410,7 +413,6 @@ def update_wallets_gauge(
                 f"Error calculating USD balances for wallet [bold]{wallet_name}"
             )
             log.info(e)
-            log.warning(eth_name, eth_address)
 
 
 def update_xchain_bridge_gauge(
