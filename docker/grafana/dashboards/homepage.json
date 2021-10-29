@@ -132,7 +132,7 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 11,
         "x": 0,
         "y": 8
       },
@@ -191,8 +191,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 7,
-        "x": 12,
+        "w": 8,
+        "x": 11,
         "y": 8
       },
       "id": 32,
@@ -209,8 +209,8 @@
           "values": false
         },
         "text": {
-          "titleSize": 12,
-          "valueSize": 25
+          "titleSize": 10,
+          "valueSize": 23
         },
         "textMode": "value_and_name"
       },
@@ -250,8 +250,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 7,
-        "x": 12,
+        "w": 8,
+        "x": 11,
         "y": 12
       },
       "id": 33,

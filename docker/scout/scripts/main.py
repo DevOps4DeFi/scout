@@ -277,16 +277,16 @@ def update_setts_roi_gauge(
         sett_roi_gauge: Gauge, sett_data: List[Dict], network: str
 ) -> None:
     for sett in sett_data:
-        sett_roi_gauge.labels(sett['name'], "none", network, "ROI").set(sett['apr'])
+        sett_name = sett.get('vaultAsset') or sett.get('settAsset') or sett['name']
+        sett_roi_gauge.labels(sett_name, "none", network, "ROI").set(sett['apr'])
         # Gather data for each Sett source separately now
         for source in sett['sources']:
-            sett_roi_gauge.labels(sett['name'], source['name'], network, "apr").set(source['apr'])
+            sett_roi_gauge.labels(sett_name, source['name'], network, "apr").set(source['apr'])
             sett_roi_gauge.labels(
-                sett['name'], source['name'], network, "minApr"
+                sett_name, source['name'], network, "minApr"
             ).set(source['minApr'])
             sett_roi_gauge.labels(
-                sett['name'], source['name'], network, "maxApr"
-            ).set(source['maxApr'])
+                sett_name, source['name'], network, "maxApr").set(source['maxApr'])
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
