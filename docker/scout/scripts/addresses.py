@@ -107,7 +107,7 @@ ADDRESSES_ETH = {
         "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
-        "veCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305",
+#        "veCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305", ##this broke scout and is just cvx
         "bveCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305",
 #        "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",  ##TODO NO COINGECKO PRICE
     },
@@ -127,6 +127,8 @@ ADDRESSES_ETH = {
     #Every single asset curve pool listed in treasury tokens must also be listed here.  This does not inclide tricrypto or other crypto like pools.
     #This list contains curve pools in which all of the underlying tokens have basically the same value.
     #Again every curve pool listed in treasury_tokens must be in this list, or crv_crypto_pools below
+    ## TODO for Andrii  Figure out better CRV handling.  These should all go in 1 list, other than tricrypto.
+
     "crv_pools": {
         "crvRenBTC": "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",
         "crvSBTC": "0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714",
