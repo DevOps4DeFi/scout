@@ -232,6 +232,12 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
 
 
+## TODO for Andrii:  The function above handles tricrypto which holds 3 different assets.  It looks at all the underlying tokens to figure out value and computes everything
+## The function below is simplified for bitcoin. It assumes that all tokens hold peg around WBTC as defined in the function.
+## In the end it would be better if the function below could look at the underlying asset and figure out what the base currency is.
+##  The 3 basic currencies we handle are wbtc, crv, and USD.  Then set USD price based on the underlying currency.
+##  If this were handled, all of the crv pools except tricrypto could be handeld by one function.
+##  As it stands right now, there is no USD price for the crv pools or USD pools in daowatch.
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
 
