@@ -261,8 +261,8 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
     sett_token_name = sett_name[1:]
     sett_token_name = re.sub("harvest", "", sett_token_name) #harvest sett
     sett_token_name = re.sub("bbveCVX-CVX-f", "CVX", sett_token_name) #bveCVX LP
-sett_token_name = re.sub("^ve", "", sett_token_name) #bveCVX
-try:
+    sett_token_name = re.sub("^ve", "", sett_token_name) #bveCVX
+    try:
         sett_token_address = treasury_tokens[sett_token_name]
     except KeyError:
         log.warning(f"Cannot find {sett_token_name} in treasury tokens. Skipping")
