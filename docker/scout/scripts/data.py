@@ -8,7 +8,7 @@ import requests
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
 
-from addresses import MAPPING_TO_SETT_API_CHAIN_PARAM
+from scripts.addresses import MAPPING_TO_SETT_API_CHAIN_PARAM
 from scripts.logconf import log
 
 
