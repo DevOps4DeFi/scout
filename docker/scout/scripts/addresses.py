@@ -515,9 +515,9 @@ def checksum_address_dict(addresses):
 
 
 # Excluding BSC since all Setts there are marked as deprecated
-CHAIN_ETH = "eth"
-CHAIN_ARB = "arbitrum"
-CHAIN_MATIC = "matic"
+CHAIN_ETH = "ETH"
+CHAIN_ARB = "ARB"
+CHAIN_MATIC = "POLYGON"
 SUPPORTED_CHAINS = [CHAIN_ETH, CHAIN_ARB, CHAIN_MATIC]
 
 
