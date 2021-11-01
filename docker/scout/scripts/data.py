@@ -8,6 +8,7 @@ import requests
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
 
+from addresses import MAPPING_TO_SETT_API_CHAIN_PARAM
 from scripts.logconf import log
 
 
@@ -336,10 +337,11 @@ def get_wallet_balances_by_token(wallets, tokens):
     }
 
 
-def get_sett_roi_data(network: Optional[str] = "eth") -> Optional[List[Dict]]:
+def get_sett_roi_data(network: Optional[str] = "ETH") -> Optional[List[Dict]]:
     log.info("Fetching ROI from Badger API")
+    chain = MAPPING_TO_SETT_API_CHAIN_PARAM[network]
     response = get_json_request(
-        request_type="get", url=f"https://api.badger.finance/v2/setts?chain={network.lower()}"
+        request_type="get", url=f"https://api.badger.finance/v2/setts?chain={chain}"
     )
     if not response:
         log.warning("Cannot fetch Sett ROI data from Badger API")
