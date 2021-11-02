@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import os
 import re
 import warnings
@@ -215,7 +216,7 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
     pool = interface.tricryptoPool(pool_address)
-    pool_divisor = 10 **pool_token_interface.decimals()
+    pool_divisor = 10 ** pool_token_interface.decimals()
     totalSupply = pool_token_interface.totalSupply() / pool_divisor
     balance = pool_token_interface.balance() / pool_divisor
 
@@ -236,23 +237,39 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
 
 
-def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
+def update_crv_tokens_gauge(crv_tokens_gauge: Gauge, pool_name: str, pool_address: str) -> None:
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
-
-    pool_token_name = pool_name
-    pool_token_address = treasury_tokens[pool_token_name]
-
+    pool_token_address = treasury_tokens[pool_name]
+    crv_swap = interface.CRVswap(pool_address)
     token_address = get_treasury_token_addr_by_pool_name(pool_name, treasury_tokens)
     # Fallback to WBTC
     if not token_address:
         token_address = treasury_tokens["WBTC"]
-    crv_swap = interface.CRVswap(pool_address)
+
+    pool_token_interface = interface.ERC20(token_address)
+    pool_divisor = 10 ** pool_token_interface.decimals()
+    total_supply = pool_token_interface.totalSupply() / pool_divisor
+    balance = pool_token_interface.balance() / pool_divisor
+
     virtual_price = crv_swap.get_virtual_price() / 1e18
     usd_price = virtual_price * usd_prices_by_token_address[token_address]
-    log.warning(f"CRV Token price: {pool_name}: virtual price {virtual_price} "
-                f"* usd token price {usd_prices_by_token_address[token_address]} == {usd_price}USD")
     crv_tokens_gauge.labels(pool_name, token_address, "pricePerShare").set(virtual_price)
     crv_tokens_gauge.labels(pool_name, token_address, "usdPricePerShare").set(usd_price)
+    crv_tokens_gauge.labels(pool_name, token_address, "balance").set(balance)
+    crv_tokens_gauge.labels(pool_name, token_address, "totalSupply").set(total_supply)
+
+    token_list = []
+    for i in itertools.count(start=0):
+        try:
+            token_list.append(interface.ERC20(crv_swap.coins(i)))
+        # Break when reaching out of range
+        except ValueError:
+            break
+
+    for token in token_list:
+        crv_tokens_gauge.labels(
+            pool_name, token_address,
+            f"{token.symbol()}_balance").set(token.balanceOf(pool_address) / 10 ** token.decimals())
 
     usd_prices_by_token_address[pool_token_address] = usd_price
 
