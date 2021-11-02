@@ -237,10 +237,29 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
 
 
+def get_crv_coins(pool_address: str):
+    # CRV meta pools use different interface, so need to check if any of these two interfaces has
+    # coins
+    coins = get_tokens_with_interfaces(interface.CRVswap(pool_address))
+    if not coins:
+        coins = get_tokens_with_interfaces(interface.crvTransfer(pool_address))
+    return coins
+
+
+def get_tokens_with_interfaces(crv_interface):
+    token_lists = []
+    for i in itertools.count(start=0):
+        try:
+            token_lists.append(interface.ERC20(crv_interface.coins(i)))
+        except ValueError:
+            break
+    return token_lists
+
+
 def update_crv_tokens_gauge(crv_tokens_gauge: Gauge, pool_name: str, pool_address: str) -> None:
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_address = treasury_tokens[pool_name]
-    crv_swap = interface.CRVswap(pool_address)
+    crv_swap = interface.crvTransfer(pool_address)
     token_address = get_treasury_token_addr_by_pool_name(pool_name, treasury_tokens)
     # Fallback to WBTC
     if not token_address:
@@ -258,13 +277,7 @@ def update_crv_tokens_gauge(crv_tokens_gauge: Gauge, pool_name: str, pool_addres
     crv_tokens_gauge.labels(pool_name, token_address, "balance").set(balance)
     crv_tokens_gauge.labels(pool_name, token_address, "totalSupply").set(total_supply)
 
-    token_list = []
-    for i in itertools.count(start=0):
-        try:
-            token_list.append(interface.ERC20(crv_swap.coins(i)))
-        # Break when reaching out of range
-        except ValueError:
-            break
+    token_list = get_crv_coins(pool_address)
 
     for token in token_list:
         crv_tokens_gauge.labels(
