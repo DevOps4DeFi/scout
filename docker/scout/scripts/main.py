@@ -259,7 +259,7 @@ def get_tokens_with_interfaces(crv_interface):
 def update_crv_tokens_gauge(crv_tokens_gauge: Gauge, pool_name: str, pool_address: str) -> None:
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_address = treasury_tokens[pool_name]
-    crv_swap = interface.crvTransfer(pool_address)
+    crv_swap = interface.CRVswap(pool_address)
     token_address = get_treasury_token_addr_by_pool_name(pool_name, treasury_tokens)
     # Fallback to WBTC
     if not token_address:
