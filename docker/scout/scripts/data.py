@@ -1,4 +1,5 @@
 import json
+import re
 from dataclasses import dataclass
 from typing import Dict
 from typing import List
@@ -353,6 +354,25 @@ def get_sett_roi_data(network: Optional[str] = "ETH") -> Optional[List[Dict]]:
         if not sett['deprecated']:
             setts_data.append(sett)
     return setts_data
+
+
+TOKEN_TO_TREASURY_TOKEN_NAME_MAPPING = {
+    'btc': "WTBC",
+    'usd': "USDT",
+    'cvx': "CVX",
+    'mim': "USDT",
+    'frax': "USDT",
+    '3pool': "USDT",
+    '3crv': "USDT",
+}
+
+
+def get_treasury_token_addr_by_pool_name(pool_name: str, treasury_tokens: Dict) -> Optional[str]:
+    token = None
+    for key, value in TOKEN_TO_TREASURY_TOKEN_NAME_MAPPING.items():
+        if re.search(key, pool_name, re.IGNORECASE):
+            token = value
+    return treasury_tokens.get(token) if token else None
 
 
 def get_json_request(request_type, url, request_data=None):

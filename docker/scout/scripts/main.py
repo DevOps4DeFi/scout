@@ -1,7 +1,6 @@
 import datetime
 import os
 import re
-import time
 import warnings
 from typing import Dict
 from typing import List
@@ -18,6 +17,7 @@ from scripts.addresses import SUPPORTED_CHAINS
 from scripts.addresses import reverse_addresses
 from scripts.addresses import checksum_address_dict
 from scripts.data import get_badgertree_data
+from scripts.data import get_treasury_token_addr_by_pool_name
 from scripts.data import get_digg_data
 from scripts.data import get_ibbtc_data
 from scripts.data import get_json_request
@@ -49,12 +49,16 @@ badger_wallets = ADDRESSES["badger_wallets"]
 treasury_tokens = ADDRESSES["treasury_tokens"]
 lp_tokens = ADDRESSES["lp_tokens"]
 crv_pools = ADDRESSES["crv_pools"]
+crv_stablecoin_pools = ADDRESSES["crv_stablecoin_pools"]
+crv_meta_pools = ADDRESSES["crv_meta_pools"]
 crv_3_pools = ADDRESSES["crv_3_pools"]
 sett_vaults = ADDRESSES["sett_vaults"]
 yearn_vaults = ADDRESSES["yearn_vaults"]
 custodians = ADDRESSES["custodians"]
 oracles = ADDRESSES["oracles"]
 peaks = ADDRESSES["peaks"]
+
+ALL_CRV_POOLS = {**crv_pools, **crv_stablecoin_pools, **crv_meta_pools}
 
 peak_sett_composition = {
     "badgerPeak": {
@@ -232,25 +236,23 @@ def update_crv_3_tokens_guage(guage, pool_name, pool_address):
         guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
 
 
-## TODO for Andrii:  The function above handles tricrypto which holds 3 different assets.  It looks at all the underlying tokens to figure out value and computes everything
-## The function below is simplified for bitcoin. It assumes that all tokens hold peg around WBTC as defined in the function.
-## In the end it would be better if the function below could look at the underlying asset and figure out what the base currency is.
-##  The 3 basic currencies we handle are wbtc, crv, and USD.  Then set USD price based on the underlying currency.
-##  If this were handled, all of the crv pools except tricrypto could be handeld by one function.
-##  As it stands right now, there is no USD price for the crv pools or USD pools in daowatch.
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
 
     pool_token_name = pool_name
     pool_token_address = treasury_tokens[pool_token_name]
 
-    wbtc_address = treasury_tokens["WBTC"]
-
-    virtual_price = interface.CRVswap(pool_address).get_virtual_price() / 1e18
-    usd_price = virtual_price * usd_prices_by_token_address[wbtc_address]
-
-    crv_tokens_gauge.labels(pool_name, wbtc_address, "pricePerShare").set(virtual_price)
-    crv_tokens_gauge.labels(pool_name, wbtc_address, "usdPricePerShare").set(usd_price)
+    token_address = get_treasury_token_addr_by_pool_name(pool_name, treasury_tokens)
+    # Fallback to WBTC
+    if not token_address:
+        token_address = treasury_tokens["WBTC"]
+    crv_swap = interface.CRVswap(pool_address)
+    virtual_price = crv_swap.get_virtual_price() / 1e18
+    usd_price = virtual_price * usd_prices_by_token_address[token_address]
+    log.warning(f"CRV Token price: {pool_name}: virtual price {virtual_price} "
+                f"* usd token price {usd_prices_by_token_address[token_address]} == {usd_price}USD")
+    crv_tokens_gauge.labels(pool_name, token_address, "pricePerShare").set(virtual_price)
+    crv_tokens_gauge.labels(pool_name, token_address, "usdPricePerShare").set(usd_price)
 
     usd_prices_by_token_address[pool_token_address] = usd_price
 
@@ -621,7 +623,7 @@ def main():
             )
 
         # process curve pool data
-        for pool_name, pool_address in crv_pools.items():
+        for pool_name, pool_address in ALL_CRV_POOLS.items():
             update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address)
 
         # process 3crv data data

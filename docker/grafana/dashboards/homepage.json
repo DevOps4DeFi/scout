@@ -15,6 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "id": 9,
   "links": [],
   "panels": [
     {
@@ -158,7 +159,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"eth\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"ETH\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -217,7 +218,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"arbitrum\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"ARB\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -276,7 +277,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"matic\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"POLYGON\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -361,7 +362,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"eth\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"ETH\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -446,7 +447,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"matic\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"POLYGON\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -531,7 +532,7 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum by (sett) (settRoi{targetChain=\"arbitrum\", param=\"ROI\"})",
+          "expr": "sum by (sett) (settRoi{targetChain=\"ARB\", param=\"ROI\"})",
           "interval": "",
           "legendFormat": "{{sett}}",
           "refId": "A"
@@ -1336,5 +1337,5 @@
   "timezone": "utc",
   "title": "Homepage",
   "uid": "IVTgOlwGz",
-  "version": 27
+  "version": 16
 }
