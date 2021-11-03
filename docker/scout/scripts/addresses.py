@@ -124,11 +124,6 @@ ADDRESSES_ETH = {
         "slpEthBDigg": "0xf9440fedc72a0b8030861dcdac39a75b544e7a3c",
         "slpWbtcIbBTC": "0x18d98D452072Ac2EB7b74ce3DB723374360539f1",
     },
-    #Every single asset curve pool listed in treasury tokens must also be listed here.  This does not inclide tricrypto or other crypto like pools.
-    #This list contains curve pools in which all of the underlying tokens have basically the same value.
-    #Again every curve pool listed in treasury_tokens must be in this list, or crv_crypto_pools below
-    ## TODO for Andrii  Figure out better CRV handling.  These should all go in 1 list, other than tricrypto.
-
     "crv_pools": {
         "crvRenBTC": "0x93054188d876f558f4a66B2EF1d97d16eDf0895B",
         "crvSBTC": "0x7fC77b5c7614E1533320Ea6DDc2Eb61fa00A9714",
