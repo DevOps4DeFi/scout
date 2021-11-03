@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": null,
+  "id": 9,
   "links": [],
   "panels": [
     {
@@ -43,7 +43,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "decimals": 2,
           "mappings": [],
@@ -74,12 +75,15 @@
           "fields": "",
           "values": false
         },
-        "text": {},
+        "text": {
+          "titleSize": 21
+        },
         "textMode": "auto"
       },
       "pluginVersion": "8.0.6",
       "targets": [
         {
+          "exemplar": true,
           "expr": "sum by (token) (coingecko_prices{token=~\".*BADGER\",countercurrency=\"usd\"})",
           "interval": "",
           "legendFormat": "{{token}}",
@@ -110,6 +114,438 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 29,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{targetChain=\"ETH\", param=\"ROI\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Badger Setts ROI ETH",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 7,
+        "x": 12,
+        "y": 8
+      },
+      "id": 32,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{targetChain=\"ARB\", param=\"ROI\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Badger Setts ROI Arbitrum",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 7,
+        "x": 12,
+        "y": 13
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {
+          "titleSize": 12,
+          "valueSize": 25
+        },
+        "textMode": "value_and_name"
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{targetChain=\"POLYGON\", param=\"ROI\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Badger Setts ROI Polygon",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 7,
+        "x": 0,
+        "y": 17
+      },
+      "id": 31,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{targetChain=\"ETH\", param=\"ROI\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Sett ROI Over Time ETH",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 7,
+        "y": 17
+      },
+      "id": 34,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{targetChain=\"POLYGON\", param=\"ROI\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Sett ROI Over Time Polygon",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 13,
+        "y": 17
+      },
+      "id": 35,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{targetChain=\"ARB\", param=\"ROI\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Sett ROI Over Time Arbitrum",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "continuous-BlPu"
           },
           "mappings": [],
@@ -125,7 +561,7 @@
         "h": 7,
         "w": 19,
         "x": 0,
-        "y": 8
+        "y": 27
       },
       "id": 25,
       "options": {
@@ -194,7 +630,7 @@
         "h": 3,
         "w": 9,
         "x": 0,
-        "y": 15
+        "y": 34
       },
       "id": 8,
       "links": [
@@ -255,7 +691,7 @@
         "h": 3,
         "w": 10,
         "x": 9,
-        "y": 15
+        "y": 34
       },
       "id": 4,
       "options": {
@@ -319,7 +755,7 @@
         "h": 9,
         "w": 19,
         "x": 0,
-        "y": 18
+        "y": 37
       },
       "hiddenSeries": false,
       "id": 6,
@@ -487,7 +923,7 @@
         "h": 8,
         "w": 13,
         "x": 0,
-        "y": 27
+        "y": 46
       },
       "hiddenSeries": false,
       "id": 18,
@@ -613,7 +1049,7 @@
         "h": 8,
         "w": 6,
         "x": 13,
-        "y": 27
+        "y": 46
       },
       "id": 27,
       "options": {
@@ -710,7 +1146,7 @@
         "h": 8,
         "w": 19,
         "x": 0,
-        "y": 35
+        "y": 54
       },
       "hiddenSeries": false,
       "id": 10,
@@ -842,7 +1278,7 @@
         "h": 13,
         "w": 19,
         "x": 0,
-        "y": 43
+        "y": 62
       },
       "id": 12,
       "options": {
@@ -894,12 +1330,12 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "utc",
   "title": "Homepage",
   "uid": "IVTgOlwGz",
-  "version": 19
+  "version": 16
 }

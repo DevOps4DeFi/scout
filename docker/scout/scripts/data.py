@@ -1,12 +1,15 @@
 import json
-import logging
+import re
 from dataclasses import dataclass
+from typing import Dict
+from typing import List
+from typing import Optional
 
 import requests
 from brownie import interface
 from brownie.network.contract import InterfaceContainer
-from web3 import Web3
 
+from scripts.addresses import MAPPING_TO_SETT_API_CHAIN_PARAM
 from scripts.logconf import log
 
 
@@ -335,15 +338,55 @@ def get_wallet_balances_by_token(wallets, tokens):
     }
 
 
+def get_sett_roi_data(network: Optional[str] = "ETH") -> Optional[List[Dict]]:
+    log.info("Fetching ROI from Badger API")
+    chain = MAPPING_TO_SETT_API_CHAIN_PARAM[network]
+    response = get_json_request(
+        request_type="get", url=f"https://api.badger.finance/v2/setts?chain={chain}"
+    )
+    if not response:
+        log.warning("Cannot fetch Sett ROI data from Badger API")
+        return
+
+    setts_data = []
+    for sett in response:
+        # Filter out deprecated setts
+        if not sett['deprecated']:
+            setts_data.append(sett)
+    return setts_data
+
+
+TOKEN_TO_TREASURY_TOKEN_NAME_MAPPING = {
+    'btc': "WTBC",
+    'usd': "USDT",
+    'cvx': "CVX",
+    'mim': "USDT",
+    'frax': "USDT",
+    '3pool': "USDT",
+    '3crv': "USDT",
+}
+
+
+def get_treasury_token_addr_by_pool_name(pool_name: str, treasury_tokens: Dict) -> Optional[str]:
+    token = None
+    for key, value in TOKEN_TO_TREASURY_TOKEN_NAME_MAPPING.items():
+        if re.search(key, pool_name, re.IGNORECASE):
+            token = value
+    return treasury_tokens.get(token) if token else None
+
+
 def get_json_request(request_type, url, request_data=None):
     """Takes a request object and request type, then returns the response in JSON format"""
-    json_request = json.dumps(request_data)
-
+    json_request = json.dumps(request_data) if request_data else None
     if request_type == "get":
         r = requests.get(f"{url}", data=json_request)
     elif request_type == "post":
         r = requests.post(f"{url}", data=json_request)
     else:
         return None
-
+    try:
+        r.raise_for_status()
+    except requests.exceptions.HTTPError:
+        log.error(f"Got error from {url}")
+        return
     return r.json()
