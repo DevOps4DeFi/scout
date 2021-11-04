@@ -41,7 +41,7 @@ def main():
     badger_sett_roi_gauge = Gauge(
         name="settRoi",
         documentation="Badger Sett ROI data",
-        labelnames=["sett", "source", "targetChain", "param"],
+        labelnames=["sett", "source", "chain", "param"],
     )
     while True:
         for network in SUPPORTED_CHAINS:
