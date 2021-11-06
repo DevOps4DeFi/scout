@@ -5,15 +5,65 @@ from time import sleep
 from typing import Dict
 from typing import List
 
+import requests
 from prometheus_client import Gauge
 from prometheus_client import start_http_server  # noqa
+from web3 import Web3
 
+from scripts.addresses import CHAIN_ETH
+from scripts.addresses import ADDRESSES_ETH
 from scripts.addresses import SUPPORTED_CHAINS
+from scripts.addresses import checksum_address_dict
 from scripts.addresses import reverse_addresses
 from scripts.data import get_sett_roi_data
 from scripts.logconf import log
 
 PROMETHEUS_PORT = 8801
+
+
+ADDRESSES = checksum_address_dict(ADDRESSES_ETH)
+# Flatten CVX dicts
+CVX_ADDRESSES = {
+    **ADDRESSES['crv_pools'],
+    **ADDRESSES['crv_3_pools'],
+    **ADDRESSES['crv_stablecoin_pools'],
+}
+
+
+CVX_GRAPH_QUERY = """{
+  platforms(first: 5) {
+    id
+    curvePools {
+      name,
+      swap,
+      lpToken,
+      token,
+      gauge,
+      cvxApr,
+    }
+  }
+}
+"""
+
+
+def get_apr_from_convex() -> List[Dict]:
+    result = requests.post(
+        'https://api.thegraph.com/subgraphs/name/convex-community/curve-pools',
+        json={'query': CVX_GRAPH_QUERY}
+    )
+    result.raise_for_status()
+    return result.json()['data']['platforms'][0]['curvePools']
+
+
+def update_crv_setts_roi_gauge(
+    sett_roi_gauge: Gauge, sett_data: List[Dict]
+):
+    for sett_name, sett_address in CVX_ADDRESSES.items():
+        for cvx_item in sett_data:
+            if Web3.toChecksumAddress(cvx_item['swap']) == sett_address:
+                sett_roi_gauge.labels(
+                    sett_name, "none", CHAIN_ETH, "cvxROI"
+                ).set(cvx_item['cvxApr'])
 
 
 def update_setts_roi_gauge(
@@ -47,4 +97,7 @@ def main():
         for network in SUPPORTED_CHAINS:
             setts_roi = get_sett_roi_data(network)
             update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi, network)
+        # Get data from convex to compare it to data from Badger API
+        crvcvx_pools_data = get_apr_from_convex()
+        update_crv_setts_roi_gauge(badger_sett_roi_gauge, crvcvx_pools_data)
         sleep(60)
