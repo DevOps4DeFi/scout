@@ -33,6 +33,8 @@ CVX_ADDRESSES = {
 def update_crv_setts_roi_gauge(
     sett_roi_gauge: Gauge, sett_data: List[Dict]
 ):
+    if not sett_data:
+        return
     for sett_name, sett_address in CVX_ADDRESSES.items():
         for cvx_item in sett_data:
             if Web3.toChecksumAddress(cvx_item['swap']) == sett_address:

@@ -362,7 +362,7 @@ def get_apr_from_convex() -> Optional[List[Dict]]:
     try:
         result.raise_for_status()
     except requests.exceptions.HTTPError:
-        log.error("Got error from CVX graph API}")
+        log.error("Got error from CVX graph API")
         return
     return result.json()['data']['platforms'][0]['curvePools']
 
