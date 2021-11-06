@@ -118,6 +118,66 @@
           },
           "mappings": [],
           "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 19,
+        "x": 0,
+        "y": 8
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.0.6",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "sum by (sett) (settRoi{param=\"cvxROI\", chain=\"ETH\"})",
+          "interval": "",
+          "legendFormat": "{{sett}}",
+          "refId": "A"
+        }
+      ],
+      "title": "CRV Setts data from Convex",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
             "mode": "percentage",
             "steps": [
               {
@@ -134,7 +194,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 15
       },
       "id": 29,
       "options": {
@@ -193,7 +253,7 @@
         "h": 5,
         "w": 7,
         "x": 12,
-        "y": 8
+        "y": 15
       },
       "id": 32,
       "options": {
@@ -252,7 +312,7 @@
         "h": 4,
         "w": 7,
         "x": 12,
-        "y": 13
+        "y": 20
       },
       "id": 33,
       "options": {
@@ -346,7 +406,7 @@
         "h": 10,
         "w": 7,
         "x": 0,
-        "y": 17
+        "y": 24
       },
       "id": 31,
       "options": {
@@ -431,7 +491,7 @@
         "h": 10,
         "w": 6,
         "x": 7,
-        "y": 17
+        "y": 24
       },
       "id": 34,
       "options": {
@@ -516,7 +576,7 @@
         "h": 10,
         "w": 6,
         "x": 13,
-        "y": 17
+        "y": 24
       },
       "id": 35,
       "options": {
@@ -561,7 +621,7 @@
         "h": 7,
         "w": 19,
         "x": 0,
-        "y": 27
+        "y": 34
       },
       "id": 25,
       "options": {
@@ -630,7 +690,7 @@
         "h": 3,
         "w": 9,
         "x": 0,
-        "y": 34
+        "y": 41
       },
       "id": 8,
       "links": [
@@ -691,7 +751,7 @@
         "h": 3,
         "w": 10,
         "x": 9,
-        "y": 34
+        "y": 41
       },
       "id": 4,
       "options": {
@@ -755,7 +815,7 @@
         "h": 9,
         "w": 19,
         "x": 0,
-        "y": 37
+        "y": 44
       },
       "hiddenSeries": false,
       "id": 6,
@@ -923,7 +983,7 @@
         "h": 8,
         "w": 13,
         "x": 0,
-        "y": 46
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 18,
@@ -1049,7 +1109,7 @@
         "h": 8,
         "w": 6,
         "x": 13,
-        "y": 46
+        "y": 53
       },
       "id": 27,
       "options": {
@@ -1146,7 +1206,7 @@
         "h": 8,
         "w": 19,
         "x": 0,
-        "y": 54
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 10,
@@ -1278,7 +1338,7 @@
         "h": 13,
         "w": 19,
         "x": 0,
-        "y": 62
+        "y": 69
       },
       "id": 12,
       "options": {
