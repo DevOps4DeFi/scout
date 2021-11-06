@@ -61,9 +61,10 @@ def update_crv_setts_roi_gauge(
     for sett_name, sett_address in CVX_ADDRESSES.items():
         for cvx_item in sett_data:
             if Web3.toChecksumAddress(cvx_item['swap']) == sett_address:
+                log.info(f"Updated CVX CRV pool {sett_name}")
                 sett_roi_gauge.labels(
                     sett_name, "none", CHAIN_ETH, "cvxROI"
-                ).set(cvx_item['cvxApr'])
+                ).set(float(cvx_item['cvxApr']) * 100)
 
 
 def update_setts_roi_gauge(
