@@ -338,6 +338,35 @@ def get_wallet_balances_by_token(wallets, tokens):
     }
 
 
+CVX_GRAPH_QUERY = """{
+  platforms(first: 5) {
+    id
+    curvePools {
+      name,
+      swap,
+      lpToken,
+      token,
+      gauge,
+      cvxApr,
+    }
+  }
+}
+"""
+
+
+def get_apr_from_convex() -> Optional[List[Dict]]:
+    result = requests.post(
+        'https://api.thegraph.com/subgraphs/name/convex-community/curve-pools',
+        json={'query': CVX_GRAPH_QUERY}
+    )
+    try:
+        result.raise_for_status()
+    except requests.exceptions.HTTPError:
+        log.error("Got error from CVX graph API}")
+        return
+    return result.json()['data']['platforms'][0]['curvePools']
+
+
 def get_sett_roi_data(network: Optional[str] = "ETH") -> Optional[List[Dict]]:
     log.info("Fetching ROI from Badger API")
     chain = MAPPING_TO_SETT_API_CHAIN_PARAM[network]

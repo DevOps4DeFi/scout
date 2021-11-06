@@ -5,16 +5,16 @@ from time import sleep
 from typing import Dict
 from typing import List
 
-import requests
 from prometheus_client import Gauge
 from prometheus_client import start_http_server  # noqa
 from web3 import Web3
 
-from scripts.addresses import CHAIN_ETH
 from scripts.addresses import ADDRESSES_ETH
+from scripts.addresses import CHAIN_ETH
 from scripts.addresses import SUPPORTED_CHAINS
 from scripts.addresses import checksum_address_dict
 from scripts.addresses import reverse_addresses
+from scripts.data import get_apr_from_convex
 from scripts.data import get_sett_roi_data
 from scripts.logconf import log
 
@@ -28,31 +28,6 @@ CVX_ADDRESSES = {
     **ADDRESSES['crv_3_pools'],
     **ADDRESSES['crv_stablecoin_pools'],
 }
-
-
-CVX_GRAPH_QUERY = """{
-  platforms(first: 5) {
-    id
-    curvePools {
-      name,
-      swap,
-      lpToken,
-      token,
-      gauge,
-      cvxApr,
-    }
-  }
-}
-"""
-
-
-def get_apr_from_convex() -> List[Dict]:
-    result = requests.post(
-        'https://api.thegraph.com/subgraphs/name/convex-community/curve-pools',
-        json={'query': CVX_GRAPH_QUERY}
-    )
-    result.raise_for_status()
-    return result.json()['data']['platforms'][0]['curvePools']
 
 
 def update_crv_setts_roi_gauge(
