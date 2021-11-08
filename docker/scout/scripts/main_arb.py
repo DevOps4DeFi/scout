@@ -3,26 +3,23 @@ import os
 import re
 import warnings
 
-from brownie import chain, interface, Contract
-from prometheus_client import Gauge, start_http_server
+from brownie import chain
+from brownie import interface  # noqa
+from prometheus_client import Gauge
+from prometheus_client import start_http_server  # noqa
 from web3 import Web3
 
-from scripts.addresses import ADDRESSES_ARBITRUM, checksum_address_dict
-from scripts.data import (
-    get_badgertree_data,
-    get_digg_data,
-    get_ibbtc_data,
-    get_json_request,
-    get_lp_data,
-    get_peak_composition_data,
-    get_peak_value_data,
-    get_sett_data,
-    get_token_by_address,
-    get_token_interfaces,
-    get_wallet_balances_by_token,
-    get_yvault_data,
-)
-from scripts.logconf import console, log
+from scripts.addresses import ADDRESSES_ARBITRUM
+from scripts.addresses import checksum_address_dict
+from scripts.data import get_badgertree_data
+from scripts.data import get_json_request
+from scripts.data import get_lp_data
+from scripts.data import get_sett_data
+from scripts.data import get_token_by_address
+from scripts.data import get_token_interfaces
+from scripts.data import get_wallet_balances_by_token
+from scripts.logconf import console
+from scripts.logconf import log
 
 warnings.simplefilter("ignore")
 
@@ -47,29 +44,28 @@ coingecko_tokens = ADDRESSES["coingecko_tokens"]
 
 usd_prices_by_token_address = {}
 
+
 def get_token_prices(token_csv, countertoken_csv, network):
     log.info("Fetching token prices from CoinGecko ...")
 
     if network == "ETH":
         # fetch prices by token_address on ETH
-        # fetch prices by token_address on ETH
-        url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
+        url = (f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?"
+               f"contract_addresses={token_csv}&vs_currencies={countertoken_csv}")
     else:
         # fetch prices by coingecko_name on BSC
-        url = f"https://api.coingecko.com/api/v3/simple/price?ids={token_csv}&vs_currencies={countertoken_csv}"
-
+        url = (f"https://api.coingecko.com/api/v3/simple/price"
+               f"?ids={token_csv}&vs_currencies={countertoken_csv}")
 
     token_prices = get_json_request(request_type="get", url=url)
     return token_prices
 
 
 def update_price_gauge(
-    coingecko_price_gauge,
     treasury_tokens,
     token_prices,
     token_name,
     token_address,
-    countertoken_csv,
     network,
 ):
     lp_prefixes = ("uni", "slp", "crv", "cake")
@@ -87,9 +83,8 @@ def update_price_gauge(
             else:
                 price_key = token_name
 
-
             price = token_prices[price_key]
-## We already have coingecko pricing on eth.
+#               We already have coingecko pricing on eth.
 #            for countertoken in countertoken_csv.split(","):
 #              coingecko_price_gauge.labels(
 #                    "ETH" if fetched_name == "WETH"
@@ -109,6 +104,7 @@ def update_price_gauge(
         )
         log.warning(e)
         log.warning(token_prices, token_name, fetched_name, token_address)
+
 
 def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interfaces):
     lp_name = lp_token.name
@@ -151,29 +147,41 @@ def update_lp_tokens_gauge(lp_tokens_gauge, lp_tokens, lp_token, token_interface
         log.warning(f"Error calculating USD price for lpToken [bold]{lp_name}")
         log.warning(e)
 
+
 def update_crv_3_tokens_guage(guage, pool_name, pool_address):
     log.info(f"Processing crvToken data for [bold]{pool_name}...")
     pool_token_interface = interface.ERC20(treasury_tokens[pool_name])
     pool = interface.tricryptoPool(pool_address)
-    pool_divisor = 10 **pool_token_interface.decimals()
-    totalSupply = pool_token_interface.totalSupply() / pool_divisor
+    pool_divisor = 10 ** pool_token_interface.decimals()
+    total_supply = pool_token_interface.totalSupply() / pool_divisor
     balance = pool_token_interface.balance() / pool_divisor
-
 
     tokenlist = []
     usd_balance = 0
     for i in range(3):
         tokenlist.append(interface.ERC20(pool.coins(i)))
     for tokenInterface in tokenlist:
-        guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_balance").set(tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals())
-        usd_balance += (tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) * usd_prices_by_token_address[tokenInterface.address]
-    usd_price = (usd_balance / totalSupply)
+        guage.labels(
+            pool_name, pool_token_interface.address,
+            f"{tokenInterface.symbol()}_balance").set(
+            tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()
+        )
+        usd_balance += (
+                tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()
+                * usd_prices_by_token_address[tokenInterface.address]
+        )
+    usd_price = (usd_balance / total_supply)
     guage.labels(pool_name, pool_token_interface.address, "usdPricePerShare").set(usd_price)
-    guage.labels(pool_name, pool_token_interface.address, "totalSupply").set(totalSupply)
+    guage.labels(pool_name, pool_token_interface.address, "totalSupply").set(total_supply)
     guage.labels(pool_name, pool_token_interface.address, "balance").set(balance)
     usd_prices_by_token_address[pool_token_interface.address] = usd_price
     for tokenInterface in tokenlist:
-        guage.labels(pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share").set((tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()) / (pool_token_interface.totalSupply()/ pool_divisor))
+        guage.labels(
+            pool_name, pool_token_interface.address, f"{tokenInterface.symbol()}_per_share"
+        ).set(
+            (tokenInterface.balanceOf(pool_address) / 10 ** tokenInterface.decimals()
+             ) / (pool_token_interface.totalSupply() / pool_divisor)
+        )
 
 
 def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
@@ -217,13 +225,13 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
         log.warning(e)
 
+
 def update_wallets_gauge(
     wallets_gauge,
     wallet_balances_by_token,
     token_name,
     token_address,
     treasury_tokens,
-    network,
 ):
     log.info(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
 
@@ -260,7 +268,6 @@ def update_wallets_gauge(
                 f"Error calculating USD balances for wallet [bold]{wallet_name}"
             )
             log.info(e)
-            log.warning(eth_name, eth_address)
 
 
 def update_rewards_gauge(rewards_gauge, badgertree, badger, treasury_tokens):
@@ -372,12 +379,10 @@ def main():
         token_prices = get_token_prices(token_csv, countertoken_csv, NETWORK)
         for token_name, token_address in coingecko_tokens.items():
             update_price_gauge(
-                coingecko_price_gauge,
                 treasury_tokens,
                 token_prices,
                 token_name,
                 token_address,
-                countertoken_csv,
                 NETWORK,
             )
 
@@ -409,7 +414,6 @@ def main():
             token_name,
             token_address,
             treasury_tokens,
-            NETWORK,
         )
 
         # process rewards balances
