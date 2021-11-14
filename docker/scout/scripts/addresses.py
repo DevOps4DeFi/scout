@@ -92,6 +92,7 @@ ADDRESSES_ETH = {
         "crvBBTC": "0x410e3E86ef427e30B9235497143881f717d93c2A",
         "crvOBTC": "0x2fE94ea3d5d4a175184081439753DE15AeF9d614",
         "crvPBTC": "0xDE5331AC4B3630f94853Ff322B66407e0D6331E8",
+        "crvIbBTC": "0xFbdCA68601f835b27790D98bbb8eC7f05FDEaA9B",
         "crvTricrypto": "0xcA3d75aC011BF5aD07a98d02f18225F9bD9A6BDF",
         "crvTricrypto2": "0xc4AD29ba4B3c580e6D59105FFf484999997675Ff",
         "crv3pool": "0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490",
@@ -131,6 +132,7 @@ ADDRESSES_ETH = {
         "crvBBTC": "0x071c661B4DeefB59E2a3DdB20Db036821eeE8F4b",
         "crvOBTC": "0xd81dA8D904b52208541Bade1bD6595D8a251F8dd",
         "crvPBTC": "0x7F55DDe206dbAD629C080068923b36fe9D6bDBeF",
+        "crvIbBTC": "0xFbdCA68601f835b27790D98bbb8eC7f05FDEaA9B"
     },
     # Pool addresses for curve pools that handle non-stable coins like tricypto
     "crv_3_pools": {
@@ -168,6 +170,7 @@ ADDRESSES_ETH = {
         "bcrvPBTC": "0x55912d0cf83b75c492e761932abc4db4a5cb1b17",
         "bcrvOBTC": "0xf349c0faa80fc1870306ac093f75934078e28991",
         "bcrvBBTC": "0x5dce29e92b1b939f8e8c60dcf15bde82a85be4a9",
+        "bcrvIbBTC": "0xaE96fF08771a109dc6650a1BdCa62F2d558E40af",
         "bcrvTricrypto": "0xBE08Ef12e4a553666291E9fFC24fCCFd354F2Dd2",
         "bcrvTricrypto2": "0x27E98fC7d05f54E544d16F58C194C2D7ba71e3B5",
         "bcvxCRV": "0x2B5455aac8d64C14786c3a29858E43b5945819C0",
