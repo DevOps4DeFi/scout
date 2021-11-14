@@ -7,11 +7,11 @@ ADDRESSES_ETH = {
     "zero": "0x0000000000000000000000000000000000000000",
     "treasury": "0x8dE82C4C968663a0284b01069DDE6EF231D0Ef9B",
     "governance_timelock": "0x21CF9b77F88Adf8F8C98d7E33Fe601DC57bC0893",
-    "rewardsLogger" : "0x0A4F4e92C3334821EbB523324D09E321a6B0d8ec",
+    "rewardsLogger": "0x0A4F4e92C3334821EbB523324D09E321a6B0d8ec",
     "registry": "0xFda7eB6f8b7a9e9fCFd348042ae675d1d652454f",
     "keeperAccessControl": "0x711A339c002386f9db409cA55b6A35a604aB6cF6",
     "GatedMiniMeController": "0xdDB2dfad74F64F14bb1A1cbaB9C03bc0eed74493",
-    ### The wallets listed here are looped over by scout and checked for all treasury tokens
+    # The wallets listed here are looped over by scout and checked for all treasury tokens
     "badger_wallets": {
         "fees": "0x8dE82C4C968663a0284b01069DDE6EF231D0Ef9B",
         "team": "0xe4aa1d8aaf8a50422bc5c7310deb1262d1f6f657",
@@ -25,7 +25,7 @@ ADDRESSES_ETH = {
         "test_multisig_1": "0x55949f769d0af7453881435612561d109fff07b8",
         "test_multisig": "0x33909cb2633d4B298a72042Da5686B45E9385ed0",
         "techops_multisig": "0x86cbD0ce0c087b482782c181dA8d191De18C8275",
-        "politician_multisig": "0x6F76C6A1059093E21D8B1C13C4e20D8335e2909F", ##Bribes
+        "politician_multisig": "0x6F76C6A1059093E21D8B1C13C4e20D8335e2909F",  # Bribes
         "ops_multisig": "0xD4868d98849a58F743787c77738D808376210292",
         "ops_multisig_old": "0x576cD258835C529B54722F84Bb7d4170aA932C64",
         "dfdBadgerShared": "0xCF7346A5E41b0821b80D5B3fdc385EEB6Dc59F44",
@@ -52,7 +52,8 @@ ADDRESSES_ETH = {
         "testProxyAdmin": "0xB10b3Af646Afadd9C62D663dd5d226B15C25CdFA",
     },
     #Scout stores prices for all tokens here, either from coingecko or interpolation
-    # Any token here that does not have a coingeco price must be included in sett_vaults, lp_tokens or crvpools
+    # Any token here that does not have a coingeco price must be included in sett_vaults,
+    # lp_tokens or crvpools
     # or one of the crv_ lists in order to have it's price calculated and not break scout.
     "treasury_tokens": {
         "FARM": "0xa0246c9032bC3A600820415aE600c6388619A14D",
@@ -107,13 +108,13 @@ ADDRESSES_ETH = {
         "bcrvRenBTC": "0x6dEf55d2e18486B9dDfaA075bc4e4EE0B28c1545",
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
-#        "veCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305", ##this broke scout and is just cvx
         "bveCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305",
-#        "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",  ##TODO NO COINGECKO PRICE
+        # "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",  # TODO NO COINGECKO PRICE
     },
-    #Every slp token listed in treasury tokens above must also be listed here.  The lp_tokens in this list
-    #are processed by scount to determine holdings and underlying value and set the price for the token in treasury_tokens
-    #Note that only univ2 style tokens should be listed here
+    # Every slp token listed in treasury tokens above must also be listed here.
+    # The lp_tokens in this list are processed by scount to determine holdings and underlying value
+    # and set the price for the token in treasury_tokens
+    # Note that only univ2 style tokens should be listed here
     "lp_tokens": {
         "slpWbtcEth": "0xceff51756c56ceffca006cd410b03ffc46dd3a58",
         "slpWbtcBadger": "0x110492b31c59716ac47337e616804e3e3adc0b4a",
@@ -207,11 +208,11 @@ ADDRESSES_ETH = {
         "native.bbveCVX-CVX-f": "0x98Ca7AFa876f0e15494E76E92C5b3658cdE1Ffe1",
     },
     "logic": {
-        "StrategyConvexStakingOptimizer": "0x0bB87f40D4eb6066a2311B7BE3B45A3D15771557", # V1.1
-        "StrategyCvxHelper": "0x9A12A9141363A5B343B781c4951d42E327B89397", # V1.1
-        "StrategyCvxCrvHelper": "0x76328277232c97BAf76D23A69015CB478293A048", # V1.1
+        "StrategyConvexStakingOptimizer": "0x0bB87f40D4eb6066a2311B7BE3B45A3D15771557",  # V1.1
+        "StrategyCvxHelper": "0x9A12A9141363A5B343B781c4951d42E327B89397",  # V1.1
+        "StrategyCvxCrvHelper": "0x76328277232c97BAf76D23A69015CB478293A048",  # V1.1
         "KeeperAccessControl": "0x4fe70eE8fa906D59A88DE5946F114BdbFC410a80",
-        "native.vestedCVX": "0x3eB64fEB1F7D7037304B914bB8A109d2e09B5087" # V1.1
+        "native.vestedCVX": "0x3eB64fEB1F7D7037304B914bB8A109d2e09B5087"  # V1.1
     },
     "guestlists": {
         "bimBTC": "0x7feCCc72aE222e0483cBDE212F5F88De62132546",
@@ -393,10 +394,10 @@ ADDRESSES_ARBITRUM = {
         "bslpSushiWeth": "0xe774D1FB3133b037AA17D39165b8F45f444f632d",
         "bcrvRenBTC": "0xBA418CDdd91111F5c1D1Ac2777Fa8CEa28D71843",
         "bcrvTricrypto": "0x4591890225394BF66044347653e112621AF7DDeb",
-        "bDXSSwaprWeth": "0x0c2153e8aE4DB8233c61717cDC4c75630E952561",
-        "bDXSWbtcWeth": "0xaf9aB64F568149361ab670372b16661f4380e80B",
-        "bDXSBadgerWeth": "0xE9C12F06F8AFFD8719263FE4a81671453220389c",
-        "bDXSIbbtcWeth": "0x60129b2b762952dfe8b21f40ee8aa3b2a4623546"
+        "bdxsSwaprWeth": "0x0c2153e8aE4DB8233c61717cDC4c75630E952561",
+        "bdxsWbtcWeth": "0xaf9aB64F568149361ab670372b16661f4380e80B",
+        "bdxsBadgerWeth": "0xE9C12F06F8AFFD8719263FE4a81671453220389c",
+        "bdxsIbbtcWeth": "0x60129b2b762952dfe8b21f40ee8aa3b2a4623546"
     },
     "strategies": {
         "native.renCrv": "0x4C5d19Da5EaeC298B79879a5f7481bEDE055F4F8",
