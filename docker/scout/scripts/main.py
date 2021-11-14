@@ -417,7 +417,7 @@ def update_wallets_gauge(
             wallet_address,
         ) = wallet.values()
 
-        eth_name = "ETH" if network == "ETH" else "BNB"
+        eth_name = "ETH"
         eth_address = treasury_tokens[f"W{eth_name}"]
         eth_balance = float(w3.fromWei(w3.eth.getBalance(wallet_address), "ether"))
 
@@ -437,7 +437,7 @@ def update_wallets_gauge(
             ).set(eth_balance * usd_prices_by_token_address[eth_address])
         except Exception as e:
             log.warning(
-                f"Error calculating USD balances for wallet [bold]{wallet_name}"
+                f"Error calculating USD balances for wallet [bold]{wallet_name} token [bold]{token_name}"
             )
             log.info(e)
 
@@ -624,6 +624,12 @@ def main():
         # process digg oracle prices
         update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg)
 
+        # process rewards balances
+        update_rewards_gauge(rewards_gauge, badgertree, badger, digg, treasury_tokens)
+
+        # process badgertree cycles
+        last_cycle_unixtime = badgertree_cycles.describe()
+        update_cycle_gauge(cycle_gauge, last_cycle_unixtime)
         # process lp data
         for lp_token in lp_data:
             update_lp_tokens_gauge(
@@ -693,9 +699,4 @@ def main():
                 treasury_tokens,
             )
 
-        # process rewards balances
-        update_rewards_gauge(rewards_gauge, badgertree, badger, digg, treasury_tokens)
 
-        # process badgertree cycles
-        last_cycle_unixtime = badgertree_cycles.describe()
-        update_cycle_gauge(cycle_gauge, last_cycle_unixtime)
