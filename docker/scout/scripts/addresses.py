@@ -421,6 +421,8 @@ ADDRESSES_ARBITRUM = {
         "renBTC": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
         "WETH": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
         "USDT": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        "SWPR": "0xdE903E2712288A1dA82942DDdF2c20529565aC30",
+        "ibBTC": "0x9Ab3FD50FcAe73A1AEDa959468FD0D662c881b42",
         "slpWbtcEth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
         "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
         "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
@@ -433,6 +435,10 @@ ADDRESSES_ARBITRUM = {
     "lp_tokens": {
         "slpWbtcEth": "0x515e252b2b5c22b4b2b6Df66c2eBeeA871AA4d69",
         "slpSushiWeth": "0x3221022e37029923aCe4235D812273C5A42C322d",
+        "dxsSwaprWeth": "0xA66b20912cBEa522278f3056B4aE60D0d3EE271b",
+        "dxsWbtcWeth": "0x9A17D97Fb5f76F44604270448Ac77D55Ac40C15c",
+        "dxsBadgerWeth": "0x3C6bd88cdD2AECf466E22d4ED86dB6B8953FDb72",
+        "dxsIbbtcWeth": "0x6a060a569e04a41794d6b1308865a13F27D27E53"
     },
     "crv_pools": {
         "crvRenBTC": "0x3E01dD8a5E1fb3481F0F589056b428Fc308AF0Fb",
@@ -448,7 +454,9 @@ ADDRESSES_ARBITRUM = {
         "sushi": "0xd4d42f0b6def4ce0383636770ef773390d85c61a",
         "renbtc": "0xdbf31df14b66535af65aac99c32e9ea844e14501",
         "weth": "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
-        "usdx": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9"
+        "usdx": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        "swapr": "0xdE903E2712288A1dA82942DDdF2c20529565aC30",
+        "interest-bearing-bitcoin": "0x9Ab3FD50FcAe73A1AEDa959468FD0D662c881b42"
     },
     "guestList": {
         "bDXSSwaprWeth": "0x542629fd10f4F6C71D770C9B3e5478A54e98e3Ea",
