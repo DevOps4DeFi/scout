@@ -28,7 +28,6 @@ resource "aws_ecs_task_definition" "prometheus" {
   volume {
     name      = "prometheus-data"
     host_path = "${local.mount_point}/prometheus-data"
-    readOnly = false
   }
 }
 
@@ -44,6 +43,7 @@ module "prometheus-container-definition" {
     {
       containerPath = "/prometheus"
       sourceVolume  = "prometheus-data"
+      readOnly = false
     }
   ]
   log_configuration = {
