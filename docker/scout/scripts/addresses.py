@@ -146,7 +146,7 @@ ADDRESSES_ETH = {
         "crvMIM": "0x5a6A4D54456819380173272A5E8E9B9904BdF41B",
         "crvALUSD": "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c",
         "crvFRAX": "0xd632f22692FaC7611d2AA1C0D552930D43CAEd3B",
-        "bveCVX-CVX-f": "0x04c90C198b2eFF55716079bc06d7CCc4aa4d7512"
+        "bveCVX-CVX-f": "0x04c90C198b2eFF55716079bc06d7CCc4aa4d7512",
     },
     # mStable want tokens
     "mstable_vaults": {
