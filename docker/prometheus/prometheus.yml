@@ -26,6 +26,9 @@ scrape_configs:
       - targets: ["scout-collector:8801"]
         labels:
           chain: "ETH"
+  - job_name: "scout-off-chain"
+    static_configs:
+      - targets: [ "scout-off-chain:8801" ]
   - job_name: "arb-scout"
     static_configs:
       - targets: ["arb-collector:8801"]

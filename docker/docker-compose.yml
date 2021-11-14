@@ -39,6 +39,16 @@ services:
       - "8801"
     environment:
       - ETHNODEURL
+  scout-off-chain:
+    build:
+      context: ./scout
+    container_name: scout-off-chain
+    ports:
+      - "8801"
+    environment:
+      - ETHNODEURL
+    entrypoint:
+      - "./startOffChain.sh"
   renderer:
     image: grafana/grafana-image-renderer:latest
     ports:

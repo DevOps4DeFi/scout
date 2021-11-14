@@ -38,7 +38,7 @@ module "prometheus-container-definition" {
   container_name               = "prometheus"
   container_memory_reservation = 250
   essential                    = true
-  links = ["scout-collector", "arb-collector"]
+  links = ["scout-collector", "arb-collector", "scout-off-chain"]
   mount_points = [
     {
       containerPath = "/prometheus"
@@ -84,6 +84,29 @@ module "arb-scout-container-definition" {
       name      = "ARBNODEURL"
       valueFrom = var.arbnode_url_ssm_parameter_name
     }]
+}
+module "scout-container-off-chain-definition" {
+  source                       = "cloudposse/ecs-container-definition/aws"
+  version                      = "0.47.0"
+  container_image              = local.scout_docker_image
+  container_name               = "scout-off-chain"
+  essential                    = true
+  container_memory_reservation = 250
+  entrypoint = ["./startOffChain.sh"]
+  log_configuration = {
+    logDriver = "awslogs"
+    options = {
+      awslogs-group         = aws_cloudwatch_log_group.scout.id
+      awslogs-region        = var.region
+      awslogs-stream-prefix = "scout-off-chain"
+    }
+  }
+
+  secrets = [
+    {
+      name      = "ETHNODEURL"
+      valueFrom = var.ethnode_url_ssm_parameter_name
+  }]
 }
 module "scout-bridge-definition" {
   source                       = "cloudposse/ecs-container-definition/aws"

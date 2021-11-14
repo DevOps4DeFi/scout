@@ -3,22 +3,16 @@ import itertools
 import os
 import re
 import warnings
-from typing import Dict
-from typing import List
 
 from brownie import chain
 from brownie import interface
-from brownie import Contract
 from prometheus_client import Gauge
 from prometheus_client import start_http_server
 from web3 import Web3
 
 from scripts.addresses import ADDRESSES_ETH
-from scripts.addresses import SUPPORTED_CHAINS
-from scripts.addresses import reverse_addresses
 from scripts.addresses import checksum_address_dict
 from scripts.data import get_badgertree_data
-from scripts.data import get_treasury_token_addr_by_pool_name
 from scripts.data import get_digg_data
 from scripts.data import get_ibbtc_data
 from scripts.data import get_json_request
@@ -26,9 +20,9 @@ from scripts.data import get_lp_data
 from scripts.data import get_peak_composition_data
 from scripts.data import get_peak_value_data
 from scripts.data import get_sett_data
-from scripts.data import get_sett_roi_data
 from scripts.data import get_token_by_address
 from scripts.data import get_token_interfaces
+from scripts.data import get_treasury_token_addr_by_pool_name
 from scripts.data import get_wallet_balances_by_token
 from scripts.data import get_yvault_data
 from scripts.logconf import console
@@ -325,23 +319,6 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         log.warning(e)
 
 
-def update_setts_roi_gauge(
-        sett_roi_gauge: Gauge, sett_data: List[Dict], network: str
-) -> None:
-    reversed_addresses = reverse_addresses()[network]
-    for sett in sett_data:
-        sett_name = reversed_addresses[sett['settToken']]
-        sett_roi_gauge.labels(sett_name, "none", network, "ROI").set(sett['apr'])
-        # Gather data for each Sett source separately now
-        for source in sett['sources']:
-            sett_roi_gauge.labels(sett_name, source['name'], network, "apr").set(source['apr'])
-            sett_roi_gauge.labels(
-                sett_name, source['name'], network, "minApr"
-            ).set(source['minApr'])
-            sett_roi_gauge.labels(
-                sett_name, source['name'], network, "maxApr").set(source['maxApr'])
-
-
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
     yvault_name = yvault.name
     yvault_address = yearn_vaults[yvault_name]
@@ -547,11 +524,6 @@ def main():
         documentation="Badger Sett vaults data",
         labelnames=["sett", "tokenAddress", "token", "param"],
     )
-    badger_sett_roi_gauge = Gauge(
-        name="settRoi",
-        documentation="Badger Sett ROI data",
-        labelnames=["sett", "source", "targetChain", "param"],
-    )
     wallets_gauge = Gauge(
         name="wallets",
         documentation="Watched wallet balances",
@@ -649,9 +621,6 @@ def main():
                 countertoken_csv,
                 NETWORK,
             )
-        for network in SUPPORTED_CHAINS:
-            setts_roi = get_sett_roi_data(network)
-            update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi, network)
         # process digg oracle prices
         update_digg_gauge(digg_gauge, digg_prices, slpWbtcDigg, uniWbtcDigg)
 
