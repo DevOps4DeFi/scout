@@ -44,6 +44,7 @@ module "prometheus-container-definition" {
     {
       containerPath = "/prometheus"
       sourceVolume  = "prometheus-data"
+      readOnly = false
     }
   ]
   log_configuration = {
