@@ -28,6 +28,7 @@ resource "aws_ecs_task_definition" "prometheus" {
   volume {
     name      = "prometheus-data"
     host_path = "${local.mount_point}/prometheus-data"
+    readOnly = false
   }
 }
 

@@ -41,7 +41,8 @@ module "grafana-container-definition" {
   mount_points = [
     {
       containerPath = "/var/lib/grafana",
-      sourceVolume  = "grafana-data"
+      sourceVolume  = "grafana-data",
+      readOnly = false
     }
   ]
   log_configuration = {
