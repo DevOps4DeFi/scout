@@ -3,11 +3,12 @@ import itertools
 import os
 import re
 import warnings
+from typing import Optional
 
 from brownie import chain
-from brownie import interface
+from brownie import interface  # noqa
 from prometheus_client import Gauge
-from prometheus_client import start_http_server
+from prometheus_client import start_http_server  # noqa
 from web3 import Web3
 
 from scripts.addresses import ADDRESSES_ETH
@@ -404,9 +405,9 @@ def update_wallets_gauge(
     token_address,
     treasury_tokens,
     network,
+    step: Optional[int] = 0
 ):
     log.info(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
-
     wallet_info = wallet_balances_by_token[token_address]
     for wallet in wallet_info.describe():
         (
@@ -416,7 +417,12 @@ def update_wallets_gauge(
             wallet_name,
             wallet_address,
         ) = wallet.values()
-
+        # On each 10th step should check for all tokens balances, even if previous balance is 0
+        is_10th_step = step % 10 == 0
+        if token_balance == 0.0 and not is_10th_step:
+            log.info(f"Skip checking balance for {token_name} "
+                     f"in {wallet_name} wallet with step {step}")
+            continue
         eth_name = "ETH"
         eth_address = treasury_tokens[f"W{eth_name}"]
         eth_balance = float(w3.fromWei(w3.eth.getBalance(wallet_address), "ether"))
@@ -437,7 +443,8 @@ def update_wallets_gauge(
             ).set(eth_balance * usd_prices_by_token_address[eth_address])
         except Exception as e:
             log.warning(
-                f"Error calculating USD balances for wallet [bold]{wallet_name} token [bold]{token_name}"
+                f"Error calculating USD balances for wallet "
+                f"[bold]{wallet_name} token [bold]{token_name}"
             )
             log.info(e)
 
@@ -664,22 +671,8 @@ def main():
         for underlying in peak_sett_underlyings:
             update_peak_composition_gauge(peak_composition_gauge, underlying)
 
-        if step == 0:
-            ### Get basic balances for all wallets on first run
-            for token_name, token_address in treasury_tokens.items():
-                update_wallets_gauge(
-                    wallets_gauge,
-                    wallet_balances_by_token,
-                    token_name,
-                    token_address,
-                    treasury_tokens,
-                    NETWORK,
-            )
-        else:
-        # process wallet balances for *one* treasury token
-            token_name, token_address = list(treasury_tokens.items())[
-                step % num_treasury_tokens
-            ]
+        # Get basic balances for all wallets on first run
+        for token_name, token_address in treasury_tokens.items():
             update_wallets_gauge(
                 wallets_gauge,
                 wallet_balances_by_token,
@@ -687,6 +680,7 @@ def main():
                 token_address,
                 treasury_tokens,
                 NETWORK,
+                step,
             )
 
         # process bridged tokens
@@ -698,5 +692,3 @@ def main():
                 token_interfaces,
                 treasury_tokens,
             )
-
-

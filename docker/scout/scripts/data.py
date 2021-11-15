@@ -333,7 +333,9 @@ def get_token_balance_data(wallets, token_name, token_address):
 
 def get_wallet_balances_by_token(wallets, tokens):
     return {
-        token_address: get_token_balance_data(wallets, token_name, token_address)
+        token_address: TokenBalance(
+            wallets=wallets, name=token_name, token=interface.ERC20(token_address)
+        )
         for token_name, token_address in tokens.items()
     }
 
