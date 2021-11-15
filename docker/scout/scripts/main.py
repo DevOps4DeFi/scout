@@ -420,8 +420,6 @@ def update_wallets_gauge(
         # On each 10th step should check for all tokens balances, even if previous balance is 0
         is_10th_step = step % 10 == 0
         if token_balance == 0.0 and not is_10th_step:
-            log.info(f"Skip checking balance for {token_name} "
-                     f"in {wallet_name} wallet with step {step}")
             continue
         eth_name = "ETH"
         eth_address = treasury_tokens[f"W{eth_name}"]
