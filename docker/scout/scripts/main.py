@@ -3,6 +3,7 @@ import itertools
 import os
 import re
 import warnings
+from collections import defaultdict
 from typing import Optional
 
 from brownie import chain
@@ -16,13 +17,13 @@ from scripts.addresses import checksum_address_dict
 from scripts.data import get_badgertree_data
 from scripts.data import get_digg_data
 from scripts.data import get_ibbtc_data
-from scripts.data import get_json_request
 from scripts.data import get_lp_data
 from scripts.data import get_peak_composition_data
 from scripts.data import get_peak_value_data
 from scripts.data import get_sett_data
 from scripts.data import get_token_by_address
 from scripts.data import get_token_interfaces
+from scripts.data import get_token_prices
 from scripts.data import get_treasury_token_addr_by_pool_name
 from scripts.data import get_wallet_balances_by_token
 from scripts.data import get_yvault_data
@@ -66,25 +67,6 @@ peak_sett_composition = {
 }
 
 usd_prices_by_token_address = {}
-
-
-def get_token_prices(token_csv, countertoken_csv, network):
-    log.info("Fetching token prices from CoinGecko ...")
-
-    if network == "ETH":
-        # fetch prices by token_address on ETH
-        # fetch prices by token_address on ETH
-        url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
-    elif network == "BSC":
-        # fetch prices by coingecko_name on BSC
-        url = f"https://api.coingecko.com/api/v3/simple/price?ids={token_csv}&vs_currencies={countertoken_csv}"
-    else:
-        log.error(
-            "Specify network in order to fetch prices using appropriate CoinGecko API endpoint"
-        )
-
-    token_prices = get_json_request(request_type="get", url=url)
-    return token_prices
 
 
 def update_price_gauge(
@@ -398,35 +380,31 @@ def update_peak_composition_gauge(peak_composition_gauge, peak_sett_underlying):
     )
 
 
+WALLETS_TOKEN_BALANCES = defaultdict(dict)
+
+
 def update_wallets_gauge(
     wallets_gauge,
     wallet_balances_by_token,
-    token_name,
     token_address,
-    treasury_tokens,
-    network,
     step: Optional[int] = 0
 ):
-    log.info(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
     wallet_info = wallet_balances_by_token[token_address]
-    for wallet in wallet_info.describe():
-        (
-            token_name,
-            token_address,
-            token_balance,
-            wallet_name,
-            wallet_address,
-        ) = wallet.values()
-        # On each 10th step should check for all tokens balances, even if previous balance is 0
-        is_10th_step = step % 10 == 0
-        if token_balance == 0.0 and not is_10th_step:
+    dont_skip = step % 10 == 0
+    log.info(f"Processing wallet balances for [bold]{wallet_info['name']}: {token_address} ...")
+    for wallet_name, wallet_address in wallet_info['wallets'].items():
+        if WALLETS_TOKEN_BALANCES.get(wallet_address, {}).get(token_address) == 0 and not dont_skip:
+            log.warning(f"Skipping {wallet_name} wallet update since token balance was 0 before")
             continue
+        log.warning(f"!!!!!!!!!! Wallet {wallet_name} token {token_address} updated!!!!!!")
+        token = interface.ERC20(wallet_info['token'])
+        token_balance = token.balanceOf(wallet_address) / 10 ** token.decimals()
+        WALLETS_TOKEN_BALANCES[wallet_address][token_address] = token_balance
         eth_name = "ETH"
-        eth_address = treasury_tokens[f"W{eth_name}"]
         eth_balance = float(w3.fromWei(w3.eth.getBalance(wallet_address), "ether"))
 
         wallets_gauge.labels(
-            wallet_name, wallet_address, token_name, token_address, "balance"
+            wallet_name, wallet_address, wallet_info['name'], token_address, "balance"
         ).set(token_balance)
         wallets_gauge.labels(
             wallet_name, wallet_address, eth_name, "None", "balance"
@@ -434,15 +412,15 @@ def update_wallets_gauge(
 
         try:
             wallets_gauge.labels(
-                wallet_name, wallet_address, token_name, token_address, "usdBalance"
+                wallet_name, wallet_address, wallet_info['name'], token_address, "usdBalance"
             ).set(token_balance * usd_prices_by_token_address[token_address])
             wallets_gauge.labels(
                 wallet_name, wallet_address, eth_name, "none", "usdBalance"
-            ).set(eth_balance * usd_prices_by_token_address[eth_address])
+            ).set(eth_balance * usd_prices_by_token_address[treasury_tokens[f"W{eth_name}"]])
         except Exception as e:
             log.warning(
                 f"Error calculating USD balances for wallet "
-                f"[bold]{wallet_name} token [bold]{token_name}"
+                f"[bold]{wallet_name} token [bold]{wallet_info['name']}"
             )
             log.info(e)
 
@@ -579,9 +557,10 @@ def main():
     badger = token_interfaces[treasury_tokens["BADGER"]]
     digg = token_interfaces[treasury_tokens["DIGG"]]
 
-    wallet_balances_by_token = get_wallet_balances_by_token(
-        badger_wallets, treasury_tokens
-    )
+    wallet_balances_by_token = {token_address: dict(
+        wallets=badger_wallets, name=token_name,
+        token=token_address,
+    ) for token_name, token_address in treasury_tokens.items()}
 
     lp_data = get_lp_data(lp_tokens)
 
@@ -674,10 +653,7 @@ def main():
             update_wallets_gauge(
                 wallets_gauge,
                 wallet_balances_by_token,
-                token_name,
                 token_address,
-                treasury_tokens,
-                NETWORK,
                 step,
             )
 

@@ -232,7 +232,6 @@ def update_wallets_gauge(
     token_name,
     token_address,
     treasury_tokens,
-    step: int,
 ):
     log.info(f"Processing wallet balances for [bold]{token_name}: {token_address} ...")
 
@@ -245,9 +244,6 @@ def update_wallets_gauge(
             wallet_name,
             wallet_address,
         ) = wallet.values()
-        is_10th_step = step % 10 == 0
-        if token_balance == 0.0 and not is_10th_step:
-            continue
 
         eth_name = "ETH"
         eth_address = treasury_tokens[f"W{eth_name}"]
@@ -418,7 +414,6 @@ def main():
             token_name,
             token_address,
             treasury_tokens,
-            step,
         )
 
         # process rewards balances

@@ -421,3 +421,22 @@ def get_json_request(request_type, url, request_data=None):
         log.error(f"Got error from {url}")
         return
     return r.json()
+
+
+def get_token_prices(token_csv, countertoken_csv, network) -> Optional[Dict]:
+    log.info("Fetching token prices from CoinGecko ...")
+
+    if network == "ETH":
+        # fetch prices by token_address on ETH
+        # fetch prices by token_address on ETH
+        url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?" \
+              f"contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
+    elif network == "BSC":
+        # fetch prices by coingecko_name on BSC
+        url = f"https://api.coingecko.com/api/v3/simple/price?" \
+              f"ids={token_csv}&vs_currencies={countertoken_csv}"
+    else:
+        return
+
+    token_prices = get_json_request(request_type="get", url=url)
+    return token_prices
