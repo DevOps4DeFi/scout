@@ -25,7 +25,6 @@ from scripts.data import get_token_by_address
 from scripts.data import get_token_interfaces
 from scripts.data import get_token_prices
 from scripts.data import get_treasury_token_addr_by_pool_name
-from scripts.data import get_wallet_balances_by_token
 from scripts.data import get_yvault_data
 from scripts.logconf import console
 from scripts.logconf import log
@@ -396,7 +395,6 @@ def update_wallets_gauge(
         if WALLETS_TOKEN_BALANCES.get(wallet_address, {}).get(token_address) == 0 and not dont_skip:
             log.warning(f"Skipping {wallet_name} wallet update since token balance was 0 before")
             continue
-        log.warning(f"!!!!!!!!!! Wallet {wallet_name} token {token_address} updated!!!!!!")
         token = interface.ERC20(wallet_info['token'])
         token_balance = token.balanceOf(wallet_address) / 10 ** token.decimals()
         WALLETS_TOKEN_BALANCES[wallet_address][token_address] = token_balance
