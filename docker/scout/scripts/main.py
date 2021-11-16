@@ -393,8 +393,8 @@ def update_wallets_gauge(
     log.info(f"Processing wallet balances for [bold]{wallet_info['name']}: {token_address} ...")
     for wallet_name, wallet_address in wallet_info['wallets'].items():
         if WALLETS_TOKEN_BALANCES.get(wallet_address, {}).get(token_address) == 0 and not dont_skip:
-            log.warning(f"Skipping {wallet_name} wallet update since token balance was 0 before")
             continue
+        log.info(f"Updating balance for {wallet_info['name']} for wallet {wallet_name}")
         token = interface.ERC20(wallet_info['token'])
         token_balance = token.balanceOf(wallet_address) / 10 ** token.decimals()
         WALLETS_TOKEN_BALANCES[wallet_address][token_address] = token_balance
