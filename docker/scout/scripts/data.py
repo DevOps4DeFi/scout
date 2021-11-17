@@ -333,7 +333,9 @@ def get_token_balance_data(wallets, token_name, token_address):
 
 def get_wallet_balances_by_token(wallets, tokens):
     return {
-        token_address: get_token_balance_data(wallets, token_name, token_address)
+        token_address: TokenBalance(
+            wallets=wallets, name=token_name, token=interface.ERC20(token_address)
+        )
         for token_name, token_address in tokens.items()
     }
 
@@ -379,9 +381,7 @@ def get_sett_roi_data(network: Optional[str] = "ETH") -> Optional[List[Dict]]:
 
     setts_data = []
     for sett in response:
-        # Filter out deprecated setts
-        if not sett['deprecated']:
-            setts_data.append(sett)
+        setts_data.append(sett)
     return setts_data
 
 
@@ -419,3 +419,22 @@ def get_json_request(request_type, url, request_data=None):
         log.error(f"Got error from {url}")
         return
     return r.json()
+
+
+def get_token_prices(token_csv, countertoken_csv, network) -> Optional[Dict]:
+    log.info("Fetching token prices from CoinGecko ...")
+
+    if network == "ETH":
+        # fetch prices by token_address on ETH
+        # fetch prices by token_address on ETH
+        url = f"https://api.coingecko.com/api/v3/simple/token_price/ethereum?" \
+              f"contract_addresses={token_csv}&vs_currencies={countertoken_csv}"
+    elif network == "BSC":
+        # fetch prices by coingecko_name on BSC
+        url = f"https://api.coingecko.com/api/v3/simple/price?" \
+              f"ids={token_csv}&vs_currencies={countertoken_csv}"
+    else:
+        return
+
+    token_prices = get_json_request(request_type="get", url=url)
+    return token_prices
