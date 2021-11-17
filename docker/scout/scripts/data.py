@@ -381,9 +381,7 @@ def get_sett_roi_data(network: Optional[str] = "ETH") -> Optional[List[Dict]]:
 
     setts_data = []
     for sett in response:
-        # Filter out deprecated setts
-        if not sett['deprecated']:
-            setts_data.append(sett)
+        setts_data.append(sett)
     return setts_data
 
 
