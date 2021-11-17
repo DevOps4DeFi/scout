@@ -22,12 +22,11 @@ ADDRESSES_ETH = {
         "rewards_escrow": "0x19d099670a21bc0a8211a89b84cedf59abb4377f",
         "dev_multisig": "0xB65cef03b9B89f99517643226d76e286ee999e77",
         "devtest_multisig": "0x33909cb2633d4B298a72042Da5686B45E9385ed0",
-        "test_multisig_1": "0x55949f769d0af7453881435612561d109fff07b8",
         "test_multisig": "0x33909cb2633d4B298a72042Da5686B45E9385ed0",
         "techops_multisig": "0x86cbD0ce0c087b482782c181dA8d191De18C8275",
         "politician_multisig": "0x6F76C6A1059093E21D8B1C13C4e20D8335e2909F",  # Bribes
         "ops_multisig": "0xD4868d98849a58F743787c77738D808376210292",
-        "ops_multisig_old": "0x576cD258835C529B54722F84Bb7d4170aA932C64",
+        #"ops_multisig_old": "0x576cD258835C529B54722F84Bb7d4170aA932C64",
         "dfdBadgerShared": "0xCF7346A5E41b0821b80D5B3fdc385EEB6Dc59F44",
         "ops_deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
         "ops_deployer2": "0xeE8b29AA52dD5fF2559da2C50b1887ADee257556",
@@ -64,9 +63,9 @@ ADDRESSES_ETH = {
         "USDC": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
         "aUSDC": "0xBcca60bB61934080951369a648Fb03DF4F96263C",
         "cUSDC": "0x39aa39c021dfbae8fac545936693ac917d5e7563",
-        "DUSD": "0x5BC25f649fc4e26069dDF4cF4010F9f706c23831",
+#        "DUSD": "0x5BC25f649fc4e26069dDF4cF4010F9f706c23831",
         "DAI": "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        "DFD": "0x20c36f062a31865bED8a5B1e512D9a1A20AA333A",
+#        "DFD": "0x20c36f062a31865bED8a5B1e512D9a1A20AA333A",
         "CRV": "0xD533a949740bb3306d119CC777fa900bA034cd52",
         "WBTC": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599",
         "renBTC": "0xEB4C2781e4ebA804CE9a9803C67d0893436bB27D",
@@ -147,6 +146,7 @@ ADDRESSES_ETH = {
         "crvALUSD": "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c",
         "crvFRAX": "0xd632f22692FaC7611d2AA1C0D552930D43CAEd3B",
         "bveCVX-CVX-f": "0x04c90C198b2eFF55716079bc06d7CCc4aa4d7512",
+        "crvIbBTC": "0xFbdCA68601f835b27790D98bbb8eC7f05FDEaA9B"
     },
     # mStable want tokens
     "mstable_vaults": {
