@@ -79,5 +79,6 @@ def main():
             update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi, network)
         # Get data from convex to compare it to data from Badger API
         crvcvx_pools_data = get_apr_from_convex()
-        update_crv_setts_roi_gauge(badger_sett_roi_gauge, crvcvx_pools_data)
+        if crvcvx_pools_data:
+            update_crv_setts_roi_gauge(badger_sett_roi_gauge, crvcvx_pools_data)
         sleep(60)
