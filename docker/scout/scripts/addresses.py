@@ -34,6 +34,10 @@ ADDRESSES_ETH = {
         "ops_deployer4": "0xef42D748e09A2d9eF89238c053CE0B6f00236210",
         "ops_deployer5": "0xC6a902de22b10cb176460777ce6e7A12A6b6AE5a",
         "ops_deployer6": "0x7c1D678685B9d2F65F1909b9f2E544786807d46C",
+        "ops_executor1": "0xcf4fF1e03830D692F52EB094c52A5A6A2181Ab3F",
+        "ops_executor2": "0x8938bf50d1a3736bdA413510688834540858dAEA",
+        "ops_executor3": "0xC69Fb085481bC8C4bfF99B924076656305D9a25D",
+        "ops_executor4": "0xBB2281cA5B4d07263112604D1F182AD0Ab26a252",
         "ops_guardian": "0x29F7F8896Fb913CF7f9949C623F896a154727919",
         "ops_keeper": "0x872213E29C85d7e30F1C8202FC47eD1Ec124BB1D",
         "ops_root-validator": "0x626f69162ea1556a75dd4443d87d2fe38dd25901",
@@ -45,7 +49,6 @@ ADDRESSES_ETH = {
         "ops_external_harvester": "0x64E2286148Fbeba8BEb4613Ede74bAc7646B2A2B",
         "digg_treasury": "0x5A54Ca44e8F5A1A695f8621f15Bfa159a140bB61",
         "uniswap_rewards": "0x0c79406977314847a9545b11783635432d7fe019",
-        "defiDollar_fees": "0x5b5cf8620292249669e1dcc73b753d01543d6ac7",
         "delegate": "0x14f83ff95d4ec5e8812ddf42da1232b0ba1015e6",
         "devProxyAdmin": "0x20Dce41Acca85E8222D6861Aa6D23B6C941777bF",
         "testProxyAdmin": "0xB10b3Af646Afadd9C62D663dd5d226B15C25CdFA",
@@ -107,6 +110,7 @@ ADDRESSES_ETH = {
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
         "bveCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305",
+        "bcrvIbBTC": "0xaE96fF08771a109dc6650a1BdCa62F2d558E40af",
         # "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",  # TODO NO COINGECKO PRICE
     },
     # Every slp token listed in treasury tokens above must also be listed here.
@@ -146,7 +150,7 @@ ADDRESSES_ETH = {
         "crvALUSD": "0x43b4FdFD4Ff969587185cDB6f0BD875c5Fc83f8c",
         "crvFRAX": "0xd632f22692FaC7611d2AA1C0D552930D43CAEd3B",
         "bveCVX-CVX-f": "0x04c90C198b2eFF55716079bc06d7CCc4aa4d7512",
-        "crvIbBTC": "0xFbdCA68601f835b27790D98bbb8eC7f05FDEaA9B"
+        "crvIbBTC": "0xFbdCA68601f835b27790D98bbb8eC7f05FDEaA9B",
     },
     # mStable want tokens
     "mstable_vaults": {

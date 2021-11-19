@@ -227,12 +227,15 @@ def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
         crv_interface = interface.CRVswap(pool_address)
     else:
         crv_interface = interface.CRVswapUnderlying(pool_address)
+
+    token_interface = interface.ERC20(treasury_tokens[pool_name])
     virtual_price = crv_interface.get_virtual_price() / 1e18
     usd_price = virtual_price * usd_prices_by_token_address[token_address]
     log.warning(f"CRV Token price: {pool_name}: virtual price {virtual_price} "
                 f"* usd token price {usd_prices_by_token_address[token_address]} == {usd_price}USD")
     crv_tokens_gauge.labels(pool_name, token_address, "pricePerShare").set(virtual_price)
     crv_tokens_gauge.labels(pool_name, token_address, "usdPricePerShare").set(usd_price)
+    crv_tokens_gauge.labels(pool_name, token_address, "totalSupply").set(token_interface.totalSupply() / 1e18)
 
     usd_prices_by_token_address[pool_token_address] = usd_price
 

@@ -1,25 +1,5 @@
 version: "3"
 services:
-  ibbtc:
-    build:
-      context: ./scout
-    ports:
-      - "8801"
-    environment:
-      - ETHNODEURL
-    container_name: ibbtc-events
-    entrypoint:
-      - "./startIbbtc.sh"
-  events:
-    build:
-      context: ./scout
-    ports:
-      - "8081"
-    environment:
-      - ETHNODEURL
-    container_name: events
-    entrypoint:
-      - "./startBridge.sh"
   arb-scout:
     build:
       context: ./scout
