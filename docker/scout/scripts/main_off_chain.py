@@ -74,6 +74,8 @@ def main():
     while True:
         for network in SUPPORTED_CHAINS:
             setts_roi = get_sett_roi_data(network)
+            if not setts_roi:
+                continue
             update_setts_roi_gauge(badger_sett_roi_gauge, setts_roi, network)
         # Get data from convex to compare it to data from Badger API
         crvcvx_pools_data = get_apr_from_convex()
