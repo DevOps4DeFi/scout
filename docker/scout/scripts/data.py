@@ -350,6 +350,7 @@ CVX_GRAPH_QUERY = """{
       token,
       gauge,
       cvxApr,
+      tvl,
     }
   }
 }
