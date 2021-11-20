@@ -4,6 +4,8 @@ import os
 import re
 import warnings
 from collections import defaultdict
+from typing import Dict
+from typing import List
 from typing import Optional
 
 from brownie import chain
@@ -14,6 +16,7 @@ from web3 import Web3
 
 from scripts.addresses import ADDRESSES_ETH
 from scripts.addresses import checksum_address_dict
+from scripts.data import get_apr_from_convex
 from scripts.data import get_badgertree_data
 from scripts.data import get_digg_data
 from scripts.data import get_ibbtc_data
@@ -53,6 +56,12 @@ yearn_vaults = ADDRESSES["yearn_vaults"]
 custodians = ADDRESSES["custodians"]
 oracles = ADDRESSES["oracles"]
 peaks = ADDRESSES["peaks"]
+
+CVX_ADDRESSES = {
+    **ADDRESSES['crv_pools'],
+    **ADDRESSES['crv_3_pools'],
+    **ADDRESSES['crv_stablecoin_pools'],
+}
 
 CRV_POOLS_WITH_CRV_STABLECOIN_POOLS = {**crv_pools, **crv_stablecoin_pools}
 
@@ -302,6 +311,20 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
     except Exception as e:
         log.warning(f"Error calculating USD price for Sett [bold]{sett_name}")
         log.warning(e)
+
+
+def update_crv_setts_roi_gauge(
+    sett_gauge: Gauge, sett_data: List[Dict]
+):
+    if not sett_data:
+        return
+    for sett_name, sett_address in CVX_ADDRESSES.items():
+        for cvx_item in sett_data:
+            if Web3.toChecksumAddress(cvx_item['swap']) == sett_address:
+                log.info(f"Updated AUM CVX pool {sett_name}")
+                sett_gauge.labels(
+                    sett_name, sett_address, sett_name, "cvxAUM"
+                ).set(cvx_item['tvl'])
 
 
 def update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens):
@@ -633,6 +656,10 @@ def main():
 
         for sett in sett_data:
             update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens)
+
+        crvcvx_pools_data = get_apr_from_convex()
+        if crvcvx_pools_data:
+            update_crv_setts_roi_gauge(sett_gauge, crvcvx_pools_data)
 
         for yvault in yvault_data:
             update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens)
