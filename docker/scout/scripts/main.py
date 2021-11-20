@@ -321,7 +321,7 @@ def update_crv_cvx_aum_gauge(
             if Web3.toChecksumAddress(cvx_item['swap']) == token_address:
                 log.info(f"Updated AUM CVX pool {token_name}")
                 curve_gauge.labels(
-                    {token_name}, token_address,"cvxAUM"
+                    token_name, token_address,"cvxAUM"
                 ).set(cvx_item['tvl'])
 
 
