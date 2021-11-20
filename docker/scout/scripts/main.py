@@ -240,8 +240,6 @@ def update_crv_tokens_gauge(crv_tokens_gauge, pool_name, pool_address):
     token_interface = interface.ERC20(treasury_tokens[pool_name])
     virtual_price = crv_interface.get_virtual_price() / 1e18
     usd_price = virtual_price * usd_prices_by_token_address[token_address]
-    log.warning(f"CRV Token price: {pool_name}: virtual price {virtual_price} "
-                f"* usd token price {usd_prices_by_token_address[token_address]} == {usd_price}USD")
     crv_tokens_gauge.labels(pool_name, token_address, "pricePerShare").set(virtual_price)
     crv_tokens_gauge.labels(pool_name, token_address, "usdPricePerShare").set(usd_price)
     crv_tokens_gauge.labels(pool_name, token_address, "totalSupply").set(token_interface.totalSupply() / 1e18)
@@ -313,17 +311,17 @@ def update_sett_gauge(sett_gauge, sett, sett_vaults, treasury_tokens):
         log.warning(e)
 
 
-def update_crv_setts_roi_gauge(
-    sett_gauge: Gauge, sett_data: List[Dict]
+def update_crv_cvx_aum_gauge(
+    curve_gauge: Gauge, pool_data: List[Dict]
 ):
-    if not sett_data:
+    if not pool_data:
         return
-    for sett_name, sett_address in CVX_ADDRESSES.items():
-        for cvx_item in sett_data:
-            if Web3.toChecksumAddress(cvx_item['swap']) == sett_address:
-                log.info(f"Updated AUM CVX pool {sett_name}")
-                sett_gauge.labels(
-                    sett_name, sett_address, sett_name, "cvxAUM"
+    for token_name, token_address in CVX_ADDRESSES.items():
+        for cvx_item in pool_data:
+            if Web3.toChecksumAddress(cvx_item['swap']) == token_address:
+                log.info(f"Updated AUM CVX pool {token_name}")
+                curve_gauge.labels(
+                    {token_name}, token_address,"cvxAUM"
                 ).set(cvx_item['tvl'])
 
 
@@ -659,7 +657,7 @@ def main():
 
         crvcvx_pools_data = get_apr_from_convex()
         if crvcvx_pools_data:
-            update_crv_setts_roi_gauge(sett_gauge, crvcvx_pools_data)
+            update_crv_cvx_aum_gauge(crv_tokens_gauge, crvcvx_pools_data)
 
         for yvault in yvault_data:
             update_sett_yvault_gauge(sett_gauge, yvault, yearn_vaults, treasury_tokens)
