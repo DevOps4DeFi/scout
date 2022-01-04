@@ -92,7 +92,7 @@ module "scout-container-off-chain-definition" {
   version                      = "0.47.0"
   container_image              = local.scout_docker_image
   container_name               = "scout-off-chain"
-  essential                    = true
+  essential                    = false
   container_memory_reservation = 250
   entrypoint = ["./startOffChain.sh"]
   log_configuration = {
