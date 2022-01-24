@@ -28,11 +28,12 @@ ADDRESSES_ETH = {
         "test_multisig": "0x33909cb2633d4B298a72042Da5686B45E9385ed0",
         "techops_multisig": "0x86cbD0ce0c087b482782c181dA8d191De18C8275",
         "politician_multisig": "0x6F76C6A1059093E21D8B1C13C4e20D8335e2909F", ##Bribes
-        "treasury_multisig": "0x042B32Ac6b453485e357938bdC38e0340d4b9276",
+        "recovered_multisig": "0x9faA327AAF1b564B569Cb0Bc0FDAA87052e8d92c",
         "ops_multisig": "0xD4868d98849a58F743787c77738D808376210292",
         "ops_multisig_old": "0x576cD258835C529B54722F84Bb7d4170aA932C64",
         "treasury_ops_multisig": "0x042B32Ac6b453485e357938bdC38e0340d4b9276",
         "treasury_vault_multisig": "0xD0A7A8B98957b9CD3cFB9c0425AbE44551158e9e",
+        "ibbtc_multisig": "0xB76782B51BFf9C27bA69C77027e20Abd92Bcf3a8",
         "dfdBadgerShared": "0xCF7346A5E41b0821b80D5B3fdc385EEB6Dc59F44",
         "ops_deployer": "0xDA25ee226E534d868f0Dd8a459536b03fEE9079b",
         "ops_deployer2": "0xeE8b29AA52dD5fF2559da2C50b1887ADee257556",
@@ -63,6 +64,8 @@ ADDRESSES_ETH = {
         "devUngatedProxyAdmin": "0x9215cBDCDe25629d0e3D69ee5562d1b444Cf69F9",
         "testProxyAdmin": "0xB10b3Af646Afadd9C62D663dd5d226B15C25CdFA",
         "techOpsProxyAdmin": "0x7D0398D7D7432c47Dffc942Cd097B9eA3d88C385",
+        "badgerHunt": "0x394DCfbCf25C5400fcC147EbD9970eD34A474543",
+        "rewardsEscrow": "0xBE838aE7f6Ba97e7Eb545a3f43eE96FfBb3184DC",
     },
     #Scout stores prices for all tokens here, either from coingecko or interpolation
     # Any token here that does not have a coingeco price must be included in sett_vaults, lp_tokens or crvpools
@@ -126,7 +129,7 @@ ADDRESSES_ETH = {
         "bcrvSBTC": "0xd04c48A53c111300aD41190D63681ed3dAd998eC",
         "bcrvTBTC": "0xb9D076fDe463dbc9f915E5392F807315Bf940334",
         "bveCVX": "0xfd05D3C7fe2924020620A8bE4961bBaA747e6305",
-        "yvWBTC": "0xA696a63cc78DfFa1a63E9E50587C197387FF6C7E",  ##TODO NO COINGECKO PRICE
+        "A-BADGER-LP": "0x43298F9f91a4545dF64748e78a2c777c580573d6",
     },
     #Every slp token listed in treasury tokens above must also be listed here.  The lp_tokens in this list
     #are processed by scount to determine holdings and underlying value and set the price for the token in treasury_tokens
